@@ -1,0 +1,32 @@
+#login{
+	margin-top:25px;
+	background: black;
+	color:white;
+	border-radius: 0px;
+}
+
+#titlearea{
+	font-size: 50px;
+	float:left;
+	font-weight: bold;
+	margin-top:50px;
+	line-height: 90%;
+}
+
+h2{
+	line-height: 40%;
+	font-weight: bold;
+}
+
+form{
+	width:70%;
+}
+
+.form-control{
+	    border-radius: 0px;
+}
+
+.btn-default{
+	border-radius: 0px;
+}
+
