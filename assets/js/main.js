@@ -120,7 +120,7 @@ fireObj = {
         },
         gameChatOn: function(key) {
             gameRef.child(key).child("chat").on("child_added", function(snap) {
-                //TODO: call add new MSG with snap.val() to game chat 
+                //TODO: call add new MSG with snap.val() to game chat
             })
         },
         gameChatOff: function(key) {
