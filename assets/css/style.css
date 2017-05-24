@@ -1,32 +1,285 @@
-#login{
-	margin-top:25px;
-	background: black;
-	color:white;
-	border-radius: 0px;
+body {
+    font-family: 'helvetica neue';
+    background: url('../images/background.jpg')no-repeat center center fixed;
+    background-size: cover;
+    height: 100%;
 }
 
-#titlearea{
-	font-size: 50px;
-	float:left;
-	font-weight: bold;
-	margin-top:50px;
-	line-height: 90%;
+#myNav {
+    background-color: black;
 }
 
-h2{
-	line-height: 40%;
-	font-weight: bold;
+#user-name {
+    color: white;
+    font-weight: 500;
+    font-size: 1.2em;
 }
 
-form{
-	width:70%;
+#nav-links {
+    margin-right: 20px;
 }
 
-.form-control{
-	    border-radius: 0px;
+#brand-icon {
+    height: 27px;
+    width: 27px;
+    margin-top: -2px;
+    margin-right: -15px;
+    margin-left: 25px;
 }
 
-.btn-default{
-	border-radius: 0px;
+#nav-links a {
+    color: white;
 }
 
+.cards {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.flip-container {
+    perspective: 1000;
+    margin: 18px 0;
+}
+
+/*.flip-container:hover .flipper,*/
+.flip .flipper {
+    transform: rotateY(180deg);
+}
+
+/*.flip-container:hover .flipper {
+    transform: rotateY(180deg);
+}*/
+
+.flip-container,
+.front,
+.back {
+    width: 200px;
+    height: 300px;
+    text-align: center;
+    line-height: 300px;
+    font-size: 20px;
+    border-radius: 15px;
+}
+
+.flip-container {
+  /*border: 2px solid red;*/
+}
+
+.flipper {
+    transition: .6s;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    position: relative;
+}
+
+.front,
+.back {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.front {
+    z-index: 2;
+    background: white;
+    border: 2px solid black;
+}
+
+.back {
+    transform: rotateY(180deg);
+    background: white;
+    border: 2px solid black;
+}
+
+#front-black {
+    background: black;
+    border: 2px solid black;
+    color: white;
+}
+
+#back-black {
+    background: black;
+    border: 2px solid black;
+    color: white;
+}
+
+.front p {
+    line-height: 1em;
+    margin-top: 70px;
+    text-align: left;
+    margin-left: 20px;
+    font-family: helvetica neue;
+    font-weight: bold;
+    font-size: 1.7em;
+}
+
+.back p {
+    line-height: 1.2em;
+    margin-top: 15px;
+    text-align: left;
+    margin-left: 20px;
+    margin-right: 15px;
+    font-family: 'helvetica neue';
+    font-weight: bold;
+}
+
+
+
+
+
+
+#player-well {
+    height: 150px;
+    border: 2px solid black;
+    background-color: #e5e5e5;
+}
+
+#players {
+  margin-top: 10px;
+}
+
+
+
+#chat-well {
+    height: 525px;
+    border: 2px solid black;
+    background-color: #e5e5e5;
+}
+
+#chat-display {
+    height: 87%;
+}
+
+
+/* CHAT */
+
+.chat-window {
+    bottom: 0;
+    position: fixed;
+    float: right;
+    margin-left: 10px;
+}
+
+.chat-window > div > .panel {
+    border-radius: 5px 5px 0 0;
+}
+
+.icon_minim {
+    padding: 2px 10px;
+}
+
+.msg_container_base {
+    background: #e5e5e5;
+    margin: 0;
+    padding: 0 10px 10px;
+    max-height: 430px;
+    overflow-x: hidden;
+}
+
+.top-bar {
+    background: #666;
+    color: white;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.msg_receive {
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.msg_sent {
+    padding-bottom: 20px !important;
+    margin-right: 0;
+}
+
+.messages {
+    background: white;
+    padding: 10px;
+    border-radius: 2px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    max-width: 100%;
+}
+
+.messages > p {
+    font-size: 13px;
+    margin: 0 0 0.2rem 0;
+}
+
+.messages > time {
+    font-size: 11px;
+    color: #ccc;
+}
+
+.msg_container {
+    padding: 10px;
+    overflow: hidden;
+    display: flex;
+}
+
+img {
+    display: block;
+    width: 100%;
+}
+
+.avatar {
+    position: relative;
+}
+
+.base_receive > .avatar:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border: 5px solid #FFF;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+}
+
+.base_sent {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+.base_sent > .avatar:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border: 5px solid white;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    box-shadow: 1px 1px 2px rgba(black, 0.2); // not quite perfect but close
+}
+
+.msg_sent > time {
+    float: right;
+}
+
+.msg_container_base::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #F5F5F5;
+}
+
+.msg_container_base::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5;
+}
+
+.msg_container_base::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    background-color: #555;
+}
+
+.btn-group.dropup {
+    position: fixed;
+    left: 0px;
+    bottom: 0;
+}
