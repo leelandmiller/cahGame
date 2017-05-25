@@ -325,16 +325,16 @@ fireObj = {
                             //TODO: call quitgame functions
                         } else {
                             /*state = {
-																	    open: 0,
-																	    ready: 1,
-																	    chooseBlack: 2,
-																	    chooseWhite: 3,
-																	    pickWhite: 4,
-																	    showCards: 5,
-																	    nextTurn: 6,
-																	    gameOver: 7,
-																	    quitGame: 8
-																	}*/
+														    open: 0,
+														    ready: 1,
+														    chooseBlack: 2,
+														    chooseWhite: 3,
+														    pickWhite: 4,
+														    showCards: 5,
+														    nextTurn: 6,
+														    gameOver: 7,
+														    quitGame: 8
+														}*/
                             switch (data) {
                                 case (state.open):
 
@@ -350,7 +350,7 @@ fireObj = {
                                         //call update players screen
                                         //listen for players joining to update the screen
                                         if (host) {
-                                            //playerOrder.push(snap.key)
+                                            playerOrder.push(snap.key)
                                         }
 
                                     });
@@ -407,10 +407,10 @@ fireObj = {
                     })
                 })
             } //gamestate
-    }, //fireObj
+    } //fireObj
     // console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
 
-    makeElement = {
+makeElement = {
 
 
     }
