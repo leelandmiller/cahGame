@@ -292,9 +292,9 @@ fireObj = {
 
             })
 
-        }
+        },
 
-            gameState: function(key) {
+        gameState: function(key) {
                 let host = false;
                 let blackOrder = [];
                 let whiteOrder = [];
@@ -342,8 +342,7 @@ fireObj = {
                                     // if not the host build and add player object based on player uid
                                     if (!host) {
                                         fireObj.buildPlayerObj(key, playerKey)
-                                    };
-                                    else {
+                                    } else {
                                         playerOrder.push(currentUid);
                                     }
                                     //show waitng for game to start screen
@@ -351,7 +350,7 @@ fireObj = {
                                         //call update players screen
                                         //listen for players joining to update the screen
                                         if (host) {
-                                            //playerOrder.push()
+                                            //playerOrder.push(snap.key)
                                         }
 
                                     });
