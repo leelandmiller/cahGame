@@ -352,9 +352,11 @@ fireObj = {
 
 
 
+
                     }).then(function() {
                         currentPlayerRef = playerRef.child(playerKey);
-
+                        currentGameRef.onDisconnect().remove();
+                        currentPlayerRef.onDisconnect().remove();
                         currentGameRef.child("state").on("value", function(snap) {
                                 let data = snap.val();
                                 if (data === null) {
@@ -466,7 +468,8 @@ fireObj = {
             } //gamestate
     } //fireObj
     // console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
-    // fireObj.signIn("leelandmiller@gmail.com", "testUser2")
+    // fireObj.signIn("leelandmiller@gmail.com", "testUser1")
+    //fireObj.signIn("amelancon68@gmail.com", "testUser1");
 
 gameRef.orderByChild('state').equalTo(state.open).on('child_added', function(snap) {
     var hostName = snap.val().host;
