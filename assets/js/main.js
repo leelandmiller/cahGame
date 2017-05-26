@@ -91,19 +91,19 @@ fireObj = {
                         displayNameRef.update(name);
                         currentUid = firebase.auth().currentUser.uid;
                         userRef.child(currentUid).set({
-                                displayName: displayName,
-                                joinedGame: "",
-                                whiteCards: "",
-                                blackCards: "",
-                                winCount: "",
-                                totalBlackCards: 0,
-                                uid: currentUid,
-                                profile: {
-                                    info: "",
-                                    pic: "http://api.adorable.io/avatar/125/" + currentUid
-                                }
-                            }) //set
-                            //TODO: change to next screen
+                            displayName: displayName,
+                            joinedGame: "",
+                            whiteCards: "",
+                            blackCards: "",
+                            winCount: "",
+                            totalBlackCards: 0,
+                            uid: currentUid,
+                            profile: {
+                                info: "",
+                                pic: "http://api.adorable.io/avatar/125/" + currentUid
+                            }
+                        }) //set
+                        //TODO: change to next screen
 
 
                     }); //then
@@ -138,113 +138,113 @@ fireObj = {
             gameRef.child(key).child("chat").off();
         },
         createNewGame: function(playerCount, winlimit) {
-                let newGameRef = gameRef.push();
-                let whiteCount = 0;
-                let blackCount = 0;
-                let tempArray = {
-                    white: [],
-                    black: []
-                };
-                let shuffledArray = {
-                    white: [],
-                    black: []
-                };
-                currentGame = newGameRef.key;
-                let gameObj = {
-                    host: currentUid,
-                    playerLimit: playerCount,
-                    winLimit: winlimit,
-                    totalPlayers: 1,
-                    blackOrder: {
-                        order: true
-                    },
-                    whiteOrder: {
-                        order: true
-                    },
-                    players: {
-                        host: {
-                            hand: {
-                                hand: true
-                            },
-                            blackCards: {
-                                cards: true;
-                            },
-                            chosenWhiteCard: "",
-                            uid: currentUid,
-                            playerBlackCount: 0
-                        }
-                    },
-                    blackCount: 0,
-                    whiteCount: 0,
-                    scores: "",
-                    chat: {
-                        chat: true
-                    },
-                    state: state.open
-                }
-                cardRef.child("whiteCardCount").once("value", function(snap) {
-                    //grabs total white card count
-                    whiteCount = snap.val();
+            let newGameRef = gameRef.push();
+            let whiteCount = 0;
+            let blackCount = 0;
+            let tempArray = {
+                white: [],
+                black: []
+            };
+            let shuffledArray = {
+                white: [],
+                black: []
+            };
+            currentGame = newGameRef.key;
+            let gameObj = {
+                host: currentUid,
+                playerLimit: playerCount,
+                winLimit: winlimit,
+                totalPlayers: 1,
+                blackOrder: {
+                    order: true
+                },
+                whiteOrder: {
+                    order: true
+                },
+                players: {
+                    host: {
+                        hand: {
+                            hand: true
+                        },
+                        blackCards: {
+                            cards: true;
+                        },
+                        chosenWhiteCard: "",
+                        uid: currentUid,
+                        playerBlackCount: 0
+                    }
+                },
+                blackCount: 0,
+                whiteCount: 0,
+                scores: "",
+                chat: {
+                    chat: true
+                },
+                state: state.open
+            }
+            cardRef.child("whiteCardCount").once("value", function(snap) {
+                //grabs total white card count
+                whiteCount = snap.val();
+            }).then(function() {
+                cardRef.child("blackCardCount").once("value", function(snap) {
+                    //grabs total black card count
+                    blackCount = snap.val();
                 }).then(function() {
-                    cardRef.child("blackCardCount").once("value", function(snap) {
-                            //grabs total black card count
-                            blackCount = snap.val();
-                        }).then(function() {
-                            //creats 2 arrays of all indexs
-                            for (var i = 0; i < whiteCount; i++) {
-                                tempArray.white.push(i);
-                            }
-                            for (var i = 0; i < blackCount; i++) {
-                                tempArray.black.push(i);
-                            }
-                            //create shuffled arrays of indexs
-                            for (var i = 0; i < blackCount; i++) {
-                                let rand = Math.floor(Math.random() * tempArray.black.length);
-                                shuffledArray.black.push(tempArray.black[rand]);
-                                tempArray.black.splice(rand, 1);
-                            }
-                            for (var i = 0; i < whiteCount; i++) {
-                                let rand = Math.floor(Math.random() * tempArray.white.length);
-                                shuffledArray.white.push(tempArray.white[rand]);
-                                tempArray.white.splice(rand, 1);
-                            }
-                        }) //then2
-                }).then(function() { //then1
-                    //make new game and add shuffled arrays
-                    newGameRef.set(gameObj).then(function() {
-                        let count = 0;
-                        let set = 0;
-                        // debugger;
-                        while (count < blackCount) {
-                            for (var i = 0; i < 50; i++) {
-                                console.log(shuffledArray.black)
-                                if (shuffledArray.black[count]) {
+                    //creats 2 arrays of all indexs
+                    for (var i = 0; i < whiteCount; i++) {
+                        tempArray.white.push(i);
+                    }
+                    for (var i = 0; i < blackCount; i++) {
+                        tempArray.black.push(i);
+                    }
+                    //create shuffled arrays of indexs
+                    for (var i = 0; i < blackCount; i++) {
+                        let rand = Math.floor(Math.random() * tempArray.black.length);
+                        shuffledArray.black.push(tempArray.black[rand]);
+                        tempArray.black.splice(rand, 1);
+                    }
+                    for (var i = 0; i < whiteCount; i++) {
+                        let rand = Math.floor(Math.random() * tempArray.white.length);
+                        shuffledArray.white.push(tempArray.white[rand]);
+                        tempArray.white.splice(rand, 1);
+                    }
+                }) //then2
+            }).then(function() { //then1
+                //make new game and add shuffled arrays
+                newGameRef.set(gameObj).then(function() {
+                    let count = 0;
+                    let set = 0;
+                    // debugger;
+                    while (count < blackCount) {
+                        for (var i = 0; i < 50; i++) {
+                            console.log(shuffledArray.black)
+                            if (shuffledArray.black[count]) {
 
-                                    newGameRef.child("blackOrder").child(set).child(i).set(shuffledArray.black[count]);
-                                } //if
-                                count++;
-                            } //for
-                            set++;
-                        } //while
-                    }).then(function() {
-                        let count = 0;
-                        let set = 0;
-                        while (count < whiteCount) {
-                            for (var i = 0; i < 50; i++) {
+                                newGameRef.child("blackOrder").child(set).child(i).set(shuffledArray.black[count]);
+                            } //if
+                            count++;
+                        } //for
+                        set++;
+                    } //while
+                }).then(function() {
+                    let count = 0;
+                    let set = 0;
+                    while (count < whiteCount) {
+                        for (var i = 0; i < 50; i++) {
 
-                                if (shuffledArray.white[count]) {
+                            if (shuffledArray.white[count]) {
 
-                                    newGameRef.child("whiteOrder").child(set).child(i).set(shuffledArray.white[count]);
-                                }
-                                count++;
+                                newGameRef.child("whiteOrder").child(set).child(i).set(shuffledArray.white[count]);
                             }
-                            set++;
+                            count++;
                         }
-                        fireObj.gameState(currentGame);
-                    })
+                        set++;
+                    }
+                    fireObj.gameState(currentGame);
                 })
+            })
 
-            } //createGame
+        } //createGame
     }, //fireObj
 
     gameState: function(key) {
@@ -331,7 +331,7 @@ fireObj = {
             })
         })
     }
-    // console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
+// console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
 
 makeElement = {
 
