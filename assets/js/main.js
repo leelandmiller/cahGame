@@ -31,7 +31,11 @@ fireObj = {
                 var errorMessage = error.message;
             }).then(function() {
                 currentUid = firebase.auth().currentUser.uid;
-                //TODO: change to next screen
+                userRef.child(currentUid).child("displayName").once("value", function(snap) {
+                        currentDisplayName = snap.val();
+                    })
+                    //TODO: change to next screen
+                console.log("signed in!")
             })
 
         },
@@ -281,24 +285,24 @@ fireObj = {
         },
         dealSevenCards: function(playerKey, whiteOrder, host) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
-                let firstChild = Math.floor(snap.val() / 50);
-                let secondChild = (snap.val() % 50);
-                let cards = []
-                for (var i = 0; i < 7; i++) {
-                    if (secondChild + i > 49) {
-                        cards.push(whiteOrder[firstChild + 1][(secondChild + i) - 50])
-                    } else {
-                        cards.push(whiteOrder[firstChild][secondChild + i])
+                    let firstChild = Math.floor(snap.val() / 50);
+                    let secondChild = (snap.val() % 50);
+                    let cards = []
+                    for (var i = 0; i < 7; i++) {
+                        if (secondChild + i > 49) {
+                            cards.push(whiteOrder[firstChild + 1][(secondChild + i) - 50])
+                        } else {
+                            cards.push(whiteOrder[firstChild][secondChild + i])
+                        }
+
                     }
+                    for (var i = 0; i < 7; i++) {
+                        playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
+                    }
+                    snap.val() = snap.val() + 7;
+                    return snap;
 
-                }
-                for (var i = 0; i < 7; i++) {
-                    playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
-                }
-                snap.val() = snap.val() + 7;
-                return snap;
-
-            })
+                }) //then foreach all players checking for all card dealt out then change state
 
         },
         dealOneCard: function(playerKey, whiteOrder, host, card) {
@@ -336,6 +340,11 @@ fireObj = {
                         winLimit = snap.val().winlimit;
                         playerKey = snap.val().players;
                         playerMax = snap.val().playerLimit;
+                        $("#maxPlayers").text(playerMax);
+                        playerRef.child(playerKey).child("host/displayName").once("value", function(snap) {
+                            $("#hostName").text(snap.val())
+                        })
+
 
 
                     }).then(function() {
@@ -367,15 +376,21 @@ fireObj = {
                                                 fireObj.buildPlayerObj(key, playerKey)
                                             } else {
                                                 playerOrder.push(currentUid);
-                                                totalPlayers++;
+
                                             } //else
-                                            //show waitng for game to start screen
+                                            currentGameRef.child("totalPlayers").on("value", function(snap) {
+                                                    $("#currentPlay").text(snap.val());
+                                                })
+                                                //show waitng for game to start screen
                                             currentPlayerRef.on("child_added", function(snap) {
                                                 //listen for players joining to update the screen
                                                 //call update players screen
                                                 if (host) {
                                                     playerOrder.push(snap.key)
                                                     totalPlayers++;
+                                                    currentGameRef.update({
+                                                        totalPlayers: totalPlayers
+                                                    });
                                                     if (totalPlayers >= 4) {
                                                         //if player count >= 4 allow host to start
                                                     }
@@ -395,8 +410,13 @@ fireObj = {
                                             break;
                                         case (state.chooseBlack):
 
-                                            //black card get pulled from cardRef
-                                            //display black card to all
+                                            currentGameRef.child("currentTurn").once("value", function(snap) {
+                                                    if (snap.val() === currentUid) {
+                                                        // set you as chooser of white card
+                                                    } //if
+                                                }) //currentGameRef
+                                                //black card get pulled from cardRef
+                                                //display black card to all
                                             break;
                                         case (state.chooseWhite):
                                             blackCount++;
@@ -438,7 +458,14 @@ fireObj = {
             } //gamestate
     } //fireObj
     // console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
+fireObj.signIn("amelancon68@gmail.com", "testUser1")
 
+$("#create-game").on("click", function(event) {
+    event.preventDefault();
+    let playerCount = $("#numPlayers").val();
+    let winCount = $("#numWin").val();
+    fireObj.createNewGame(playerCount, winCount);
+})
 makeElement = {
 
 
