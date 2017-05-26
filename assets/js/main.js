@@ -177,7 +177,7 @@ fireObj = {
                     order: true
                 },
                 players: playerKey,
-                currentTurn: currentUid,
+                currentTurn: "host",
                 blackCount: 0,
                 whiteCount: 0,
                 scores: "",
@@ -190,7 +190,7 @@ fireObj = {
             let playerObj = {
                 host: {
                     hand: {
-                        hand: true
+                        hand: false
                     },
                     blackCards: {
                         cards: true
@@ -269,7 +269,7 @@ fireObj = {
                 snap = playerCount;
                 playerObj = {
                     hand: {
-                        hand: true
+                        hand: false
                     },
                     blackCards: {
                         cards: true
@@ -287,8 +287,8 @@ fireObj = {
         dealSevenCards: function(playerKey, whiteOrder, host) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
 
-                    let firstChild = Math.floor(snap.val() / 50);
-                    let secondChild = (snap.val() % 50);
+                    let firstChild = Math.floor(snap / 50);
+                    let secondChild = (snap % 50);
                     let cards = []
                     for (var i = 0; i < 7; i++) {
                         if (secondChild + i > 49) {
@@ -301,7 +301,7 @@ fireObj = {
                     for (var i = 0; i < 7; i++) {
                         playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
                     }
-                    snap.val() = snap.val() + 7;
+                    snap = snap + 7;
                     return snap;
 
                 }) //then foreach all players checking for all card dealt out then change state
@@ -309,11 +309,11 @@ fireObj = {
         },
         dealOneCard: function(playerKey, whiteOrder, host, card) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
-                let firstChild = Math.floor(snap.val() / 50);
-                let secondChild = (snap.val() % 50);
+                let firstChild = Math.floor(snap / 50);
+                let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
                 playerRef.child(key + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard)
-                snap.val() = snap.val() + 1;
+                snap = snap + 1;
                 return snap;
             });
         },
@@ -382,27 +382,39 @@ fireObj = {
                                                 // if not the host build and add player object based on player uid
                                                 fireObj.buildPlayerObj(key, playerKey)
                                             } else {
-                                                playerOrder.push(currentUid);
-
-                                            } //else
+                                                let newBtn = $("<button>").attr("id", "hostStart");
+                                                newBtn.text("start Game");
+                                                $("#playerDisplay").prepend(newBtn);
+                                                newBtn.on("click", function(event) {
+                                                    event.preventDefault();
+                                                    currentGameRef.child("state").update({
+                                                        state: state.ready
+                                                    })
+                                                })
+                                                newBtn.hide();
+                                            }
                                             currentGameRef.child("totalPlayers").on("value", function(snap) {
                                                     $("#currentPlay").text(snap.val());
-                                                    playerOrder.push(snap.key);
+
                                                 })
                                                 //show waitng for game to start screen
                                             currentPlayerRef.on("child_added", function(snap) {
                                                 //listen for players joining to update the screen
                                                 //call update players screen
-
+                                                if (host) playerOrder.push(snap.key);
+                                                console.log(playerOrder)
                                                 if (snap.key != "host") {
+
                                                     let newh1 = $("<h1>").text(snap.val().displayName);
                                                     $("#playerList").append(newh1);
                                                 }
 
                                                 if (host) {
 
-                                                    if (totalPlayers >= 4) {
+                                                    if (playerOrder.length >= 4) {
+                                                        $("#hostStart").show();
                                                         //if player count >= 4 allow host to start
+
                                                     }
                                                     // if the host listen for player count to playerLimit
                                                 } //if
@@ -467,7 +479,9 @@ fireObj = {
                     }) //then
             } //gamestate
     } //fireObj
-    // console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
+
+
+console.log(fireObj.signUpCheck("test6@gmail.com", "testUser1", "testUser1", "testuser8"))
     // fireObj.signIn("leelandmiller@gmail.com", "testUser1")
     //fireObj.signIn("amelancon68@gmail.com", "testUser1");
 
@@ -503,3 +517,12 @@ makeElement = {
 
 
 //             // })
+//ALL TEST ACCOUNT LOGINS
+//fireObj.signIn("leelandmiller@gmail.com", "testUser1")
+//fireObj.signIn("amelancon68@gmail.com", "testUser1");
+//fireObj.signIn("test@gmail.com", "testUser1")
+//fireObj.signIn("test2@gmail.com", "testUser1")
+//fireObj.signIn("test3@gmail.com", "testUser1")
+//fireObj.signIn("test4@gmail.com", "testUser1")
+//fireObj.signIn("test5@gmail.com", "testUser1")
+//fireObj.signIn("test6@gmail.com", "testUser1")
