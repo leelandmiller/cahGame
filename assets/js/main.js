@@ -103,19 +103,19 @@ fireObj = {
                         currentDisplayName = displayName;
                         currentUid = firebase.auth().currentUser.uid;
                         userRef.child(currentUid).set({
-                                displayName: displayName,
-                                joinedGame: "",
-                                whiteCards: "",
-                                blackCards: "",
-                                winCount: "",
-                                totalBlackCards: 0,
-                                uid: currentUid,
-                                profile: {
-                                    info: "",
-                                    pic: "http://api.adorable.io/avatar/125/" + currentUid
-                                }
-                            }) //set
-                            //TODO: change to next screen
+                            displayName: displayName,
+                            joinedGame: "",
+                            whiteCards: "",
+                            blackCards: "",
+                            winCount: "",
+                            totalBlackCards: 0,
+                            uid: currentUid,
+                            profile: {
+                                info: "",
+                                pic: "http://api.adorable.io/avatar/125/" + currentUid
+                            }
+                        }) //set
+                        //TODO: change to next screen
 
 
                     }); //then
@@ -143,7 +143,7 @@ fireObj = {
         },
         gameChatOn: function(key) {
             gameRef.child(key).child("chat").on("child_added", function(snap) {
-                //TODO: call add new MSG with snap.val() to game chat 
+                //TODO: call add new MSG with snap.val() to game chat
             })
         },
         gameChatOff: function(key) {
@@ -151,6 +151,7 @@ fireObj = {
         },
         createNewGame: function(playerCount, winlimit) {
             let newGameRef = gameRef.push();
+
             let newPlayerRef = playerRef.push();
             let playerKey = newPlayerRef.key
             let whiteCount = 0;
@@ -165,7 +166,7 @@ fireObj = {
             };
             currentGame = newGameRef.key;
             let gameObj = {
-                host: currentUid,
+                host: currentDisplayName,
                 playerLimit: playerCount,
                 winLimit: winlimit,
                 totalPlayers: 1,
@@ -185,6 +186,7 @@ fireObj = {
                 },
                 state: state.open
             }
+
             let playerObj = {
                 host: {
                     hand: {
@@ -249,7 +251,6 @@ fireObj = {
                         for (var i = 0; i < 50; i++) {
 
                             if (shuffledArray.white[count]) {
-
                                 newGameRef.child("whiteOrder").child(set).child(i).set(shuffledArray.white[count]);
                             }
                             count++;
@@ -259,13 +260,13 @@ fireObj = {
                     fireObj.gameState(currentGame);
                 })
             })
-
         }, //createGame
 
         buildPlayerObj: function(key, playerKey) {
             gameRef.child(key + "/totalPlayers").transaction(function(snap) {
-                playerCount = snap.val() + 1;
-                snap.val() = playerCount;
+                console.log(snap);
+                playerCount = snap + 1;
+                snap = playerCount;
                 playerObj = {
                     hand: {
                         hand: true
@@ -279,12 +280,13 @@ fireObj = {
                     playerBlackCount: 0
                 }
                 playerRef.child(playerKey).child(currentUid).set(playerObj)
-                snap.val().totalPlayers = playerCount;
+                // snap.val().totalPlayers = playerCount;
                 return snap;
             })
         },
         dealSevenCards: function(playerKey, whiteOrder, host) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
+
                     let firstChild = Math.floor(snap.val() / 50);
                     let secondChild = (snap.val() % 50);
                     let cards = []
@@ -387,10 +389,7 @@ fireObj = {
                                                 //call update players screen
                                                 if (host) {
                                                     playerOrder.push(snap.key)
-                                                    totalPlayers++;
-                                                    currentGameRef.update({
-                                                        totalPlayers: totalPlayers
-                                                    });
+
                                                     if (totalPlayers >= 4) {
                                                         //if player count >= 4 allow host to start
                                                     }
@@ -458,7 +457,20 @@ fireObj = {
             } //gamestate
     } //fireObj
     // console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
-fireObj.signIn("amelancon68@gmail.com", "testUser1")
+fireObj.signIn("leelandmiller@gmail.com", "testUser2")
+
+gameRef.orderByChild('state').equalTo(state.open).on('child_added', function(snap) {
+    var hostName = snap.val().host;
+    var joinBtn = '<button class="btn btn-default" id="' + snap.key + '">Join</button>';
+
+    var newGameData = $('<tr>').html('<td>'+ hostName + '</td><td>' + snap.val().totalPlayers + '/' + snap.val().playerLimit + '</td><td>' + snap.val().winLimit + '</td><td>'+ joinBtn + '</td>');
+    $('#table-row').append(newGameData);
+
+    $('#' + snap.key).on('click', function() {
+        fireObj.gameState(snap.key);
+    });
+});
+
 
 $("#create-game").on("click", function(event) {
     event.preventDefault();
