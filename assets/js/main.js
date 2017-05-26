@@ -103,19 +103,19 @@ fireObj = {
                         currentDisplayName = displayName;
                         currentUid = firebase.auth().currentUser.uid;
                         userRef.child(currentUid).set({
-                            displayName: displayName,
-                            joinedGame: "",
-                            whiteCards: "",
-                            blackCards: "",
-                            winCount: "",
-                            totalBlackCards: 0,
-                            uid: currentUid,
-                            profile: {
-                                info: "",
-                                pic: "http://api.adorable.io/avatar/125/" + currentUid
-                            }
-                        }) //set
-                        //TODO: change to next screen
+                                displayName: displayName,
+                                joinedGame: "",
+                                whiteCards: "",
+                                blackCards: "",
+                                winCount: "",
+                                totalBlackCards: 0,
+                                uid: currentUid,
+                                profile: {
+                                    info: "",
+                                    pic: "http://api.adorable.io/avatar/125/" + currentUid
+                                }
+                            }) //set
+                            //TODO: change to next screen
 
 
                     }); //then
@@ -263,8 +263,8 @@ fireObj = {
         }, //createGame
 
         buildPlayerObj: function(key, playerKey) {
+            //increase totalplayers by 1 and builds the playerObj
             gameRef.child(key + "/totalPlayers").transaction(function(snap) {
-                console.log(snap);
                 playerCount = snap + 1;
                 snap = playerCount;
                 playerObj = {
@@ -280,7 +280,7 @@ fireObj = {
                     playerBlackCount: 0
                 }
                 playerRef.child(playerKey).child(currentUid).set(playerObj)
-                // snap.val().totalPlayers = playerCount;
+                    // snap.val().totalPlayers = playerCount;
                 return snap;
             })
         },
@@ -333,17 +333,20 @@ fireObj = {
                 let currentPlayerRef = "";
                 currentGameRef = gameRef.child(key);
                 currentGameRef.once("value", function(snap) {
-                        if (snap.val().host === currentUid) {
-                            host = true;
-                        }
+
                         //grab all data needed to have stored
+
                         blackOrder = snap.val().blackOrder;
                         whiteOrder = snap.val().whiteOrder;
                         winLimit = snap.val().winlimit;
                         playerKey = snap.val().players;
                         playerMax = snap.val().playerLimit;
+                        if (snap.val().host.toString() === currentDisplayName) {
+                            host = true;
+                        }
                         $("#maxPlayers").text(playerMax);
                         playerRef.child(playerKey).child("host/displayName").once("value", function(snap) {
+
                             $("#hostName").text(snap.val())
                         })
 
@@ -382,13 +385,19 @@ fireObj = {
                                             } //else
                                             currentGameRef.child("totalPlayers").on("value", function(snap) {
                                                     $("#currentPlay").text(snap.val());
+                                                    playerOrder.push(snap.key);
                                                 })
                                                 //show waitng for game to start screen
                                             currentPlayerRef.on("child_added", function(snap) {
                                                 //listen for players joining to update the screen
                                                 //call update players screen
+
+                                                if (snap.key != "host") {
+                                                    let newh1 = $("<h1>").text(snap.val().displayName);
+                                                    $("#playerList").append(newh1);
+                                                }
+
                                                 if (host) {
-                                                    playerOrder.push(snap.key)
 
                                                     if (totalPlayers >= 4) {
                                                         //if player count >= 4 allow host to start
@@ -457,13 +466,13 @@ fireObj = {
             } //gamestate
     } //fireObj
     // console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
-fireObj.signIn("leelandmiller@gmail.com", "testUser2")
+    // fireObj.signIn("leelandmiller@gmail.com", "testUser2")
 
 gameRef.orderByChild('state').equalTo(state.open).on('child_added', function(snap) {
     var hostName = snap.val().host;
     var joinBtn = '<button class="btn btn-default" id="' + snap.key + '">Join</button>';
 
-    var newGameData = $('<tr>').html('<td>'+ hostName + '</td><td>' + snap.val().totalPlayers + '/' + snap.val().playerLimit + '</td><td>' + snap.val().winLimit + '</td><td>'+ joinBtn + '</td>');
+    var newGameData = $('<tr>').html('<td>' + hostName + '</td><td>' + snap.val().totalPlayers + '/' + snap.val().playerLimit + '</td><td>' + snap.val().winLimit + '</td><td>' + joinBtn + '</td>');
     $('#table-row').append(newGameData);
 
     $('#' + snap.key).on('click', function() {
