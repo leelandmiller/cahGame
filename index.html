@@ -4,55 +4,268 @@
 <head>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/tgstyle.css">
     <title></title>
 </head>
 
 <body>
-    <div class="container">
-        <div id="titlearea" class="row">
-            <div class="col-lg-7">
-                Coders
-                <br> Against
-                <br> Humanity
-                <h2>
-There's a.method()
-</h2>
-                <h2>
-to our madness.
-</h2>
+        <!-- Page NAV -->
+    <nav class="navbar navbar-default" id="myNav">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">
+                    <img id="brand-icon" src="assets/images/coders.png">
+                </a>
+                <p class="navbar-text" id="user-name">Tanner James</p>
             </div>
-            <div id="maincardarea" class="col-lg-5">
-                <div id="first" class="container">
-                    I drink to forget about ___________________ ?
+            <ul class="nav navbar-nav navbar-right" id="nav-links">
+                <li><a href="#">Game Center</a></li>
+                <!-- <li><a>|</a></li> -->
+                <li><a href="#">Sign-out</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- MAIN VIEW -->
+    <div class="container-fluid" id="main-view">
+        <div class="row">
+            <div class="col-md-8">
+                <!-- CARDS ROW ONE -->
+                <div class="row cards">
+                    <div class="col-md-3">
+                        <!-- black card -->
+                        <div class="flip-container" id="black">
+                            <div class="flipper">
+                                <div class="front" id="front-black">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
+                                </div>
+                                <div class="back" id="back-black">
+                                    <p>This is the back face ________.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card one -->
+                        <div class="flip-container" id="card1">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
+                                </div>
+                                <div class="back">
+                                    <p>This is the back face ________.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card one -->
+                        <div class="flip-container" id="card2">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
+                                </div>
+                                <div class="back">
+                                    <p>This is the back face ________.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card three -->
+                        <div class="flip-container" id="card3">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
+                                </div>
+                                <div class="back">
+                                    <p>This is the back face ________.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="second" class="container">
-                    JavaScript.
+                <!-- CARDS ROW TWO -->
+                <div class="row cards">
+                    <div class="col-md-3">
+                        <!-- card four -->
+                        <div class="flip-container" id="card4">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
+                                </div>
+                                <div class="back">
+                                    <p>This is the back face ________.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card five -->
+                        <div class="flip-container" id="card5">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
+                                </div>
+                                <div class="back">
+                                    <p>This is the back face ________.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card six -->
+                        <div class="flip-container" id="card6">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
+                                </div>
+                                <div class="back">
+                                    <p>This is the back face ________.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card seven -->
+                        <div class="flip-container" id="card7">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
+                                </div>
+                                <div class="back">
+                                    <p>This is the back face ________.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- RIGHT DISPLAY -->
+            <div class="col-md-4" id="right-display">
+                <div class="panel panel-default" id="player-well">
+                    <div class="panel-heading top-bar">
+                        <div class="col-md-8 col-xs-8">
+                            <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> Player Info</h3>
+                        </div>
+                    </div>
+                    <div class="container" id="players">
+                        <p class="panel-title">Player One</p>
+                        <p class="panel-title">Player Two</p>
+                        <p class="panel-title">Player Three</p>
+                        <p class="panel-title">Player Four</p>
+                    </div>
+                </div>
+                <div class="panel panel-default" id="chat-well">
+                    <div class="panel-heading top-bar">
+                        <div class="col-md-8 col-xs-8">
+                            <h3 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Group Chat</h3>
+                        </div>
+                        <!--                         <div class="col-md-4 col-xs-4" style="text-align: right;">
+                            <a href="#"><span id="minim_chat_window" class="glyphicon glyphicon-minus icon_minim"></span></a>
+                            <a href="#"><span class="glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span></a>
+                        </div> -->
+                    </div>
+                    <div class="panel-body msg_container_base" id="chat">
+
+
+                        <!-- SENT Mesage Structure -->
+                        <!-- <div class="row msg_container base_sent">
+                            <div class="col-md-10 col-xs-10">
+                                <div class="messages msg_sent">
+                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
+                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                            </div>
+                        </div>
+
+
+                        <div class="row msg_container base_receive">
+                            <div class="col-md-2 col-xs-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                            </div>
+                            <div class="col-md-10 col-xs-10">
+                                <div class="messages msg_receive">
+                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
+                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row msg_container base_receive">
+                            <div class="col-md-2 col-xs-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                            </div>
+                            <div class="col-xs-10 col-md-10">
+                                <div class="messages msg_receive">
+                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
+                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row msg_container base_sent">
+                            <div class="col-xs-10 col-md-10">
+                                <div class="messages msg_sent">
+                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
+                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                            </div>
+                        </div>
+                        <div class="row msg_container base_receive">
+                            <div class="col-md-2 col-xs-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                            </div>
+                            <div class="col-xs-10 col-md-10">
+                                <div class="messages msg_receive">
+                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
+                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row msg_container base_sent">
+                            <div class="col-md-10 col-xs-10 ">
+                                <div class="messages msg_sent">
+                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
+                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-xs-2 avatar">
+                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
+                            </div>
+                        </div> -->
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                            <span class="input-group-btn">
+                        <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
+                        </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    <form>
-        <div class="container">
-            <div id="loginarea" class="jumbotron">
-                <div id="email" class="form-group">
-                    <label for="formGroupExampleInput">E-mail</label>
-                    <input type="text" class="form-control" id="email" placeholder="E-mail">
-                </div>
-                <div id="firstpw" class="form-group">
-                    <label for="formGroupExampleInput2">Password</label>
-                    <input type="text" class="form-control" id="pwone" placeholder="Password">
-                </div>
-                <div id="secondpw" class="form-group">
-                    <label for="formGroupExampleInput2">Re-Enter Password</label>
-                    <input type="text" class="form-control" id="pwtwo" placeholder="Password">
-                </div>
-                <button id="sibtn" type="button" class="btn btn-primary btn-lg btn-block">Sign In</button>
-                <button id="subtn" type="button" class="btn btn-default btn-lg btn-block">Sign Up</button>
-            </div>
-        </div>
-    </form>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
     <script>
@@ -67,7 +280,7 @@ to our madness.
     };
     firebase.initializeApp(config);
     </script>
-    <script type="text/javascript" src="assets/js/main.js"></script>
+    <script type="text/javascript" src="assets/js/tgmain.js"></script>
 </body>
 
 </html>
