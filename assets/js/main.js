@@ -228,7 +228,6 @@ fireObj = {
                 newGameRef.set(gameObj).then(function() {
                     let count = 0;
                     let set = 0;
-                    // debugger;
                     while (count < blackCount) {
                         for (var i = 0; i < 50; i++) {
                             if (shuffledArray.black[count]) {
@@ -294,13 +293,23 @@ fireObj = {
 
                 }
                 for (var i = 0; i < 7; i++) {
-                    playerRef.child(key + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
+                    playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
                 }
                 snap.val() = snap.val() + 7;
                 return snap;
 
             })
 
+        },
+        dealOneCard: function(playerKey, whiteOrder, host, card) {
+            currentGameRef.child("whiteCount").transaction(function(snap) {
+                let firstChild = Math.floor(snap.val() / 50);
+                let secondChild = (snap.val() % 50);
+                let newCard = whiteOrder[firstChild][secondChild];
+                playerRef.child(key + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard)
+                snap.val() = snap.val() + 1;
+                return snap;
+            });
         },
 
         gameState: function(key) {
@@ -358,6 +367,7 @@ fireObj = {
                                                 fireObj.buildPlayerObj(key, playerKey)
                                             } else {
                                                 playerOrder.push(currentUid);
+                                                totalPlayers++;
                                             } //else
                                             //show waitng for game to start screen
                                             currentPlayerRef.on("child_added", function(snap) {
