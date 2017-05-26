@@ -10,6 +10,7 @@ let blackCardRef = cardRef.child("/blackCards");
 let whiteCardRef = cardRef.child("/whiteCards");
 let currentUid = "";
 let currentGame = "";
+let currentDisplayName = "";
 let state = {
     open: 0,
     ready: 1,
@@ -40,12 +41,16 @@ fireObj = {
             //TODO:must be called by function that takes the return and displays it
             let containsNumber = false;
             let containsLetter = false;
+
             if (password !== passConfrim) {
+                //checks taht passwords match
                 return "passwords dont match";
             } else if (!(password.length >= 6)) {
+                //checks that it is at least 6 char long
                 return "password is not long enough must be at least 6 characters long"
             } else {
                 for (var i = 0; i < password.length; i++) {
+                    //makes sure it has at least 1 number and letter
                     if (!containsNumber) {
                         for (var k = 0; k < 10; k++) {
                             if (password[i] === k.toString()) {
@@ -75,6 +80,7 @@ fireObj = {
         createAcct: function(password, displayName, email) {
             let nameExists = true;
             displayNameRef.child(displayName).once("value", function(snap) {
+                //chceks to make sure display name isnt taken
                 console.log(snap.val())
                 if (snap.val() === null) {
                     nameExists = false;
@@ -90,6 +96,7 @@ fireObj = {
                         let name = {};
                         name[displayName] = true;
                         displayNameRef.update(name);
+                        currentDisplayName = displayName;
                         currentUid = firebase.auth().currentUser.uid;
                         userRef.child(currentUid).set({
                                 displayName: displayName,
@@ -184,6 +191,7 @@ fireObj = {
                     },
                     chosenWhiteCard: "",
                     uid: currentUid,
+                    displayName: currentDisplayName,
                     playerBlackCount: 0
                 }
             }
@@ -264,6 +272,7 @@ fireObj = {
                     },
                     chosenWhiteCard: "",
                     uid: currentUid,
+                    displayName: currentDisplayName,
                     playerBlackCount: 0
                 }
                 playerRef.child(playerKey).child(currentUid).set(playerObj)
@@ -271,10 +280,10 @@ fireObj = {
                 return snap;
             })
         },
-        dealSevenCards: function(playerKey, whiteOrder) {
+        dealSevenCards: function(playerKey, whiteOrder, host) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
                 let firstChild = Math.floor(snap.val() / 50);
-                let secondChild = (snap.val() % 50) - 1;
+                let secondChild = (snap.val() % 50);
                 let cards = []
                 for (var i = 0; i < 7; i++) {
                     if (secondChild + i > 49) {
@@ -285,7 +294,7 @@ fireObj = {
 
                 }
                 for (var i = 0; i < 7; i++) {
-                    playerRef.child(key + "/" + currentUid + "/hand").child(i).set(cards[i]);
+                    playerRef.child(key + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
                 }
                 snap.val() = snap.val() + 7;
                 return snap;
@@ -303,28 +312,32 @@ fireObj = {
                 let whiteCount = 0;
                 let playerKey = "";
                 let playerOrder = [];
+                let playerMax = 0;
                 let playerTurnCount = 0;
+                let totalPlayers = 0;
                 let currentPlayerRef = "";
                 currentGameRef = gameRef.child(key);
                 currentGameRef.once("value", function(snap) {
-                    if (snap.val().host === currentUid) {
-                        host = true;
-                    }
-                    blackOrder = snap.val().blackOrder;
-                    whiteOrder = snap.val().whiteOrder;
-                    winLimit = snap.val().winlimit;
-                    playerKey = snap.val().players;
+                        if (snap.val().host === currentUid) {
+                            host = true;
+                        }
+                        //grab all data needed to have stored
+                        blackOrder = snap.val().blackOrder;
+                        whiteOrder = snap.val().whiteOrder;
+                        winLimit = snap.val().winlimit;
+                        playerKey = snap.val().players;
+                        playerMax = snap.val().playerLimit;
 
 
-                }).then(function() {
-                    currentPlayerRef = playerRef.child(playerKey);
+                    }).then(function() {
+                        currentPlayerRef = playerRef.child(playerKey);
 
-                    currentGameRef.child("state").on("value", function(snap) {
-                        let data = snap.val();
-                        if (data === null) {
-                            //TODO: call quitgame functions
-                        } else {
-                            /*state = {
+                        currentGameRef.child("state").on("value", function(snap) {
+                                let data = snap.val();
+                                if (data === null) {
+                                    //TODO: call quitgame functions
+                                } else {
+                                    /*state = {
 														    open: 0,
 														    ready: 1,
 														    chooseBlack: 2,
@@ -335,77 +348,83 @@ fireObj = {
 														    gameOver: 7,
 														    quitGame: 8
 														}*/
-                            switch (data) {
-                                case (state.open):
+                                    switch (data) {
+                                        case (state.open):
 
-                                    //TODO: hide game list
-                                    // if not the host build and add player object based on player uid
-                                    if (!host) {
-                                        fireObj.buildPlayerObj(key, playerKey)
-                                    } else {
-                                        playerOrder.push(currentUid);
-                                    }
-                                    //show waitng for game to start screen
-                                    currentPlayerRef.on("child_added", function(snap) {
-                                        //call update players screen
-                                        //listen for players joining to update the screen
-                                        if (host) {
-                                            playerOrder.push(snap.key)
-                                        }
+                                            //TODO: hide game list
 
-                                    });
-                                    // if the host listen for player count to playerLimit
-                                    //if player count >= 4 allow host to start
-                                    //the host starts game and changes to next state
-                                    break;
-                                case (state.ready):
-                                    fireObj.dealSevenCards(playerKey, whiteCount);
-                                    // deal out cards
-                                    // display cards their cards
-                                    //call next state
-                                    break;
-                                case (state.chooseBlack):
+                                            if (!host) {
+                                                // if not the host build and add player object based on player uid
+                                                fireObj.buildPlayerObj(key, playerKey)
+                                            } else {
+                                                playerOrder.push(currentUid);
+                                            } //else
+                                            //show waitng for game to start screen
+                                            currentPlayerRef.on("child_added", function(snap) {
+                                                //listen for players joining to update the screen
+                                                //call update players screen
+                                                if (host) {
+                                                    playerOrder.push(snap.key)
+                                                    totalPlayers++;
+                                                    if (totalPlayers >= 4) {
+                                                        //if player count >= 4 allow host to start
+                                                    }
+                                                    // if the host listen for player count to playerLimit
+                                                } //if
 
-                                    //black card get pulled from cardRef
-                                    //display black card to all
-                                    break;
-                                case (state.chooseWhite):
-                                    blackCount++;
+                                            }); //currentPlayerRef.on()
 
-                                    //setup card listen to add white card choice
-                                    //add picked card to player object in currentGameRef
-                                    //if host have count that increase by 1 everytime ad player chooses a card by listening to the player objects in database
-                                    //once hosts count equals player cound-1 change state
-                                    break;
-                                case (state.pickWhite):
-                                    //display all choosed white cards to everyone in random order
-                                    currentGameRef.child("currentTurn").once("value", function(snap) {
-                                            if (snap.val() === currentUid) {
-                                                // set you as chooser of white card
-                                            }
-                                        })
-                                        //current player turn chooses a white card to win
-                                        // set min time or wait 5sec after pick
-                                    break;
-                                case (state.showCards):
-                                    // show owner of each white card
-                                    //award black card to winner
-                                    break;
-                                case (state.nextTurn):
-                                    //check if somebody had reached score limit
-                                    //if not start from state.chooseBlack
-                                    //else go to state.gameOver
-                                    break;
-                                case (state.gameOver):
-                                    //allow users to return to match making screen
-                                    break;
-                                case (state.quitGame):
-                                    break;
-                            }
-                        }
 
-                    })
-                })
+                                            //the host starts game and changes to next state
+                                            break;
+                                        case (state.ready):
+                                            fireObj.dealSevenCards(playerKey, whiteOrder, host);
+                                            // deal out cards
+                                            // display cards their cards
+                                            //call next state
+                                            break;
+                                        case (state.chooseBlack):
+
+                                            //black card get pulled from cardRef
+                                            //display black card to all
+                                            break;
+                                        case (state.chooseWhite):
+                                            blackCount++;
+
+                                            //setup card listen to add white card choice
+                                            //add picked card to player object in currentGameRef
+                                            //if host have count that increase by 1 everytime ad player chooses a card by listening to the player objects in database
+                                            //once hosts count equals player cound-1 change state
+                                            break;
+                                        case (state.pickWhite):
+                                            //display all choosed white cards to everyone in random order
+                                            currentGameRef.child("currentTurn").once("value", function(snap) {
+                                                    if (snap.val() === currentUid) {
+                                                        // set you as chooser of white card
+                                                    } //if
+                                                }) //currentGameRef
+                                                //current player turn chooses a white card to win
+                                                // set min time or wait 5sec after pick
+                                            break;
+                                        case (state.showCards):
+                                            // show owner of each white card
+                                            //award black card to winner
+                                            break;
+                                        case (state.nextTurn):
+                                            //check if somebody had reached score limit
+                                            //if not start from state.chooseBlack
+                                            //else go to state.gameOver
+                                            break;
+                                        case (state.gameOver):
+                                            //allow users to return to match making screen
+                                            break;
+                                        case (state.quitGame):
+                                            break;
+                                    } //switch
+                                } //else
+
+                            }) //currentgame.on
+                    }) //then
             } //gamestate
     } //fireObj
     // console.log(fireObj.signUpCheck("amelancon68@gmail.com", "testUser1", "testUser1", "AlexIsCool"))
