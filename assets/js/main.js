@@ -8,6 +8,8 @@ let globalChat = database.ref("/globalChat");
 let displayNameRef = database.ref("/users/displayNames");
 let blackCardRef = cardRef.child("/blackCards");
 let whiteCardRef = cardRef.child("/whiteCards");
+let currentPlayerRef = "";
+let currentGameRef = "";
 let currentUid = "";
 let currentGame = "";
 let currentDisplayName = "";
@@ -304,6 +306,15 @@ fireObj = {
                     snap = snap + 7;
                     return snap;
 
+                }).then(function() {
+                    currentPlayerRef.child((host ? "host" : currentUid) + "/hand").once("value", function(snap) {
+                            for (var i = 0; i < 7; i++) {
+                                let num = snap.val()[i];
+                                cardRef.child("whiteCards").child(Math.floor(num / 50)).child(num % 50).once("value", function(snap) {
+                                        $("#cards").append($("<h2>").text(snap.val()))
+                                    }) //card.once
+                            } //for
+                        }) //player.once
                 }) //then foreach all players checking for all card dealt out then change state
 
         },
@@ -330,7 +341,7 @@ fireObj = {
                 let playerMax = 0;
                 let playerTurnCount = 0;
                 let totalPlayers = 0;
-                let currentPlayerRef = "";
+
                 currentGameRef = gameRef.child(key);
                 currentGameRef.once("value", function(snap) {
 
@@ -426,6 +437,7 @@ fireObj = {
                                             break;
                                         case (state.ready):
                                             fireObj.dealSevenCards(playerKey, whiteOrder, host);
+
                                             // deal out cards
                                             // display cards their cards
                                             //call next state
@@ -433,7 +445,7 @@ fireObj = {
                                         case (state.chooseBlack):
 
                                             currentGameRef.child("currentTurn").once("value", function(snap) {
-                                                    if (snap.val() === currentUid) {
+                                                    if (snap.val() === (host ? "host" : currentUid)) {
                                                         // set you as chooser of white card
                                                     } //if
                                                 }) //currentGameRef
@@ -481,9 +493,7 @@ fireObj = {
     } //fireObj
 
 
-console.log(fireObj.signUpCheck("test6@gmail.com", "testUser1", "testUser1", "testuser8"))
-    // fireObj.signIn("leelandmiller@gmail.com", "testUser1")
-    //fireObj.signIn("amelancon68@gmail.com", "testUser1");
+
 
 gameRef.orderByChild('state').equalTo(state.open).on('child_added', function(snap) {
     var hostName = snap.val().host;
