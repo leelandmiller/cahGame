@@ -42,10 +42,13 @@ body {
     margin: 18px 0;
 }
 
+
 /*.flip-container:hover .flipper,*/
+
 .flip .flipper {
     transform: rotateY(180deg);
 }
+
 
 /*.flip-container:hover .flipper {
     transform: rotateY(180deg);
@@ -62,9 +65,6 @@ body {
     border-radius: 15px;
 }
 
-.flip-container {
-  /*border: 2px solid red;*/
-}
 
 .flipper {
     transition: .6s;
@@ -125,10 +125,9 @@ body {
     font-weight: bold;
 }
 
-
-
-
-
+#waiting {
+    /*margin-top: 80px;*/
+}
 
 #player-well {
     height: 250px;
@@ -137,23 +136,32 @@ body {
 }
 
 #players {
-  margin-top: 10px;
+    margin-top: 10px;
+}
+
+#loading-gif {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin: 15px 0;
+}
+
+#loading-gif img {
+    width: 15%;
 }
 
 
+/* CHAT */
 
 #chat-well {
-    height: 400px;
+    height: 100%;
     border: 2px solid black;
     background-color: #e5e5e5;
 }
 
 #chat-display {
-    height: 87%;
+    height: 100%;
 }
-
-
-/* CHAT */
 
 .chat-window {
     bottom: 0;
@@ -220,7 +228,7 @@ body {
     display: flex;
 }
 
-img {
+.avatar img {
     display: block;
     width: 100%;
 }
@@ -282,4 +290,57 @@ img {
     position: fixed;
     left: 0px;
     bottom: 0;
+}
+
+
+/* loader */
+
+ .loading {
+    text-align: center;
+    width: 20%;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.loading span {
+    -webkit-animation: loading 1s infinite alternate;
+    background: #333;
+    border-radius: 10px;
+    display: inline-block;
+    height: 10px;
+    margin: 60px auto;
+    width: 10px;
+}
+
+.loading span:nth-of-type(2) {
+    -webkit-animation-delay: 0.2s;
+    background: #444;
+}
+
+.loading span:nth-of-type(3) {
+    -webkit-animation-delay: 0.4s;
+    background: #555;
+}
+
+.loading span:nth-of-type(4) {
+    -webkit-animation-delay: 0.6s;
+    background: #666;
+}
+
+.loading span:nth-of-type(5) {
+    -webkit-animation-delay: 0.8s;
+    background: #777;
+}
+
+@-webkit-keyframes loading {
+    0% {
+        -webkit-transform: translatey(0);
+        height: 10px;
+        width: 10px;
+    }
+    100% {
+        -webkit-transform: translatey(-40px);
+        height: 20px;
+        width: 20px;
+    }
 }
