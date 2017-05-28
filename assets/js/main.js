@@ -315,6 +315,30 @@ fireObj = {
                                     }) //card.once
                             } //for
                         }) //player.once
+                }).then(function() {
+                    currentGameRef.child('players').once('value').then(function(snap) {
+                        // get playersKey from currentGameRef
+                        var playersKey = snap.val();
+                        database.ref('/players/' + playersKey).once('value').then(function(snap) {
+                            // Initialize allHandsDealt to true
+                            var allHandsDealt = true;
+                            // loops through every player currentGameRef's players
+                            snap.forEach(function(childSnap) {
+                                // if the current player's hand.numChildren() < 8, set allHandsDealt to false.
+                                // (8 because the initial 'hand' property in the 'hand' obj)
+                                if (childSnap.child('hand').numChildren() < 8) {
+                                    allHandsDealt = false;
+                                };
+                            });
+
+                            // update the game state in currentGameRef to 2
+                            if (allHandsDealt) {
+                                currentGameRef.update({
+                                    state: 2
+                                });
+                            }
+                        })
+                    });
                 }) //then foreach all players checking for all card dealt out then change state
 
         },
@@ -402,7 +426,7 @@ fireObj = {
                                                         state: state.ready
                                                     })
                                                 })
-                                                newBtn.hide();
+                                                // newBtn.hide();
                                             }
                                             currentGameRef.child("totalPlayers").on("value", function(snap) {
                                                     $("#currentPlay").text(snap.val());
