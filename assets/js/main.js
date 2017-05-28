@@ -166,7 +166,9 @@ fireObj = {
                 white: [],
                 black: []
             };
+            //grab the key to the enw game
             currentGame = newGameRef.key;
+            //build the game obj for database
             let gameObj = {
                 host: currentDisplayName,
                 playerLimit: playerCount,
@@ -334,7 +336,7 @@ fireObj = {
                             // update the game state in currentGameRef to 2
                             if (allHandsDealt) {
                                 currentGameRef.update({
-                                    state: 2
+                                    state: state.chooseBlack
                                 });
                             }
                         })
@@ -421,12 +423,12 @@ fireObj = {
                                                 newBtn.text("start Game");
                                                 $("#playerDisplay").prepend(newBtn);
                                                 newBtn.on("click", function(event) {
-                                                    event.preventDefault();
-                                                    currentGameRef.child("state").update({
-                                                        state: state.ready
+                                                        event.preventDefault();
+                                                        currentGameRef.child("state").update({
+                                                            state: state.ready
+                                                        })
                                                     })
-                                                })
-                                                // newBtn.hide();
+                                                    // newBtn.hide();
                                             }
                                             currentGameRef.child("totalPlayers").on("value", function(snap) {
                                                     $("#currentPlay").text(snap.val());
