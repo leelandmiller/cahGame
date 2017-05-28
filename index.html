@@ -9,7 +9,7 @@
 </head>
 
 <body>
-        <!-- Page NAV -->
+    <!-- Page NAV -->
     <nav class="navbar navbar-default" id="myNav">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -28,7 +28,7 @@
     <!-- MAIN VIEW -->
     <div class="container-fluid" id="main-view">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8" id='hideCards'>
                 <!-- CARDS ROW ONE -->
                 <div class="row cards">
                     <div class="col-md-3">
@@ -156,19 +156,165 @@
                     </div>
                 </div>
             </div>
-            <!-- RIGHT DISPLAY -->
-            <div class="col-md-4" id="right-display">
-                <div class="panel panel-default" id="player-well">
+            <!-- Waiting on Players -->
+            <div class="col-md-6 col-md-offset-1" id="waiting">
+                <div class="panel panel-default" id="create-panel">
                     <div class="panel-heading top-bar">
-                        <div class="col-md-8 col-xs-8">
-                            <h3 class="panel-title"><span class="glyphicon glyphicon-user"></span> Player Info</h3>
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-hourglass"></span> Waiting for Players</h3>
+                        <div class="panel-body">
+                            <table style="margin-bottom: 30px;" class="table table-striped" id="waiting-host-table">
+                                <tr>
+                                    <th>Host</th>
+                                    <th class="text-center">Players Joined</th>
+                                    <th class="text-center">Cards</th>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                    <td class="text-center">3/7</td>
+                                    <td class="text-center">7</td>
+                                </tr>
+                            </table>
+                            <table class="table table-striped" id="waiting-player-table">
+                                <tr>
+                                    <th>Players</th>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                            </table>
+                            <div id="loading-gif">
+                                <div class="loading">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <h3 class='text-center'>Waiting for players...</h3>
+                            </div>
+                            <button class="col-md-2 col-md-offset-5 btn btn-danger">Force Start</button>
                         </div>
                     </div>
-                    <div class="container" id="players">
-                        <p class="panel-title">Player One</p>
-                        <p class="panel-title">Player Two</p>
-                        <p class="panel-title">Player Three</p>
-                        <p class="panel-title">Player Four</p>
+                </div>
+            </div>
+            <!-- GameCenter -->
+            <div class="col-md-4 col-md-offset-1 hide-game-center">
+                <div class="panel panel-default" id="create-panel">
+                    <div class="panel-heading top-bar">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-tasks"></span> Current Games</h3>
+                        <div class="panel-body">
+                            <table class="table table-bordered table-striped" id="current-game-table">
+                                <tr>
+                                    <th>Host</th>
+                                    <th>Players</th>
+                                    <th>Cards</th>
+                                    <th> </th>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                    <td>3/7</td>
+                                    <td>7</td>
+                                    <td>
+                                        <button class="col-md-12 btn btn-warning">Join</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                    <td>3/7</td>
+                                    <td>7</td>
+                                    <td>
+                                        <button class="col-md-12 btn btn-warning">Join</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                    <td>3/7</td>
+                                    <td>7</td>
+                                    <td>
+                                        <button class="col-md-12 btn btn-warning">Join</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 hide-game-center">
+                <div class="panel panel-default" id="create-panel">
+                    <div class="panel-heading top-bar">
+                        <h3 class="panel-title"><span class="glyphicon glyphicon-plus-sign"></span> Create Game</h3>
+                        <div class="panel-body">
+                            <form>
+                                <div class="form-group">
+                                    <label>Number of Players</label>
+                                    <select class="form-control">
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
+                                        <option>7</option>
+                                        <option>8</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Number of Cards</label>
+                                    <select class="form-control">
+                                        <option>5</option>
+                                        <option>6</option>
+                                        <option>7</option>
+                                        <option>8</option>
+                                        <option>9</option>
+                                        <option>10</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="col-md-6 col-md-offset-3 btn btn-primary" id="create-game">Create Game</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- RIGHT DISPLAY -->
+            <div class="col-md-4 pull-right " id="right-display ">
+                <div class="panel panel-default " id="player-well ">
+                    <div class="panel-heading top-bar ">
+                        <h3 class="panel-title "><span class="glyphicon glyphicon-user "></span> Player Info</h3>
+                        <div class="panel-body ">
+                            <table class="table table-bordered table-striped " id="create-table">
+                                <tr>
+                                    <td>Ron Swanson - x4 <span class="glyphicon glyphicon-stop"></td>
+                                    <td>Bill Williams x6 <span class="glyphicon glyphicon-stop"></td>
+                                </tr>
+                                <tr>
+                                    <td>Sam Samson - x7 <span class="glyphicon glyphicon-stop"></td>
+                                    <td>Bob Roberts x5 <span class="glyphicon glyphicon-stop"></td>
+                                </tr>
+                                <tr>
+                                    <td>Don Donalds - x3 <span class="glyphicon glyphicon-stop"></td>
+                                    <td>Ted Daniels x5 <span class="glyphicon glyphicon-stop"></td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson - x4 <span class="glyphicon glyphicon-stop"></td>
+                                    <td>Bill Williams x6 <span class="glyphicon glyphicon-stop"></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                 </div>
                 <div class="panel panel-default" id="chat-well">
@@ -176,111 +322,26 @@
                         <div class="col-md-8 col-xs-8">
                             <h3 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Group Chat</h3>
                         </div>
-                        <!--                         <div class="col-md-4 col-xs-4" style="text-align: right;">
-                            <a href="#"><span id="minim_chat_window" class="glyphicon glyphicon-minus icon_minim"></span></a>
-                            <a href="#"><span class="glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span></a>
-                        </div> -->
                     </div>
                     <div class="panel-body msg_container_base" id="chat">
-
-
-                        <!-- SENT Mesage Structure -->
-                        <!-- <div class="row msg_container base_sent">
-                            <div class="col-md-10 col-xs-10">
-                                <div class="messages msg_sent">
-                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
-                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-xs-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                            </div>
-                        </div>
-
-
-                        <div class="row msg_container base_receive">
-                            <div class="col-md-2 col-xs-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                            </div>
-                            <div class="col-md-10 col-xs-10">
-                                <div class="messages msg_receive">
-                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
-                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row msg_container base_receive">
-                            <div class="col-md-2 col-xs-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                            </div>
-                            <div class="col-xs-10 col-md-10">
-                                <div class="messages msg_receive">
-                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
-                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row msg_container base_sent">
-                            <div class="col-xs-10 col-md-10">
-                                <div class="messages msg_sent">
-                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
-                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-xs-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                            </div>
-                        </div>
-                        <div class="row msg_container base_receive">
-                            <div class="col-md-2 col-xs-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                            </div>
-                            <div class="col-xs-10 col-md-10">
-                                <div class="messages msg_receive">
-                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
-                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row msg_container base_sent">
-                            <div class="col-md-10 col-xs-10 ">
-                                <div class="messages msg_sent">
-                                    <p>that mongodb thing looks good, huh? tiny master db, and huge document store</p>
-                                    <time datetime="2009-11-13T20:00">Timothy • 51 min</time>
-                                </div>
-                            </div>
-                            <div class="col-md-2 col-xs-2 avatar">
-                                <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
-                            </div>
-                        </div> -->
+                        <!-- messages -->
                     </div>
                     <div class="panel-footer">
                         <div class="input-group">
                             <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
                             <span class="input-group-btn">
-                        <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
-                        </span>
+                                 <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js"></script>
-    <script>
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyDAaxwFEqWX-vPiG5V8q_rTKZPLVir3UBk",
-        authDomain: "testrepocah.firebaseapp.com",
-        databaseURL: "https://testrepocah.firebaseio.com",
-        projectId: "testrepocah",
-        storageBucket: "testrepocah.appspot.com",
-        messagingSenderId: "906450921448"
-    };
-    firebase.initializeApp(config);
-    </script>
-    <script type="text/javascript" src="assets/js/tgmain.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js " integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=" anonymous "></script>
+    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js "></script>
+    <script type="text/javascript " src="assets/js/tgmain.js "></script>
+    <script type="text/javascript " src="assets/js/main.js "></script>
 </body>
 
 </html>
