@@ -1,8 +1,12 @@
 body {
     font-family: 'helvetica neue';
+
+    height: 100%;
+}
+
+.coffee-table-bg {
     background: url('../images/background.jpg')no-repeat center center fixed;
     background-size: cover;
-    height: 100%;
 }
 
 #myNav {
@@ -343,4 +347,8 @@ body {
         height: 20px;
         width: 20px;
     }
+}
+
+.hide-create {
+    display: none;
 }
