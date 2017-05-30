@@ -1,4 +1,13 @@
 // $(document).onReady(function() {
+var config = {
+    apiKey: "AIzaSyDAaxwFEqWX-vPiG5V8q_rTKZPLVir3UBk",
+    authDomain: "testrepocah.firebaseapp.com",
+    databaseURL: "https://testrepocah.firebaseio.com",
+    projectId: "testrepocah",
+    storageBucket: "testrepocah.appspot.com",
+    messagingSenderId: "906450921448"
+};
+firebase.initializeApp(config);
 let database = firebase.database();
 let userRef = database.ref("/users");
 let gameRef = database.ref("/games");
@@ -484,7 +493,7 @@ fireObj = {
                                                         let secondNum = 50 % snap.val();
                                                         //display(blackOrder[firstNum][secondNum])
                                                     })
-                                                    if (snap.val() === (host ? "host" : currentUid)) {
+                                                    if (snap.val() !== (host ? "host" : currentUid)) {
                                                         // set you as chooser of white card
 
                                                     } //if
