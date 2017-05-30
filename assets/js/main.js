@@ -22,6 +22,7 @@ let currentGameRef = "";
 let currentUid = "";
 let currentGame = "";
 let currentDisplayName = "";
+let newAvatar = avatarObj.getAvatarURL();
 let state = {
     open: 0,
     ready: 1,
@@ -135,7 +136,7 @@ fireObj = {
                                 uid: currentUid,
                                 profile: {
                                     info: "",
-                                    pic: "http://api.adorable.io/avatar/125/" + currentUid
+                                    pic: newAvatar
                                 }
                             }) //set
                             // 
@@ -480,7 +481,8 @@ fireObj = {
                                                 if (host) {
 
                                                     if (playerOrder.length >= 4) {
-                                                        $("#hostStart").show();
+                                                        $("#loading-gif").hide();
+                                                        $("#forceStart").show();
                                                         //if player count >= 4 allow host to start
 
                                                     }
@@ -510,6 +512,7 @@ fireObj = {
                                                     })
                                                     if (snap.val() !== (host ? "host" : currentUid)) {
                                                         // set you as chooser of white card
+                                                        // need to deal with 1 or 2 clicks
 
                                                     } //if
                                                 }) //currentGameRef
