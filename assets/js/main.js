@@ -398,6 +398,8 @@ fireObj = {
                 let playerMax = 0;
                 let playerTurnCount = 0;
                 let totalPlayers = 0;
+                $(".hide-create").hide();
+                $(".hide-waiting").show();
 
                 currentGameRef = gameRef.child(key);
                 currentGameRef.once("value", function(snap) {
@@ -406,16 +408,24 @@ fireObj = {
 
                         blackOrder = snap.val().blackOrder;
                         whiteOrder = snap.val().whiteOrder;
-                        winLimit = snap.val().winlimit;
+                        winLimit = snap.val().winLimit;
                         playerKey = snap.val().players;
                         playerMax = snap.val().playerLimit;
                         if (snap.val().host.toString() === currentDisplayName) {
                             host = true;
                         }
-                        $("#maxPlayers").text(playerMax);
-                        playerRef.child(playerKey).child("host/displayName").once("value", function(snap) {
 
-                            $("#hostName").text(snap.val())
+                        let newTr = $("<tr>");
+                        let name = $("<td>").text(snap.val().host);
+                        let player = $("<td>").html("<span id ='waitPlayers'>1</span>/" + playerMax);
+                        let win = $("<td>").text(winLimit);
+                        newTr.append(name);
+                        newTr.append(player);
+                        newTr.append(win);
+                        console.log(newTr);
+                        $("#waiting-host-table").append(newTr);
+                        currentGameRef.child("totalPlayers").on("value", function(snap) {
+                            $("#waitPlayers").text(snap.val());
                         })
 
 
@@ -449,17 +459,6 @@ fireObj = {
                                             if (!host) {
                                                 // if not the host build and add player object based on player uid
                                                 fireObj.buildPlayerObj(key, playerKey)
-                                            } else {
-                                                let newBtn = $("<button>").attr("id", "hostStart");
-                                                newBtn.text("start Game");
-                                                $("#playerDisplay").prepend(newBtn);
-                                                newBtn.on("click", function(event) {
-                                                        event.preventDefault();
-                                                        currentGameRef.child("state").update({
-                                                            state: state.ready
-                                                        })
-                                                    })
-                                                    // newBtn.hide();
                                             }
                                             currentGameRef.child("totalPlayers").on("value", function(snap) {
                                                     $("#currentPlay").text(snap.val());
@@ -470,13 +469,14 @@ fireObj = {
                                                 //listen for players joining to update the screen
                                                 //call update players screen
                                                 if (host) playerOrder.push(snap.key);
-                                                console.log(playerOrder)
                                                 if (snap.key != "host") {
 
-                                                    let newh1 = $("<h1>").text(snap.val().displayName);
-                                                    $("#playerList").append(newh1);
-                                                }
 
+                                                }
+                                                let newPlayer = $("<th>").text(snap.val().displayName);
+                                                let newTr = $("<tr>");
+                                                newTr.append(newPlayer);
+                                                $("#waiting-player-table").append(newTr);
                                                 if (host) {
 
                                                     if (playerOrder.length >= 4) {
