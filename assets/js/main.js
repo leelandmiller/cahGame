@@ -33,6 +33,21 @@ let state = {
     gameOver: 7,
     quitGame: 8
 }
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        $(".front-page").hide();
+        $("body").addClass("coffee-table-bg");
+        $("#myNav").show()
+        $("#main-view").show();
+        $(".hide-create").show();
+        currentUid = user.uid;
+        userRef.child(currentUid).child("displayName").once("value", function(snap) {
+            currentDisplayName = snap.val();
+        })
+        fireObj.joinGameEvent();
+    }
+
+})
 
 fireObj = {
 
@@ -40,13 +55,6 @@ fireObj = {
             firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
                 var errorCode = error.code;
                 var errorMessage = error.message;
-            }).then(function() {
-                currentUid = firebase.auth().currentUser.uid;
-                userRef.child(currentUid).child("displayName").once("value", function(snap) {
-                        currentDisplayName = snap.val();
-                    })
-                    //TODO: change to next screen
-                console.log("signed in!")
             })
 
         },
@@ -130,7 +138,7 @@ fireObj = {
                                     pic: "http://api.adorable.io/avatar/125/" + currentUid
                                 }
                             }) //set
-                            //TODO: change to next screen
+                            // 
 
 
                     }); //then
@@ -164,6 +172,13 @@ fireObj = {
         gameChatOff: function(key) {
             gameRef.child(key).child("chat").off();
         },
+        joinGameEvent: function() {
+            gameRef.orderByChild("state").equalTo(state.open).on("child_added", function(snap) {
+                makeElement.buildOpenGame(snap.key, snap.val().host, snap.val().winLimit, snap.val().playerLimit);
+
+            })
+        },
+
         createNewGame: function(playerCount, winlimit) {
             let newGameRef = gameRef.push();
 
@@ -569,32 +584,157 @@ fireObj = {
     } //fireObj
 
 
+// THIS IS THE FRONT END JS CODE 
+// DATABASE AND GAME LOGIC I ABOVE THIS!!!
+// 
+// 
+// 
+makeElement = {
+    buildSentMessage: function(player, message, time) {
+
+        var messageContainer = $('<div>').addClass('row msg_container base_sent');
+
+        var messageHolder = $('<div>').addClass('col-md-10 col-xs-10');
+        messageContainer.append(messageHolder);
+        var messageBox = $('<div>').addClass('messages msg_sent');
+        messageHolder.append(messageBox);
+        var message = $('<p>').html(sentMessageText);
+        messageBox.append(message);
+
+        var avatarContainer = $('<div>').addClass('col-md-2 col-xs-2 avatar');
+        messageContainer.append(avatarContainer);
+        var avatarImage = $('<img>')
+        avatarImage.attr('class', 'img-responsive')
+        avatarImage.attr('src', 'http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg');
+        avatarContainer.append(avatarImage);
+
+        $('#chat').append(messageContainer);
+    },
+    buildReceivedMessage: function(player, message, time) {
+
+        var messageContainer = $('<div>').addClass('row msg_container base_receive');
+
+        var avatarContainer = $('<div>').addClass('col-md-2 col-xs-2 avatar');
+        messageContainer.append(avatarContainer);
+        var avatarImage = $('<img>')
+        avatarImage.attr('class', 'img-responsive')
+        avatarImage.attr('src', 'http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg');
+        avatarContainer.append(avatarImage);
+
+        var messageHolder = $('<div>').addClass('col-md-10 col-xs-10');
+        messageContainer.append(messageHolder);
+        var messageBox = $('<div>').addClass('messages msg_receive');
+        messageHolder.append(messageBox);
+        var message = $('<p>').html(receivedMessageText);
+        messageBox.append(message);
+
+        $('#chat').append(messageContainer);
+    },
+
+    newWhiteCard: function() {
+        $('#' + card + ' .flipper .back p').html(whiteCard);
+    },
+
+    gamesToJoin: function() {
+
+    },
+
+    waitingHost: function() {
+
+    },
+
+    waitingPlayers: function() {
+
+    },
+
+    playerInfo: function() {
+
+    },
+    buildOpenGame: function(key, host, winLimit, playerLimit) {
+        //TODO: move with other html builders
+        let newTr = $("<tr>");
+        let hostTh = $("<td>").text(host);
+        let players = $("<td>");
+        let winCount = $("<td>");
+        let joinBtn = $("<button>").attr("id", key).text("Join").addClass("col-md-12 btn btn-warning");
+        let btnTd = $("<td>").append(joinBtn);
+        players.html("<span id ='" + key + "Players'>1</span>/" + playerLimit);
+        winCount.text(winLimit);
+        newTr.append(hostTh);
+        newTr.append(players);
+        newTr.append(winCount);
+        newTr.append(btnTd);
+        $("#current-game-table").append(newTr);
+        gameRef.child(key).child("totalPlayers").on("value", function(snap) {
+            $("#" + key + "Players").text(snap.val());
+        })
+        $("#" + key).on("click", function() {
+            fireObj.gameState(key)
+        })
+
+    },
 
 
-gameRef.orderByChild('state').equalTo(state.open).on('child_added', function(snap) {
-    var hostName = snap.val().host;
-    var joinBtn = '<button class="btn btn-default" id="' + snap.key + '">Join</button>';
+}
 
-    var newGameData = $('<tr>').html('<td>' + hostName + '</td><td>' + snap.val().totalPlayers + '/' + snap.val().playerLimit + '</td><td>' + snap.val().winLimit + '</td><td>' + joinBtn + '</td>');
-    $('#table-row').append(newGameData);
+///////////////// TESTING BELOW ////////////////////
 
-    $('#' + snap.key).on('click', function() {
-        fireObj.gameState(snap.key);
-    });
-});
+// QUICK HIDE/SHOWS //
+$('#hideCards').hide();
+$('.hide-game-center').hide();
+// $('#waiting').hide();
+$("#susubmit").on("click", function() {
+    let email = $("#emailInput").val().trim();
+    let password = $("#pwone").val();
+    console.log(email, password)
+    if (email === "" || password === "") {
+        $(".errormsg").text("password or email is blank").show();
+    } else {
+        fireObj.signIn(email, password);
+    }
+
+})
+
+$("#sisubmit").on("click", function() {
+    let email = $("#emailInput").val().trim();
+    let password = $("#pwone").val();
+    let passConfrim = $("#pwtwo").val();
+    let displayName = $("#username").val().trim();
+    if (email === "" || password === "" || passConfrim === "" || displayName === "") {
+        $(".errormsg").text("field was left blank").show();
+    } else {
+        fireObj.signUpCheck(email, password, passConfrim, displayName);
+    }
+})
+
+
+
+
+// gameRef.orderByChild('state').equalTo(state.open).on('child_added', function(snap) {
+//     var hostName = snap.val().host;
+//     var joinBtn = '<button class="btn btn-default" id="' + snap.key + '">Join</button>';
+
+//     var newGameData = $('<tr>').html('<td>' + hostName + '</td><td>' + snap.val().totalPlayers + '/' + snap.val().playerLimit + '</td><td>' + snap.val().winLimit + '</td><td>' + joinBtn + '</td>');
+//     $('#table-row').append(newGameData);
+
+//     $('#' + snap.key).on('click', function() {
+//         fireObj.gameState(snap.key);
+//     });
+// });
 
 
 $("#create-game").on("click", function(event) {
     event.preventDefault();
     let playerCount = $("#numPlayers").val();
-    let winCount = $("#numWin").val();
+    let winCount = $("#numCards").val();
+    console.log("Pc", playerCount, "WC", winCount);
     fireObj.createNewGame(playerCount, winCount);
 })
-makeElement = {
 
-
-    }
-    // $('.flip-container').hide();
+$('#main-view').hide();
+$('.hide-create').hide();
+$('.hide-waiting').hide();
+// $('.flip-container').hide();
 
 // $('.flip-container').on('click', function() {
 //             // $('#card3').show();
