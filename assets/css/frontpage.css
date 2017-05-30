@@ -1,0 +1,120 @@
+#login {
+    margin-top: 25px;
+    background: #000000;
+    color: white;
+    border-radius: 0px;
+    height: 400px;
+}
+
+#titlearea {
+    font-size: 50px;
+    font-weight: bold;
+    margin-top: 50px;
+    line-height: 90%;
+    bottom: 0;
+    letter-spacing: .7px;
+    color: black;
+}
+
+.front-page h2 {
+    line-height: 40%;
+    font-weight: bold;
+}
+
+.front-page form {
+    width: 100%;
+    font-weight: bold;
+}
+
+.form-control {
+    border-radius: 0px;
+}
+
+#buttons {
+    margin-left: 30%;
+}
+
+#sibtn{
+    background: white;
+    color: black;
+    width: 40%;
+    margin-left: 30%;
+}
+
+#back{
+    background: gray;
+    color: black;
+    width: 40%;
+    margin-left: 30%;
+}
+
+#subtn{
+    background-color: black;
+    color:white;
+    width: 40%;
+    margin-left: 30%;
+}
+
+#sisubmit{
+    background-color: lightgray;
+    color:black;
+    width: 40%;
+    margin-left: 30%;
+}
+
+#susubmit{
+    background-color: lightgray;
+    color:black;
+    width: 40%;
+    margin-left: 30%;
+}
+
+#first {
+    float: left;
+    width: 250px;
+    background: #000000;
+    margin-left: 0px;
+    font-size: 13px;
+    font-weight: bold;
+    height: 250px;
+    width: 180px;
+    color: #ffffff;
+    border-radius: 9px;
+    letter-spacing: .5px;
+}
+
+#second {
+    float: right;
+    width: 250px;
+    font-size: 13px;
+    font-weight: bold;
+    border: 1px solid #000000;
+    width: 180px;
+    height: 250px;
+    border-radius: 9px;
+    letter-spacing: .5px;
+}
+
+#maincardarea {
+    float: right;
+}
+
+.front-page button{
+    width:50%;
+}
+
+#loginarea{
+    background: black;
+    margin-top:10px;
+    width:50%;
+}
+
+.front-page label{
+    color:white;
+}
+
+.errormsg{
+    color:#fff;
+    text-align: center;
+    padding:10px;
+}
