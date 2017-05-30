@@ -1,17 +1,4 @@
 // $(document).onReady(function() {
-
-$(document).ready(function() {
-
-// QUICK HIDE/SHOWS //
-// $('#hideCards').hide();
-// $('.hide-game-center').hide();
-// $('#waiting').hide();
-// $('.front-page').hide();
-// $('.hide-create').hide();
-
-
-
-
 var config = {
     apiKey: "AIzaSyDAaxwFEqWX-vPiG5V8q_rTKZPLVir3UBk",
     authDomain: "testrepocah.firebaseapp.com",
@@ -695,7 +682,10 @@ makeElement = {
 
 ///////////////// TESTING BELOW ////////////////////
 
-
+// QUICK HIDE/SHOWS //
+$('#hideCards').hide();
+$('.hide-game-center').hide();
+// $('#waiting').hide();
 $("#susubmit").on("click", function() {
     let email = $("#emailInput").val().trim();
     let password = $("#pwone").val();
@@ -744,12 +734,9 @@ $("#create-game").on("click", function(event) {
     fireObj.createNewGame(playerCount, winCount);
 })
 
-})
-
-
-// $('#main-view').hide();
-// $('.hide-create').hide();
-// $('.hide-waiting').hide();
+$('#main-view').hide();
+$('.hide-create').hide();
+$('.hide-waiting').hide();
 // $('.flip-container').hide();
 
 // $('.flip-container').on('click', function() {
