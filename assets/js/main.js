@@ -99,11 +99,15 @@ fireObj = {
                         var errorCode = error.code;
                         var errorMessage = error.message;
                     }).then(function() {
+                        //make obj with username set to true and add to displayNmae list in database
                         let name = {};
                         name[displayName] = true;
                         displayNameRef.update(name);
+                        //sets current display name locally
                         currentDisplayName = displayName;
+                        //set current UID locally
                         currentUid = firebase.auth().currentUser.uid;
+                        //builds the user's obj in database
                         userRef.child(currentUid).set({
                                 displayName: displayName,
                                 joinedGame: "",
@@ -170,27 +174,27 @@ fireObj = {
             currentGame = newGameRef.key;
             //build the game obj for database
             let gameObj = {
-                host: currentDisplayName,
-                playerLimit: playerCount,
-                winLimit: winlimit,
-                totalPlayers: 1,
-                blackOrder: {
-                    order: true
-                },
-                whiteOrder: {
-                    order: true
-                },
-                players: playerKey,
-                currentTurn: "host",
-                blackCount: 0,
-                whiteCount: 0,
-                scores: "",
-                chat: {
-                    chat: true
-                },
-                state: state.open
-            }
-
+                    host: currentDisplayName,
+                    playerLimit: playerCount,
+                    winLimit: winlimit,
+                    totalPlayers: 1,
+                    blackOrder: {
+                        order: true
+                    },
+                    whiteOrder: {
+                        order: true
+                    },
+                    players: playerKey,
+                    currentTurn: "host",
+                    blackCount: 0,
+                    whiteCount: 0,
+                    scores: "",
+                    chat: {
+                        chat: true
+                    },
+                    state: state.open
+                }
+                //build the player obj
             let playerObj = {
                 host: {
                     hand: {
@@ -238,7 +242,9 @@ fireObj = {
                 newGameRef.set(gameObj).then(function() {
                     let count = 0;
                     let set = 0;
+                    //loops white total iterations are les sthat total count
                     while (count < blackCount) {
+                        //loops thru 50 at a time
                         for (var i = 0; i < 50; i++) {
                             if (shuffledArray.black[count]) {
 
@@ -295,6 +301,7 @@ fireObj = {
                     let secondChild = (snap % 50);
                     let cards = []
                     for (var i = 0; i < 7; i++) {
+                        //checsk if second child is above 49 whichs means it stored in the nest
                         if (secondChild + i > 49) {
                             cards.push(whiteOrder[firstChild + 1][(secondChild + i) - 50])
                         } else {
@@ -471,14 +478,30 @@ fireObj = {
                                         case (state.chooseBlack):
 
                                             currentGameRef.child("currentTurn").once("value", function(snap) {
+                                                    //display black card
+                                                    currentGameRef.child("blackCount").once("value", function(snap) {
+                                                        let firstNum = 50 / snap.val();
+                                                        let secondNum = 50 % snap.val();
+                                                        //display(blackOrder[firstNum][secondNum])
+                                                    })
                                                     if (snap.val() === (host ? "host" : currentUid)) {
                                                         // set you as chooser of white card
+
                                                     } //if
                                                 }) //currentGameRef
                                                 //black card get pulled from cardRef
                                                 //display black card to all
                                             break;
                                         case (state.chooseWhite):
+                                            currentGameRef.child("currentTurn").once("value", function(snap) {
+                                                    //display black card
+                                                    if (snap.val() === (host ? "host" : currentUid)) {
+                                                        // set you as chooser of white card
+                                                        currentGameRef.child("blackCount").transaction(function(snap) {
+                                                            return snap + 1
+                                                        })
+                                                    } //if
+                                                }) //currentGameRef
                                             blackCount++;
 
                                             //setup card listen to add white card choice
@@ -501,9 +524,27 @@ fireObj = {
                                             //award black card to winner
                                             break;
                                         case (state.nextTurn):
-                                            //check if somebody had reached score limit
-                                            //if not start from state.chooseBlack
-                                            //else go to state.gameOver
+                                            if (host) {
+                                                playerTurnCount++;
+                                                if (playerTurnCount === playerOrder.length) {
+                                                    playerTurnCount = 0;
+                                                }
+                                                currentGameRef.update({
+                                                    currentTurn: playerOrder[playerTurnCount]
+                                                })
+                                            }
+                                            currentPlayerRef.forEach(function(snap) {
+                                                    if (snap.val().playerBlackCount == winLimit) {
+                                                        //winner(snap.key)
+                                                        if (host) {
+                                                            //change gamestate
+                                                        }
+                                                    }
+
+                                                })
+                                                //check if somebody had reached score limit
+                                                //if not start from state.chooseBlack
+                                                //else go to state.gameOver
                                             break;
                                         case (state.gameOver):
                                             //allow users to return to match making screen
