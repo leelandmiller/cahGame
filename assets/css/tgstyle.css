@@ -348,3 +348,7 @@ body {
         width: 20px;
     }
 }
+
+.hide-create {
+    display: none;
+}
