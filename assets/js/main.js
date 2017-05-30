@@ -22,7 +22,7 @@ let currentGameRef = "";
 let currentUid = "";
 let currentGame = "";
 let currentDisplayName = "";
-let newAvatar = avatarObj.getAvatarURL();
+let newAvatar = avatarObj.genAvatarURL();
 let state = {
     open: 0,
     ready: 1,
