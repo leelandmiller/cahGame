@@ -477,12 +477,14 @@ fireObj = {
                                             currentPlayerRef.on("child_added", function(snap) {
                                                 //listen for players joining to update the screen
                                                 //call update players screen
+                                                let displayName = snap.val().displayName
+                                                buildPlayerList(playerKey, snap.key, displayName)
                                                 if (host) playerOrder.push(snap.key);
                                                 if (snap.key != "host") {
 
 
                                                 }
-                                                let newPlayer = $("<th>").text(snap.val().displayName);
+                                                let newPlayer = $("<th>").text(displayName);
                                                 let newTr = $("<tr>");
                                                 newTr.append(newPlayer);
                                                 $("#waiting-player-table").append(newTr);
@@ -684,6 +686,24 @@ makeElement = {
         })
 
     },
+    buildPlayerList: function(playerKey, uid, displayName) {
+        let isSet = false;
+        for (var i = 0; i < 4; i++) {
+            if ($("#row" + i).children().length < 2 && !isSet) {
+                let newTd = $("<td>").text(displayName + " - ");
+                let newSpan = $("<span>").attr("id", uid + "blackCount").text("0");
+                let newGlyph = $("<span>").addClass("glyphicon glyphicon-stop");
+                newSpan.append(newGlyph)
+                newTd.append(newSpan);
+                $("#row" + i).append(newTd);
+                isSet = true;
+                playerRef.child(playerKey + "/" + uid).child("playerBlackCount").on("value", function(snap) {
+                    $("#" + uid + "blackCount").text(snap.val())
+                })
+            }
+
+        }
+    }
 
 
 }
