@@ -236,7 +236,8 @@ fireObj = {
                     blackCards: {
                         cards: true
                     },
-                    chosenWhiteCard: "",
+                    chosenWhiteCard1: "",
+                    chosenWhiteCard2: "",
                     uid: currentUid,
                     displayName: currentDisplayName,
                     playerBlackCount: 0
@@ -317,7 +318,8 @@ fireObj = {
                     blackCards: {
                         cards: true
                     },
-                    chosenWhiteCard: "",
+                    chosenWhiteCard1: "",
+                    chosenWhiteCard2: "",
                     uid: currentUid,
                     displayName: currentDisplayName,
                     playerBlackCount: 0
@@ -362,11 +364,13 @@ fireObj = {
                         // get playersKey from currentGameRef
                         var playersKey = snap.val();
                         database.ref('/players/' + playersKey).once('value').then(function(snap) {
+
                             for (let i = 0; i < 7; i++) {
+                                let newCard = snap.val()[(host ? "host" : currentUid)].hand[i]
                                 let firstNum = Math.floor(snap.val()[(host ? "host" : currentUid)].hand[i] / 50);
                                 let secondNum = snap.val()[(host ? "host" : currentUid)].hand[i] % 50;
                                 whiteCardRef.child(firstNum).child(secondNum).once("value", function(snap) {}).then(function(snap) {
-                                    makeElement.newWhiteCard(("card" + (i + 1)).toString(), snap.val())
+                                    makeElement.newWhiteCard(("card" + (i + 1)).toString(), snap.val(), newCard)
                                 })
 
                             }
@@ -398,9 +402,11 @@ fireObj = {
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
+                let firstNum = Math.floor(newCard / 50)
+                let secondNum = newCard % 50
                 playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard).then(function(snap) {
-                    whiteCardRef.child(firstChild).child(secondChild).once("value", function(snap) {}).then(function(snap) {
-                        makeElement.newWhiteCard("card" + (card + 1), snap.val())
+                    whiteCardRef.child(firstNum).child(secondNum).once("value", function(snap) {}).then(function(snap) {
+                        makeElement.newWhiteCard("card" + (card + 1), snap.val(), newCard)
                     })
                 })
                 snap = snap + 1;
@@ -664,10 +670,11 @@ makeElement = {
         $('#chat').append(messageContainer);
     },
 
-    newWhiteCard: function(card, whiteCard) {
+    newWhiteCard: function(card, whiteCard, cardNum) {
         if (card === "black") {
             whiteCard = whiteCard.replace(/_/g, "____")
         }
+        $("#" + card).attr("cardNum", cardNum)
         $('#' + card + ' .flipper .back p').html(whiteCard);
         if ($("#" + card).hasClass("flip")) {
             $("#" + card).removeClass("flip");
@@ -694,6 +701,20 @@ makeElement = {
     },
 
     playerInfo: function() {
+
+    },
+    mainClick: function(card, loc) {
+        if (loc) {
+            //location1
+            $("#" + card).on("click", function() {
+
+            })
+        } else {
+            //location2
+            ("#" + card).on("click", function() {
+
+            })
+        }
 
     },
     buildOpenGame: function(key, host, winLimit, playerLimit) {
