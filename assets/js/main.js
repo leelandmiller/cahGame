@@ -46,7 +46,15 @@ firebase.auth().onAuthStateChanged(function(user) {
             currentDisplayName = snap.val();
         })
         fireObj.joinGameEvent();
+    } else {
+        $(".front-page").show();
+        $("body").removeClass("coffee-table-bg");
+        $("#myNav").hide()
+        $("#main-view").hide();
+        $(".hide-create").hide();
+        $(".hide-waiting").hide();
     }
+
 
 })
 
@@ -708,6 +716,10 @@ $("#sisubmit").on("click", function() {
     } else {
         fireObj.signUpCheck(email, password, passConfrim, displayName);
     }
+})
+
+$("#signOut").on("click", function() {
+    firebase.auth().signOut();
 })
 
 
