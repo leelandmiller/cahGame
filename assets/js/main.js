@@ -362,6 +362,16 @@ fireObj = {
                         // get playersKey from currentGameRef
                         var playersKey = snap.val();
                         database.ref('/players/' + playersKey).once('value').then(function(snap) {
+                            for (let i = 0; i < 7; i++) {
+                                let firstNum = Math.floor(snap.val()[(host ? "host" : currentUid)].hand[i] / 50);
+                                let secondNum = snap.val()[(host ? "host" : currentUid)].hand[i] % 50;
+                                console.log("card:", ("card" + (i + 1)))
+                                whiteCardRef.child(firstNum).child(secondNum).once("value", function(snap) {}).then(function(snap) {
+                                    makeElement.newWhiteCard(("card" + (i + 1)).toString(), snap.val())
+                                })
+
+                            }
+
                             // Initialize allHandsDealt to true
                             var allHandsDealt = true;
                             // loops through every player currentGameRef's players
@@ -389,7 +399,11 @@ fireObj = {
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
-                playerRef.child(key + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard)
+                playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard).then(function(snap) {
+                    whiteCardRef.child(firstChild).child(secondChild).once("value", function(snap) {}).then(function(snap) {
+                        makeElement.newWhiteCard("card" + (card + 1), snap.val())
+                    })
+                })
                 snap = snap + 1;
                 return snap;
             });
@@ -493,6 +507,7 @@ fireObj = {
                                                     if (playerOrder.length >= 4) {
                                                         $("#loading-gif").hide();
                                                         $("#forceStart").show();
+
                                                         //if player count >= 4 allow host to start
 
                                                     }
@@ -506,7 +521,8 @@ fireObj = {
                                             break;
                                         case (state.ready):
                                             fireObj.dealSevenCards(playerKey, whiteOrder, host);
-
+                                            $("#waiting").hide();
+                                            $("#hideCards").show();
                                             // deal out cards
                                             // display cards their cards
                                             //call next state
@@ -644,8 +660,18 @@ makeElement = {
         $('#chat').append(messageContainer);
     },
 
-    newWhiteCard: function() {
+    newWhiteCard: function(card, whiteCard) {
         $('#' + card + ' .flipper .back p').html(whiteCard);
+        if ($("#" + card).hasClass("flip")) {
+            $("#" + card).removeClass("flip");
+            setTimeout(function() {
+                $("#" + card).addClass("flip");
+            }, 600)
+
+
+        } else {
+            $("#" + card).addClass("flip");
+        }
     },
 
     gamesToJoin: function() {
@@ -742,6 +768,11 @@ $("#signOut").on("click", function() {
     firebase.auth().signOut();
 })
 
+$("#forceStart").on("click", function() {
+    currentGameRef.update({
+        state: state.ready
+    })
+})
 
 
 
