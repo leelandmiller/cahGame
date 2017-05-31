@@ -365,7 +365,6 @@ fireObj = {
                             for (let i = 0; i < 7; i++) {
                                 let firstNum = Math.floor(snap.val()[(host ? "host" : currentUid)].hand[i] / 50);
                                 let secondNum = snap.val()[(host ? "host" : currentUid)].hand[i] % 50;
-                                console.log("card:", ("card" + (i + 1)))
                                 whiteCardRef.child(firstNum).child(secondNum).once("value", function(snap) {}).then(function(snap) {
                                     makeElement.newWhiteCard(("card" + (i + 1)).toString(), snap.val())
                                 })
@@ -445,7 +444,6 @@ fireObj = {
                         newTr.append(name);
                         newTr.append(player);
                         newTr.append(win);
-                        console.log(newTr);
                         $("#waiting-host-table").append(newTr);
                         currentGameRef.child("totalPlayers").on("value", function(snap) {
                             $("#waitPlayers").text(snap.val());
@@ -531,10 +529,16 @@ fireObj = {
 
                                             currentGameRef.child("currentTurn").once("value", function(snap) {
                                                     //display black card
+                                                    let pick = 0;
                                                     currentGameRef.child("blackCount").once("value", function(snap) {
-                                                        let firstNum = 50 / snap.val();
-                                                        let secondNum = 50 % snap.val();
-                                                        //display(blackOrder[firstNum][secondNum])
+                                                        let firstNum = Math.floor(snap.val() / 50);
+                                                        let secondNum = snap.val() % 50;
+                                                        let firstChild = Math.floor(blackOrder[firstNum][secondNum] / 50)
+                                                        let secondChild = blackOrder[firstNum][secondNum] % 50
+                                                        blackCardRef.child(firstChild).child(secondChild).once("value", function(snap) {
+                                                            pick = snap.val().pick;
+                                                            makeElement.newWhiteCard("black", snap.val().text);
+                                                        })
                                                     })
                                                     if (snap.val() !== (host ? "host" : currentUid)) {
                                                         // set you as chooser of white card
@@ -661,6 +665,9 @@ makeElement = {
     },
 
     newWhiteCard: function(card, whiteCard) {
+        if (card === "black") {
+            whiteCard = whiteCard.replace(/_/g, "____")
+        }
         $('#' + card + ' .flipper .back p').html(whiteCard);
         if ($("#" + card).hasClass("flip")) {
             $("#" + card).removeClass("flip");
@@ -793,7 +800,6 @@ $("#create-game").on("click", function(event) {
     event.preventDefault();
     let playerCount = $("#numPlayers").val();
     let winCount = $("#numCards").val();
-    console.log("Pc", playerCount, "WC", winCount);
     fireObj.createNewGame(playerCount, winCount);
 })
 
