@@ -352,3 +352,7 @@ body {
 .hide-create {
     display: none;
 }
+
+#forceStart {
+    display: none;
+}
