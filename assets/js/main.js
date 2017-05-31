@@ -22,7 +22,7 @@ let currentGameRef = "";
 let currentUid = "";
 let currentGame = "";
 let currentDisplayName = "";
-let newAvatar = avatarObj.getAvatarURL();
+let newAvatar = avatarObj.genAvatarURL();
 let state = {
     open: 0,
     ready: 1,
@@ -442,16 +442,16 @@ fireObj = {
                                     //TODO: call quitgame functions
                                 } else {
                                     /*state = {
-														    open: 0,
-														    ready: 1,
-														    chooseBlack: 2,
-														    chooseWhite: 3,
-														    pickWhite: 4,
-														    showCards: 5,
-														    nextTurn: 6,
-														    gameOver: 7,
-														    quitGame: 8
-														}*/
+                                                            open: 0,
+                                                            ready: 1,
+                                                            chooseBlack: 2,
+                                                            chooseWhite: 3,
+                                                            pickWhite: 4,
+                                                            showCards: 5,
+                                                            nextTurn: 6,
+                                                            gameOver: 7,
+                                                            quitGame: 8
+                                                        }*/
                                     switch (data) {
                                         case (state.open):
 
