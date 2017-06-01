@@ -366,10 +366,11 @@ fireObj = {
         },
         dealSevenCards: function(playerKey, whiteOrder, host) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
-
+                    // get first card location
                     let firstChild = Math.floor(snap / 50);
                     let secondChild = (snap % 50);
                     let cards = []
+                        //deal out 7 cards
                     for (var i = 0; i < 7; i++) {
                         //checsk if second child is above 49 whichs means it stored in the nest
                         if (secondChild + i > 49) {
@@ -379,6 +380,7 @@ fireObj = {
                         }
 
                     }
+                    //put them into you hand in database
                     for (var i = 0; i < 7; i++) {
                         playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
                     }
@@ -399,7 +401,7 @@ fireObj = {
                         // get playersKey from currentGameRef
                         var playersKey = snap.val();
                         database.ref('/players/' + playersKey).once('value').then(function(snap) {
-
+                            //display all the cards
                             for (let i = 0; i < 7; i++) {
                                 let newCard = snap.val()[(host ? "host" : currentUid)].hand[i]
                                 let firstNum = Math.floor(snap.val()[(host ? "host" : currentUid)].hand[i] / 50);
@@ -434,9 +436,11 @@ fireObj = {
         },
         dealOneCard: function(playerKey, whiteOrder, host, card) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
+                //grab whitecount
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
+                //find auctally card location
                 let firstNum = Math.floor(newCard / 50)
                 let secondNum = newCard % 50
                 playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard).then(function(snap) {
@@ -475,9 +479,10 @@ fireObj = {
                         playerKey = snap.val().players;
                         playerMax = snap.val().playerLimit;
                         if (snap.val().host.toString() === currentDisplayName) {
+                            //set true if you are the host
                             host = true;
                         }
-
+                        //add host name to top of waiting for players
                         let newTr = $("<tr>");
                         let name = $("<td>").text(snap.val().host);
                         let player = $("<td>").html("<span id ='waitPlayers'>1</span>/" + playerMax);
@@ -486,6 +491,7 @@ fireObj = {
                         newTr.append(player);
                         newTr.append(win);
                         $("#waiting-host-table").append(newTr);
+                        //update total player count
                         currentGameRef.child("totalPlayers").on("value", function(snap) {
                             $("#waitPlayers").text(snap.val());
                         })
@@ -571,22 +577,27 @@ fireObj = {
                                             currentGameRef.child("currentTurn").once("value", function(snap) {
                                                     //display black card
                                                     let pick = 0;
+                                                    let currentTurn = snap.val()
                                                     currentGameRef.child("blackCount").once("value", function(snap) {
+                                                        //find blackCOunt
                                                         let firstNum = Math.floor(snap.val() / 50);
                                                         let secondNum = snap.val() % 50;
+                                                        //find card location
                                                         let firstChild = Math.floor(blackOrder[firstNum][secondNum] / 50)
                                                         let secondChild = blackOrder[firstNum][secondNum] % 50
                                                         blackCardRef.child(firstChild).child(secondChild).once("value", function(snap) {
                                                             pick = snap.val().pick;
                                                             makeElement.newWhiteCard("black", snap.val().text);
                                                         })
-                                                    })
-                                                    if (snap.val() !== (host ? "host" : currentUid)) {
-                                                        // set you as chooser of white card
-                                                        // need to deal with 1 or 2 clicks
-                                                        makeElement.mainClick(pick, host, snap.val());
+                                                    }).then(function() {
+                                                        if (snap.val() !== (host ? "host" : currentUid)) {
+                                                            // set you as chooser of white card
+                                                            // need to deal with 1 or 2 clicks
+                                                            makeElement.mainClick(pick, host, currentTurn);
 
-                                                    } //if
+                                                        } //if
+                                                    })
+
                                                 }) //currentGameRef
                                                 //black card get pulled from cardRef
                                                 //display black card to all
@@ -802,7 +813,9 @@ makeElement = {
                                 }) //then
                         }) //then
                 } else {
+
                     if (cardNum === firstCard) {
+                        //if card already selected deselect it 
                         firstCard = ""
                     } else {
                         firstCard = cardNum;
