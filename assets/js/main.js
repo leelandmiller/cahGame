@@ -44,6 +44,8 @@ firebase.auth().onAuthStateChanged(function(user) {
         currentUid = user.uid;
         userRef.child(currentUid).child("displayName").once("value", function(snap) {
             currentDisplayName = snap.val();
+        }).then(function() {
+            $("#user-name").text(currentDisplayName);
         })
         fireObj.joinGameEvent();
     } else {
