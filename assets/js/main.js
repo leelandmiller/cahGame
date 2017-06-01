@@ -254,6 +254,8 @@ fireObj = {
                         //grabs total black card count
                         blackCount = snap.val();
                     }).then(function() {
+                        console.log("black:" + blackCount + " white:" + whiteCount)
+                        let count = 0;
                         //creats 2 arrays of all indexs
                         for (var i = 0; i < whiteCount; i++) {
                             tempArray.white.push(i);
@@ -262,47 +264,78 @@ fireObj = {
                             tempArray.black.push(i);
                         }
                         //create shuffled arrays of indexs
-                        for (var i = 0; i < blackCount; i++) {
-                            let rand = Math.floor(Math.random() * tempArray.black.length);
-                            shuffledArray.black.push(tempArray.black[rand]);
-                            tempArray.black.splice(rand, 1);
+                        // for (var i = 0; i < blackCount; i++) {
+                        //     let rand = Math.floor(Math.random() * tempArray.black.length);
+                        //     shuffledArray.black.push(tempArray.black[rand]);
+                        //     tempArray.black.splice(rand, 1);
+                        // }
+                        // for (var i = 0; i < whiteCount; i++) {
+                        //     let rand = Math.floor(Math.random() * tempArray.white.length);
+                        //     shuffledArray.white.push(tempArray.white[rand]);
+                        //     tempArray.white.splice(rand, 1);
+                        // }
+                        while (count <= blackCount) {
+                            let newArray = [];
+                            for (var i = 0; i < 50; i++) {
+                                let rand = Math.floor(Math.random() * tempArray.black.length);
+                                if (tempArray.black[rand] !== undefined) {
+
+                                    newArray.push(tempArray.black[rand]);
+                                    tempArray.black.splice(rand, 1);
+
+                                }
+                                count++
+                            }
+                            shuffledArray.black.push(newArray);
                         }
-                        for (var i = 0; i < whiteCount; i++) {
-                            let rand = Math.floor(Math.random() * tempArray.white.length);
-                            shuffledArray.white.push(tempArray.white[rand]);
-                            tempArray.white.splice(rand, 1);
+                        tempCOunt = 0;
+                        count = 0;
+                        while (count <= whiteCount) {
+                            let newArray = [];
+                            for (var i = 0; i < 50; i++) {
+                                let rand = Math.floor(Math.random() * tempArray.white.length);
+                                if (tempArray.white[rand] !== undefined) {
+
+                                    newArray.push(tempArray.white[rand]);
+                                    tempArray.white.splice(rand, 1);
+                                }
+                                count++
+                            }
+                            shuffledArray.white.push(newArray);
                         }
                     }) //then2
             }).then(function() { //then1
                 //make new game and add shuffled arrays
                 newGameRef.set(gameObj).then(function() {
-                    let count = 0;
-                    let set = 0;
-                    //loops white total iterations are les sthat total count
-                    while (count < blackCount) {
-                        //loops thru 50 at a time
-                        for (var i = 0; i < 50; i++) {
-                            if (shuffledArray.black[count]) {
+                    newGameRef.child("blackOrder").set(shuffledArray.black)
+                        // let count = 0;
+                        // let set = 0;
+                        // //loops white total iterations are les sthat total count
+                        // while (count < blackCount) {
+                        //     //loops thru 50 at a time
+                        //     for (var i = 0; i < 50; i++) {
+                        //         if (shuffledArray.black[count]) {
 
-                                newGameRef.child("blackOrder").child(set).child(i).set(shuffledArray.black[count]);
-                            } //if
-                            count++;
-                        } //for
-                        set++;
-                    } //while
+                    //             newGameRef.child("blackOrder").child(set).child(i).set(shuffledArray.black[count]);
+                    //         } //if
+                    //         count++;
+                    //     } //for
+                    //     set++;
+                    // } //while
                 }).then(function() {
-                    let count = 0;
-                    let set = 0;
-                    while (count < whiteCount) {
-                        for (var i = 0; i < 50; i++) {
+                    newGameRef.child("whiteOrder").set(shuffledArray.white)
+                        // let count = 0;
+                        // let set = 0;
+                        // while (count < whiteCount) {
+                        //     for (var i = 0; i < 50; i++) {
 
-                            if (shuffledArray.white[count]) {
-                                newGameRef.child("whiteOrder").child(set).child(i).set(shuffledArray.white[count]);
-                            }
-                            count++;
-                        }
-                        set++;
-                    }
+                    //         if (shuffledArray.white[count]) {
+                    //             newGameRef.child("whiteOrder").child(set).child(i).set(shuffledArray.white[count]);
+                    //         }
+                    //         count++;
+                    //     }
+                    //     set++;
+                    // }
                     fireObj.gameState(currentGame);
                 })
             })
