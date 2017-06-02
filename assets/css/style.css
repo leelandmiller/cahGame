@@ -373,3 +373,24 @@ img {
     left: 0px;
     bottom: 0;
 }
+
+button.shbtn {
+    margin-top: 50px;
+    font-size: 15px;
+    line-height: 25px !important;
+}
+
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: 15px !important;
+    width:150px;
+    line-height: 25px !important;
+    background: transparent;
+    border-top-left:1px solid black;
+    box-shadow: 2px 2px gray;
+}
+
+button:hover{
+    letter-spacing: 3px;
+}
