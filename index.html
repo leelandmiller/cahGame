@@ -76,7 +76,7 @@
                 </li>
                 <!-- <li><a>|</a></li> -->
                 <li>
-                    <a href="#">Sign-out</a>
+                    <a href="#" id="signOut">Sign-out</a>
                 </li>
             </ul>
         </div>
@@ -89,7 +89,7 @@
                 <div class="row cards">
                     <div class="col-md-3">
                         <!-- black card -->
-                        <div class="flip-container" id="black">
+                        <div class="flip-container flip" id="black">
                             <div class="flipper">
                                 <div class="front" id="front-black">
                                     <p>Coders
@@ -272,7 +272,7 @@
                                 </div>
                                 <h3 class='text-center'>Waiting for players...</h3>
                             </div>
-                            <button class="col-md-2 col-md-offset-5 btn btn-danger" id="foreceStart">Force Start</button>
+                            <button class="col-md-2 col-md-offset-5 btn btn-danger" id="forceStart">Force Start</button>
                         </div>
                     </div>
                 </div>
@@ -356,38 +356,14 @@
                     </div>
                 </div>
             </div>
-            <!-- RIGHT DISPLAY -->
-            <div class="col-md-4 pull-right hide-game-center" id="right-display">
-                <div class="panel panel-default" id="player-well">
-                    <div class="panel-heading top-bar">
-                        <h3 class="panel-title"><span class="glyphicon glyphicon-user "></span> Player Info</h3>
-                    </div>
-                    <div class="panel-body">
-                        <table class="table table-bordered table-striped">
-                            <tr>
-                                <td>Ron Swanson - x4 <span class="glyphicon glyphicon-stop"></span></td>
-                                <td>Bill Williams x6 <span class="glyphicon glyphicon-stop"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Sam Samson - x7 <span class="glyphicon glyphicon-stop"></span></td>
-                                <td>Bob Roberts x5 <span class="glyphicon glyphicon-stop"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Don Donalds - x3 <span class="glyphicon glyphicon-stop"></span></td>
-                                <td>Ted Daniels x5 <span class="glyphicon glyphicon-stop"></span></td>
-                            </tr>
-                            <tr>
-                                <td>Ron Swanson - x4 <span class="glyphicon glyphicon-stop"></span></td>
-                                <td>Bill Williams x6 <span class="glyphicon glyphicon-stop"></span></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+            <div class="col-md-4 hide-create">
                 <div class="panel panel-default" id="chat-well">
                     <div class="panel-heading top-bar">
-                        <h3 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Group Chat</h3>
+                        <div class="col-md-8 col-xs-8">
+                            <h3 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Global Chat</h3>
+                        </div>
                     </div>
-                    <div class="panel-body msg_container_base" id="chat">
+                    <div class="panel-body msg_container_base" id="global-chat">
                         <!-- messages -->
                     </div>
                     <div class="panel-footer">
@@ -400,12 +376,60 @@
                     </div>
                 </div>
             </div>
+            <!-- RIGHT DISPLAY -->
+            <div class="col-md-4 pull-right hide-waiting" id="right-display ">
+                <div class="panel panel-default " id="player-well ">
+                    <div class="panel-heading top-bar ">
+                        <h3 class="panel-title ">
+                                <span class="glyphicon glyphicon-user "></span>
+                                Player Info
+                            </h3>
+                        <div class="panel-body ">
+                            <table class="table table-bordered table-striped " id="create-table">
+                                <tr id="row0">
+                                    <!-- <td>Ron Swanson - x<span id="uid+BlackCount">4<s/span>
+                                        <span class="glyphicon glyphicon-stop"></span>
+                                    </td>
+                                    <td>Bill Williams x6
+                                        <span class="glyphicon glyphicon-stop"></span>
+                                    </td> -->
+                                </tr>
+                                <tr id="row1">
+                                </tr>
+                                <tr id="row2">
+                                </tr>
+                                <tr id="row3">
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" id="chat-well">
+                    <div class="panel-heading top-bar">
+                        <div class="col-md-8 col-xs-8">
+                            <h3 class="panel-title">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                    Group Chat
+                                </h3>
+                        </div>
+                    </div>
+                    <div class="panel-body msg_container_base" id="chat">
+                        <!-- messages -->
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                            <span class="input-group-btn">
+                                    <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
+                                </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js " integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=" anonymous "></script>
     <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js "></script>
-    <!-- <script type="text/javascript " src="assets/js/tgmain.js "></script>
- -->
     <script type="text/javascript" src="assets/js/randomFace.js"></script>
     <script type="text/javascript " src="assets/js/frontpage.js "></script>
     <script type="text/javascript " src="assets/js/main.js "></script>

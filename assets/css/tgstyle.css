@@ -157,6 +157,10 @@ body {
 
 /* CHAT */
 
+#global-chat {
+    height: 575px;
+}
+
 #chat-well {
     height: 100%;
     border: 2px solid black;
@@ -350,5 +354,9 @@ body {
 }
 
 .hide-create {
+    display: none;
+}
+
+#forceStart {
     display: none;
 }

@@ -46,7 +46,15 @@ firebase.auth().onAuthStateChanged(function(user) {
             currentDisplayName = snap.val();
         })
         fireObj.joinGameEvent();
+    } else {
+        $(".front-page").show();
+        $("body").removeClass("coffee-table-bg");
+        $("#myNav").hide()
+        $("#main-view").hide();
+        $(".hide-create").hide();
+        $(".hide-waiting").hide();
     }
+
 
 })
 
@@ -105,7 +113,6 @@ fireObj = {
             let nameExists = true;
             displayNameRef.child(displayName).once("value", function(snap) {
                 //chceks to make sure display name isnt taken
-                console.log(snap.val())
                 if (snap.val() === null) {
                     nameExists = false;
                 }
@@ -149,6 +156,8 @@ fireObj = {
         }, //createAcc()
 
         sendMsg: function(key, name, msg) {
+            console.log(key, name, msg)
+
             let message = {
                 name: name,
                 message: msg,
@@ -228,7 +237,8 @@ fireObj = {
                     blackCards: {
                         cards: true
                     },
-                    chosenWhiteCard: "",
+                    chosenWhiteCard1: "",
+                    chosenWhiteCard2: "",
                     uid: currentUid,
                     displayName: currentDisplayName,
                     playerBlackCount: 0
@@ -309,7 +319,8 @@ fireObj = {
                     blackCards: {
                         cards: true
                     },
-                    chosenWhiteCard: "",
+                    chosenWhiteCard1: "",
+                    chosenWhiteCard2: "",
                     uid: currentUid,
                     displayName: currentDisplayName,
                     playerBlackCount: 0
@@ -354,6 +365,17 @@ fireObj = {
                         // get playersKey from currentGameRef
                         var playersKey = snap.val();
                         database.ref('/players/' + playersKey).once('value').then(function(snap) {
+
+                            for (let i = 0; i < 7; i++) {
+                                let newCard = snap.val()[(host ? "host" : currentUid)].hand[i]
+                                let firstNum = Math.floor(snap.val()[(host ? "host" : currentUid)].hand[i] / 50);
+                                let secondNum = snap.val()[(host ? "host" : currentUid)].hand[i] % 50;
+                                whiteCardRef.child(firstNum).child(secondNum).once("value", function(snap) {}).then(function(snap) {
+                                    makeElement.newWhiteCard(("card" + (i + 1)).toString(), snap.val(), newCard)
+                                })
+
+                            }
+
                             // Initialize allHandsDealt to true
                             var allHandsDealt = true;
                             // loops through every player currentGameRef's players
@@ -381,7 +403,13 @@ fireObj = {
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
-                playerRef.child(key + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard)
+                let firstNum = Math.floor(newCard / 50)
+                let secondNum = newCard % 50
+                playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard).then(function(snap) {
+                    whiteCardRef.child(firstNum).child(secondNum).once("value", function(snap) {}).then(function(snap) {
+                        makeElement.newWhiteCard("card" + (card + 1), snap.val(), newCard)
+                    })
+                })
                 snap = snap + 1;
                 return snap;
             });
@@ -423,7 +451,6 @@ fireObj = {
                         newTr.append(name);
                         newTr.append(player);
                         newTr.append(win);
-                        console.log(newTr);
                         $("#waiting-host-table").append(newTr);
                         currentGameRef.child("totalPlayers").on("value", function(snap) {
                             $("#waitPlayers").text(snap.val());
@@ -469,12 +496,14 @@ fireObj = {
                                             currentPlayerRef.on("child_added", function(snap) {
                                                 //listen for players joining to update the screen
                                                 //call update players screen
+                                                let displayName = snap.val().displayName
+                                                makeElement.buildPlayerList(playerKey, snap.key, displayName);
                                                 if (host) playerOrder.push(snap.key);
                                                 if (snap.key != "host") {
 
 
                                                 }
-                                                let newPlayer = $("<th>").text(snap.val().displayName);
+                                                let newPlayer = $("<th>").text(displayName);
                                                 let newTr = $("<tr>");
                                                 newTr.append(newPlayer);
                                                 $("#waiting-player-table").append(newTr);
@@ -483,6 +512,7 @@ fireObj = {
                                                     if (playerOrder.length >= 4) {
                                                         $("#loading-gif").hide();
                                                         $("#forceStart").show();
+
                                                         //if player count >= 4 allow host to start
 
                                                     }
@@ -496,7 +526,8 @@ fireObj = {
                                             break;
                                         case (state.ready):
                                             fireObj.dealSevenCards(playerKey, whiteOrder, host);
-
+                                            $("#waiting").hide();
+                                            $("#hideCards").show();
                                             // deal out cards
                                             // display cards their cards
                                             //call next state
@@ -505,10 +536,16 @@ fireObj = {
 
                                             currentGameRef.child("currentTurn").once("value", function(snap) {
                                                     //display black card
+                                                    let pick = 0;
                                                     currentGameRef.child("blackCount").once("value", function(snap) {
-                                                        let firstNum = 50 / snap.val();
-                                                        let secondNum = 50 % snap.val();
-                                                        //display(blackOrder[firstNum][secondNum])
+                                                        let firstNum = Math.floor(snap.val() / 50);
+                                                        let secondNum = snap.val() % 50;
+                                                        let firstChild = Math.floor(blackOrder[firstNum][secondNum] / 50)
+                                                        let secondChild = blackOrder[firstNum][secondNum] % 50
+                                                        blackCardRef.child(firstChild).child(secondChild).once("value", function(snap) {
+                                                            pick = snap.val().pick;
+                                                            makeElement.newWhiteCard("black", snap.val().text);
+                                                        })
                                                     })
                                                     if (snap.val() !== (host ? "host" : currentUid)) {
                                                         // set you as chooser of white card
@@ -634,8 +671,22 @@ makeElement = {
         $('#chat').append(messageContainer);
     },
 
-    newWhiteCard: function() {
+    newWhiteCard: function(card, whiteCard, cardNum) {
+        if (card === "black") {
+            whiteCard = whiteCard.replace(/_/g, "____")
+        }
+        $("#" + card).attr("cardNum", cardNum)
         $('#' + card + ' .flipper .back p').html(whiteCard);
+        if ($("#" + card).hasClass("flip")) {
+            $("#" + card).removeClass("flip");
+            setTimeout(function() {
+                $("#" + card).addClass("flip");
+            }, 600)
+
+
+        } else {
+            $("#" + card).addClass("flip");
+        }
     },
 
     gamesToJoin: function() {
@@ -653,12 +704,26 @@ makeElement = {
     playerInfo: function() {
 
     },
+    mainClick: function(card, loc) {
+        if (loc) {
+            //location1
+            $("#" + card).on("click", function() {
+
+            })
+        } else {
+            //location2
+            ("#" + card).on("click", function() {
+
+            })
+        }
+
+    },
     buildOpenGame: function(key, host, winLimit, playerLimit) {
         //TODO: move with other html builders
         let newTr = $("<tr>");
         let hostTh = $("<td>").text(host);
-        let players = $("<td>");
-        let winCount = $("<td>");
+        let players = $("<td>").addClass('text-center');
+        let winCount = $("<td>").addClass('text-center');
         let joinBtn = $("<button>").attr("id", key).text("Join").addClass("col-md-12 btn btn-warning");
         let btnTd = $("<td>").append(joinBtn);
         players.html("<span id ='" + key + "Players'>1</span>/" + playerLimit);
@@ -676,6 +741,24 @@ makeElement = {
         })
 
     },
+    buildPlayerList: function(playerKey, uid, displayName) {
+        let isSet = false;
+        for (var i = 0; i < 4; i++) {
+            if ($("#row" + i).children().length < 2 && !isSet) {
+                let newTd = $("<td>").text(displayName + " - x");
+                let newSpan = $("<span>").attr("id", uid + "blackCount").text("0");
+                let newGlyph = $("<span>").addClass("glyphicon glyphicon-stop");
+
+                newTd.append(newSpan).append(newGlyph);
+                $("#row" + i).append(newTd);
+                isSet = true;
+                playerRef.child(playerKey + "/" + uid).child("playerBlackCount").on("value", function(snap) {
+                    $("#" + uid + "blackCount").text(snap.val())
+                })
+            }
+
+        }
+    }
 
 
 }
@@ -710,6 +793,15 @@ $("#sisubmit").on("click", function() {
     }
 })
 
+$("#signOut").on("click", function() {
+    firebase.auth().signOut();
+})
+
+$("#forceStart").on("click", function() {
+    currentGameRef.update({
+        state: state.ready
+    })
+})
 
 
 
@@ -730,7 +822,6 @@ $("#create-game").on("click", function(event) {
     event.preventDefault();
     let playerCount = $("#numPlayers").val();
     let winCount = $("#numCards").val();
-    console.log("Pc", playerCount, "WC", winCount);
     fireObj.createNewGame(playerCount, winCount);
 })
 
