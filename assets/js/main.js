@@ -997,7 +997,6 @@ function buildBlackSelected() {
     back.append(textBack);
 
     $('#selectedBlack').append(cardContainer);
-
 }
 
 
