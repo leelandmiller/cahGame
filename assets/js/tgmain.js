@@ -15,70 +15,70 @@
 // console.log(blackCardRef)
 // console.log(whiteCardREf)
 
-makeElement = {
-    buildSentMessage: function(player, message, time) {
+// makeElement = {
+//     buildSentMessage: function(player, message, time) {
 
-        var messageContainer = $('<div>').addClass('row msg_container base_sent');
+//         var messageContainer = $('<div>').addClass('row msg_container base_sent');
 
-        var messageHolder = $('<div>').addClass('col-md-10 col-xs-10');
-        messageContainer.append(messageHolder);
-        var messageBox = $('<div>').addClass('messages msg_sent');
-        messageHolder.append(messageBox);
-        var message = $('<p>').html(sentMessageText);
-        messageBox.append(message);
+//         var messageHolder = $('<div>').addClass('col-md-10 col-xs-10');
+//         messageContainer.append(messageHolder);
+//         var messageBox = $('<div>').addClass('messages msg_sent');
+//         messageHolder.append(messageBox);
+//         var message = $('<p>').html(sentMessageText);
+//         messageBox.append(message);
 
-        var avatarContainer = $('<div>').addClass('col-md-2 col-xs-2 avatar');
-        messageContainer.append(avatarContainer);
-        var avatarImage = $('<img>')
-        avatarImage.attr('class', 'img-responsive')
-        avatarImage.attr('src', 'http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg');
-        avatarContainer.append(avatarImage);
+//         var avatarContainer = $('<div>').addClass('col-md-2 col-xs-2 avatar');
+//         messageContainer.append(avatarContainer);
+//         var avatarImage = $('<img>')
+//         avatarImage.attr('class', 'img-responsive')
+//         avatarImage.attr('src', 'http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg');
+//         avatarContainer.append(avatarImage);
 
-        $('#chat').append(messageContainer);
-    },
-    buildReceivedMessage: function(player, message, time) {
+//         $('#chat').append(messageContainer);
+//     },
+//     buildReceivedMessage: function(player, message, time) {
 
-        var messageContainer = $('<div>').addClass('row msg_container base_receive');
+//         var messageContainer = $('<div>').addClass('row msg_container base_receive');
 
-        var avatarContainer = $('<div>').addClass('col-md-2 col-xs-2 avatar');
-        messageContainer.append(avatarContainer);
-        var avatarImage = $('<img>')
-        avatarImage.attr('class', 'img-responsive')
-        avatarImage.attr('src', 'http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg');
-        avatarContainer.append(avatarImage);
+//         var avatarContainer = $('<div>').addClass('col-md-2 col-xs-2 avatar');
+//         messageContainer.append(avatarContainer);
+//         var avatarImage = $('<img>')
+//         avatarImage.attr('class', 'img-responsive')
+//         avatarImage.attr('src', 'http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg');
+//         avatarContainer.append(avatarImage);
 
-        var messageHolder = $('<div>').addClass('col-md-10 col-xs-10');
-        messageContainer.append(messageHolder);
-        var messageBox = $('<div>').addClass('messages msg_receive');
-        messageHolder.append(messageBox);
-        var message = $('<p>').html(receivedMessageText);
-        messageBox.append(message);
+//         var messageHolder = $('<div>').addClass('col-md-10 col-xs-10');
+//         messageContainer.append(messageHolder);
+//         var messageBox = $('<div>').addClass('messages msg_receive');
+//         messageHolder.append(messageBox);
+//         var message = $('<p>').html(receivedMessageText);
+//         messageBox.append(message);
 
-        $('#chat').append(messageContainer);
-    },
+//         $('#chat').append(messageContainer);
+//     },
 
-    newWhiteCard: function() {
-        $('#' + card + ' .flipper .back p').html(whiteCard);
-    },
+//     newWhiteCard: function() {
+//         $('#' + card + ' .flipper .back p').html(whiteCard);
+//     },
 
-    gamesToJoin: function() {
+//     gamesToJoin: function() {
 
-    },
+//     },
 
-    waitingHost: function() {
+//     waitingHost: function() {
 
-    },
+//     },
 
-    waitingPlayers: function() {
+//     waitingPlayers: function() {
 
-    },
+//     },
 
-    playerInfo: function() {
+//     playerInfo: function() {
 
-    },
+//     },
 
 
-}
+// }
 
 ///////////////// TESTING BELOW ////////////////////
 
@@ -137,7 +137,30 @@ $('#btn-chat').on('click', function() {
     $('#btn-input').val('');
 })
 
+
+
 // FLIP CONTAINER TEST //
+
+// Modal Card Listener //
+$('#selectedBlack').on('click', '.flip-container', function() {
+    cardFlip(this);
+
+    console.log('flip container', this);
+});
+
+
+function cardFlip(el) {
+
+    if ($(el).hasClass('flip')) {
+        $(el).removeClass('flip');
+    } else {
+        $(el).addClass('flip');
+    }
+    console.log(el.id);
+}
+
+
+// Game Card Listener //
 $('.flip-container').on('click', function() {
 
     if ($(this).hasClass('flip')) {
@@ -155,7 +178,8 @@ var whiteCard = 'My humps.'; //data from obj
 $('#' + card).on('click', function() {
         makeElement.newWhiteCard()
     })
-    //////////////////////// TESTING ABOVE //////////////////////////
+
+//////////////////////// TESTING ABOVE //////////////////////////
 
 
 // })
