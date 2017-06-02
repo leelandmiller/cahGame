@@ -591,14 +591,14 @@ fireObj = {
                                                         blackCardRef.child(firstChild).child(secondChild).once("value", function(snap) {
                                                             pick = snap.val().pick;
                                                             makeElement.newWhiteCard("black", snap.val().text);
-                                                        })
-                                                    }).then(function() {
-                                                        if (snap.val() !== (host ? "host" : currentUid)) {
-                                                            // set you as chooser of white card
-                                                            // need to deal with 1 or 2 clicks
-                                                            makeElement.mainClick(pick, host, currentTurn);
+                                                        }).then(function() {
+                                                            if (snap.val() !== (host ? "host" : currentUid)) {
+                                                                // set you as chooser of white card
+                                                                // need to deal with 1 or 2 clicks
+                                                                makeElement.mainClick(pick, host, currentTurn);
 
-                                                        } //if
+                                                            } //if
+                                                        })
                                                     })
 
                                                 }) //currentGameRef
@@ -727,8 +727,11 @@ makeElement = {
         if (card === "black") {
             whiteCard = whiteCard.replace(/_/g, "____")
         }
-        $("#" + card + " .flipper .back .btn").attr("cardNum", cardNum)
-        $('#' + card + ' .flipper .back p').html(whiteCard);
+        let newBtn = $("<button>").text("Choose Card").addClass("shBtn");
+        $("#" + card).attr("cardNum", cardNum)
+        $('#' + card + ' .flipper .back p span').html(whiteCard);
+        // $('#' + card + ' .flipper .back p').append(newBtn)
+        // console.log("btn added", card)
         if ($("#" + card).hasClass("flip")) {
             $("#" + card).removeClass("flip");
             setTimeout(function() {
@@ -757,62 +760,73 @@ makeElement = {
 
     },
     mainClick: function(pick, host, currentTurn) {
-        $(".back").hover(function() {
-            $(this).children(".shBtn").show()
+        console.log("mainClick called")
+        $(".flip-container").hover(function() {
+            console.log("hover!")
+            $(this).children(".flipper").children(".back").children("p").children(".shBtn").show()
         }, function() {
-            $(this).children(".shBtn").hide()
+            $(this).children(".flipper").children(".back").children("p").children(".shBtn").hide()
         })
 
         if (pick === 1) {
-            $(".shBtn").on("click", function() {
+            console.log("pick 1")
+            $(".flip-container").on("click", function() {
+                    console.log("clicked")
                     cardNum = $(this).attr("cardNum");
                     currentPlayerRef.child((host ? "host" : currentUid)).update({
-                            chooseWhiteCard1: cardNum
+                            chosenWhiteCard1: cardNum
                         }).then(function() {
-                            $(".back").off();
-                            $(".shBtn").off();
+                            $(".flip-container").off();
                             let allPicked = true;
-                            currentPlayerRef.forEach(function(snap) {
+                            currentPlayerRef.once("value", function(snap) {
+                                snap.forEach(function(snap) {
                                     if (snap.key != currentTurn && allPicked) {
                                         if (snap.val().chosenWhiteCard1 === "") {
+                                            console.log(snap.key, "false")
                                             allPicked = false;
                                         } //if2
                                     } //if1
-                                }).then(function() {
-                                    if (allPicked) {
-                                        currentGameRef.update({
-                                                state: state.pickWhite
-                                            }) //update
-                                    } //if
-                                }) //then
+                                })
+                                if (allPicked) {
+                                    currentGameRef.update({
+                                            state: state.pickWhite
+                                        }) //update
+                                } //if
+                                //then
+                            })
                         }) //then
                 }) //click
 
         } else {
+            console.log("pick 2")
             let secondPick = false;
             let firstCard = "";
-            $(".shBtn").on("click", function() {
+            $(".flip-container").on("click", function() {
+                console.log("clicked")
                 cardNum = $(this).attr("cardNum");
                 if (secondPick) {
                     currentPlayerRef.child((host ? "host" : currentUid)).update({
-                            chooseWhiteCard2: cardNum,
+                            chosenWhiteCard2: cardNum,
                             chosenWhiteCard1: firstCard
                         }).then(function() {
-                            $(".back").off();
-                            $(".shBtn").off();
+                            $(".flip-container").off();
                             let allPicked = true;
-                            currentPlayerRef.forEach(function(snap) {
-                                    if (snap.key != currentTurn && allPicked) {
-                                        if (snap.val().chosenWhiteCard1 === "" || snap.val().chooseWhiteCard2 === "") {
-                                            allPicked = false;
-                                        } //if2
-                                    } //if1
-                                }).then(function() {
+                            currentPlayerRef.once("value", function(snap) {
+                                    snap.forEach(function(snap) {
+                                        if (snap.key != currentTurn && allPicked) {
+
+                                            if (snap.val().chosenWhiteCard1 === "" || snap.val().chosenWhiteCard2 === "") {
+                                                console.log(snap.key, "false")
+                                                allPicked = false;
+                                            } //if2
+                                        } //if1
+                                    })
                                     if (allPicked) {
                                         currentGameRef.update({
                                                 state: state.pickWhite
                                             }) //update
                                     } //if
+
                                 }) //then
                         }) //then
                 } else {
