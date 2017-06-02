@@ -487,7 +487,9 @@ fireObj = {
                         let newTr = $("<tr>");
                         let name = $("<td>").text(snap.val().host);
                         let player = $("<td>").html("<span id ='waitPlayers'>1</span>/" + playerMax);
+                        player.addClass('text-center');
                         let win = $("<td>").text(winLimit);
+                        win.addClass('text-center');
                         newTr.append(name);
                         newTr.append(player);
                         newTr.append(win);
