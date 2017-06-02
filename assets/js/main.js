@@ -487,7 +487,9 @@ fireObj = {
                         let newTr = $("<tr>");
                         let name = $("<td>").text(snap.val().host);
                         let player = $("<td>").html("<span id ='waitPlayers'>1</span>/" + playerMax);
+                        player.addClass('text-center');
                         let win = $("<td>").text(winLimit);
+                        win.addClass('text-center');
                         newTr.append(name);
                         newTr.append(player);
                         newTr.append(win);
@@ -957,6 +959,60 @@ $('.hide-waiting').hide();
 //             // $('#card3').show();
 //             $(this).addClass('flip');
 
+
+/////////////// MODAL  /////////////////
+
+// Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+    modal.style.display = "block";
+    buildBlackSelected();
+}
+
+// When the user clicks on <span> (x), close the modal
+// span.onclick = function() {
+//     modal.style.display = "none";
+// }
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+
+function buildBlackSelected() {
+
+    let cardContainer = $('<div>').addClass('col-md-3');
+
+    let flipContainer = $('<div>').addClass('flip-container');
+    cardContainer.append(flipContainer);
+
+    let flipper = $('<div>').addClass('flipper');
+    flipContainer.append(flipper);
+
+    let front = $('<div>').addClass('front front-black');
+    flipper.append(front);
+    let textFront = $('<p>').html('Coders<br>Against<br>Humanity')
+    front.append(textFront);
+
+    let back = $('<div>').addClass('back back-black');
+    flipper.append(back);
+    let textBack = $('<p>').html('Build a card test ______ .')
+    back.append(textBack);
+
+    $('#selectedBlack').append(cardContainer);
+
+}
 
 
 //             // })
