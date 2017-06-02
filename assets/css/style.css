@@ -373,13 +373,15 @@ img {
     bottom: 0;
 }
 
-
 div.shBtn {
     border: 1px solid black;
     width: 150px;
     display: inline-block;
     box-shadow: 2px 2px gray;
-
+    line-height: 25px;
+    position: absolute;
+    bottom: 10px;
+    left: 21px;
 }
 
 .shBtn:hover {
@@ -389,7 +391,6 @@ div.shBtn {
 .glow {
     box-shadow: 0 0 11px darkgreen;
 }
-
 
 textarea,
 input,
