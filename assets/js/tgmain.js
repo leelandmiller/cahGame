@@ -84,8 +84,15 @@ makeElement = {
 
 // QUICK HIDE/SHOWS //
 $('#hideCards').hide();
-$('.hide-game-center').hide();
-// $('#waiting').hide();
+// $('.hide-game-center').hide();
+$('#waiting').hide();
+$('.front-page').hide();
+
+
+
+
+
+
 $("#susubmit").on("click", function() {
     let email = $("#emailInput").val().trim();
     let password = $("#pwone").val();
