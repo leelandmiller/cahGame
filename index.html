@@ -5,7 +5,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="assets/css/tgstyle.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="assets/css/frontpage.css">
     <title></title>
 </head>
@@ -71,11 +70,12 @@
                 </a>
                 <p class="navbar-text" id="user-name"></p>
             </div>
+            <!-- Trigger/Open The Modal -->
+            <button id="myBtn">Open Modal</button>
             <ul class="nav navbar-nav navbar-right" id="nav-links">
                 <li>
                     <a href="#">Game Center</a>
                 </li>
-                <!-- <li><a>|</a></li> -->
                 <li>
                     <a href="#" id="signOut">Sign-out</a>
                 </li>
@@ -85,6 +85,17 @@
     <!-- MAIN VIEW -->
     <div class="container-fluid" id="main-view">
         <div class="row">
+            <!-- The Modal -->
+            <div id="myModal" class="modal col-md-8">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="row cards" id='selectedBlack'>
+                        <!-- cards added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-8" id="hideCards">
                 <!-- CARDS ROW ONE -->
                 <div class="row cards">
@@ -92,12 +103,12 @@
                         <!-- black card -->
                         <div class="flip-container" id="black">
                             <div class="flipper">
-                                <div class="front" id="front-black">
+                                <div class="front front-black">
                                     <p>Coders
                                         <br>Against
                                         <br>Humanity</p>
                                 </div>
-                                <div class="back" id="back-black">
+                                <div class="back back-black">
                                     <p><span></span></p>
                                 </div>
                             </div>
@@ -114,13 +125,9 @@
                                     </p>
                                 </div>
                                 <div class="back">
-
-                                   <p
-><span></span></p
->
+                                    <p><span></span></p>
                                     <div class="shBtn">Choose Card
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -136,11 +143,9 @@
                                     </p>
                                 </div>
                                 <div class="back">
-
-                                   <p><span></span></p>
+                                    <p><span></span></p>
                                     <div class="shBtn">Choose Card
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -156,11 +161,9 @@
                                     </p>
                                 </div>
                                 <div class="back">
-
-                                   <p><span></span></p>
+                                    <p><span></span></p>
                                     <div class="shBtn">Choose Card
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -179,11 +182,9 @@
                                     </p>
                                 </div>
                                 <div class="back">
-
-                                   <p><span></span></p>
+                                    <p><span></span></p>
                                     <div class="shBtn">Choose Card
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -199,11 +200,9 @@
                                     </p>
                                 </div>
                                 <div class="back">
-
-                                   <p><span></span></p>
+                                    <p><span></span></p>
                                     <div class="shBtn">Choose Card
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -219,11 +218,9 @@
                                     </p>
                                 </div>
                                 <div class="back">
-
-                                   <p><span></span></p>
+                                    <p><span></span></p>
                                     <div class="shBtn">Choose Card
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -239,11 +236,9 @@
                                     </p>
                                 </div>
                                 <div class="back">
-
-                                   <p><span></span></p>
+                                    <p><span></span></p>
                                     <div class="shBtn">Choose Card
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -264,41 +259,12 @@
                                     <th class="text-center">Players Joined</th>
                                     <th class="text-center">Cards</th>
                                 </tr>
-                                <!-- 
-                                <tr>
-                                    <td>Ron Swanson</td>
-                                    <td class="text-center">3/7</td>
-                                    <td class="text-center">7</td>
-                                </tr>
-                                 -->
+
                             </table>
                             <table class="table table-striped" id="waiting-player-table">
                                 <tr>
                                     <th>Players</th>
                                 </tr>
-                                <!-- 
-                                <tr>
-                                    <td>Ron Swanson</td>
-                                </tr>
-                                <tr>
-                                    <td>Ron Swanson</td>
-                                </tr>
-                                <tr>
-                                    <td>Ron Swanson</td>
-                                </tr>
-                                <tr>
-                                    <td>Ron Swanson</td>
-                                </tr>
-                                <tr>
-                                    <td>Ron Swanson</td>
-                                </tr>
-                                <tr>
-                                    <td>Ron Swanson</td>
-                                </tr>
-                                <tr>
-                                    <td>Ron Swanson</td>
-                                </tr>
-                                 -->
                             </table>
                             <div id="loading-gif">
                                 <div class="loading">
@@ -425,12 +391,6 @@
                         <div class="panel-body ">
                             <table class="table table-bordered table-striped " id="create-table">
                                 <tr id="row0">
-                                    <!-- <td>Ron Swanson - x<span id="uid+BlackCount">4<s/span>
-                                        <span class="glyphicon glyphicon-stop"></span>
-                                    </td>
-                                    <td>Bill Williams x6
-                                        <span class="glyphicon glyphicon-stop"></span>
-                                    </td> -->
                                 </tr>
                                 <tr id="row1">
                                 </tr>
@@ -465,14 +425,13 @@
                 </div>
             </div>
         </div>
-
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js " integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=" anonymous "></script>
     <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js "></script>
     <script type="text/javascript" src="assets/js/randomFace.js"></script>
     <script type="text/javascript " src="assets/js/frontpage.js "></script>
     <script type="text/javascript " src="assets/js/main.js "></script>
-
+    <script type="text/javascript " src="assets/js/tgmain.js "></script>
 </body>
 
 </html>
