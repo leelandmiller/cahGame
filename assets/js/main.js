@@ -115,7 +115,6 @@ fireObj = {
             let nameExists = true;
             displayNameRef.child(displayName).once("value", function(snap) {
                 //chceks to make sure display name isnt taken
-                console.log(snap.val())
                 if (snap.val() === null) {
                     nameExists = false;
                 }
@@ -159,6 +158,8 @@ fireObj = {
         }, //createAcc()
 
         sendMsg: function(key, name, msg) {
+            console.log(key, name, msg)
+
             let message = {
                 name: name,
                 message: msg,
@@ -509,16 +510,16 @@ fireObj = {
                                     //TODO: call quitgame functions
                                 } else {
                                     /*state = {
-														    open: 0,
-														    ready: 1,
-														    chooseBlack: 2,
-														    chooseWhite: 3,
-														    pickWhite: 4,
-														    showCards: 5,
-														    nextTurn: 6,
-														    gameOver: 7,
-														    quitGame: 8
-														}*/
+                                                            open: 0,
+                                                            ready: 1,
+                                                            chooseBlack: 2,
+                                                            chooseWhite: 3,
+                                                            pickWhite: 4,
+                                                            showCards: 5,
+                                                            nextTurn: 6,
+                                                            gameOver: 7,
+                                                            quitGame: 8
+                                                        }*/
                                     switch (data) {
                                         case (state.open):
 
@@ -830,8 +831,8 @@ makeElement = {
         //TODO: move with other html builders
         let newTr = $("<tr>");
         let hostTh = $("<td>").text(host);
-        let players = $("<td>");
-        let winCount = $("<td>");
+        let players = $("<td>").addClass('text-center');
+        let winCount = $("<td>").addClass('text-center');
         let joinBtn = $("<button>").attr("id", key).text("Join").addClass("col-md-12 btn btn-warning");
         let btnTd = $("<td>").append(joinBtn);
         players.html("<span id ='" + key + "Players'>1</span>/" + playerLimit);

@@ -18,12 +18,8 @@
                     Coders
                     <br> Against
                     <br> Humanity
-                    <h2>
-                            There's a.method()
-                        </h2>
-                    <h2>
-                            to our madness.
-                        </h2>
+                    <h2>There's a.method()</h2>
+                    <h2>to our madness.</h2>
                 </div>
                 <div id="maincardarea" class="col-lg-5">
                     <div id="first" class="container">
@@ -50,11 +46,11 @@
                     </div>
                     <div id="firstpw" class="form-group">
                         <label for="formGroupExampleInput2">Password</label>
-                        <input type="text" class="form-control" id="pwone" placeholder="Password">
+                        <input type="password" class="form-control" id="pwone" placeholder="Password">
                     </div>
                     <div id="secondpw" class="form-group">
                         <label for="formGroupExampleInput2">Re-Enter Password</label>
-                        <input type="text" class="form-control" id="pwtwo" placeholder="Password">
+                        <input type="password" class="form-control" id="pwtwo" placeholder="Password">
                     </div>
                     <button id="sibtn" type="button" class="btn btn-primary btn-lg btn-block">Sign In</button>
                     <button id="subtn" type="button" class="btn btn-default btn-lg btn-block">Sign Up</button>
@@ -230,39 +226,41 @@
                                     <th class="text-center">Players Joined</th>
                                     <th class="text-center">Cards</th>
                                 </tr>
-                                <!-- <tr>
-    <td>Ron Swanson</td>
-    <td class="text-center">3/7</td>
-    <td class="text-center">7</td>
-</tr>
- -->
+                                <!-- 
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                    <td class="text-center">3/7</td>
+                                    <td class="text-center">7</td>
+                                </tr>
+                                 -->
                             </table>
                             <table class="table table-striped" id="waiting-player-table">
                                 <tr>
                                     <th>Players</th>
                                 </tr>
-                                <!-- <tr>
-    <td>Ron Swanson</td>
-</tr>
-<tr>
-    <td>Ron Swanson</td>
-</tr>
-<tr>
-    <td>Ron Swanson</td>
-</tr>
-<tr>
-    <td>Ron Swanson</td>
-</tr>
-<tr>
-    <td>Ron Swanson</td>
-</tr>
-<tr>
-    <td>Ron Swanson</td>
-</tr>
-<tr>
-    <td>Ron Swanson</td>
-</tr>
- -->
+                                <!-- 
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                <tr>
+                                    <td>Ron Swanson</td>
+                                </tr>
+                                 -->
                             </table>
                             <div id="loading-gif">
                                 <div class="loading">
@@ -281,7 +279,7 @@
             </div>
             <!-- GameCenter -->
             <div class="col-md-4 col-md-offset-1 hide-create">
-                <div class="panel panel-default " id="join-panel">
+                <div class="panel panel-default" id="join-panel">
                     <div class="panel-heading top-bar">
                         <h3 class="panel-title">
                                 <span class="glyphicon glyphicon-tasks"></span>
@@ -324,7 +322,7 @@
                 </div>
             </div>
             <div class="col-md-3 hide-create">
-                <div class="panel panel-default " id="create-panel">
+                <div class="panel panel-default" id="create-panel">
                     <div class="panel-heading top-bar">
                         <h3 class="panel-title">
                                 <span class="glyphicon glyphicon-plus-sign"></span>
@@ -358,6 +356,26 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4 hide-create">
+                <div class="panel panel-default" id="chat-well">
+                    <div class="panel-heading top-bar">
+                        <div class="col-md-8 col-xs-8">
+                            <h3 class="panel-title"><span class="glyphicon glyphicon-comment"></span> Global Chat</h3>
+                        </div>
+                    </div>
+                    <div class="panel-body msg_container_base" id="global-chat">
+                        <!-- messages -->
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                            <span class="input-group-btn">
+                                <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- RIGHT DISPLAY -->
             <div class="col-md-4 pull-right hide-waiting" id="right-display ">
                 <div class="panel panel-default " id="player-well ">
@@ -385,37 +403,36 @@
                             </table>
                         </div>
                     </div>
-                    <div class="panel panel-default" id="chat-well">
-                        <div class="panel-heading top-bar">
-                            <div class="col-md-8 col-xs-8">
-                                <h3 class="panel-title">
-                                        <span class="glyphicon glyphicon-comment"></span>
-                                        Group Chat
-                                    </h3>
-                            </div>
+                </div>
+                <div class="panel panel-default" id="chat-well">
+                    <div class="panel-heading top-bar">
+                        <div class="col-md-8 col-xs-8">
+                            <h3 class="panel-title">
+                                    <span class="glyphicon glyphicon-comment"></span>
+                                    Group Chat
+                                </h3>
                         </div>
-                        <div class="panel-body msg_container_base" id="chat">
-                            <!-- messages -->
-                        </div>
-                        <div class="panel-footer">
-                            <div class="input-group">
-                                <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
-                                <span class="input-group-btn">
-                                        <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
-                                    </span>
-                            </div>
+                    </div>
+                    <div class="panel-body msg_container_base" id="chat">
+                        <!-- messages -->
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                            <span class="input-group-btn">
+                                    <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
+                                </span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js " integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=" anonymous "></script>
-        <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js "></script>
-        <!-- <script type="text/javascript " src="assets/js/tgmain.js "></script>
- -->
-        <script type="text/javascript" src="assets/js/randomFace.js"></script>
-        <script type="text/javascript " src="assets/js/frontpage.js "></script>
-        <script type="text/javascript " src="assets/js/main.js "></script>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js " integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=" anonymous "></script>
+    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js "></script>
+    <script type="text/javascript" src="assets/js/randomFace.js"></script>
+    <script type="text/javascript " src="assets/js/frontpage.js "></script>
+    <script type="text/javascript " src="assets/js/main.js "></script>
 </body>
 
 </html>
