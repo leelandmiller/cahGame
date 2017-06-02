@@ -44,6 +44,8 @@ firebase.auth().onAuthStateChanged(function(user) {
         currentUid = user.uid;
         userRef.child(currentUid).child("displayName").once("value", function(snap) {
             currentDisplayName = snap.val();
+        }).then(function() {
+            $("#user-name").text(currentDisplayName);
         })
         fireObj.joinGameEvent();
     } else {
@@ -253,6 +255,8 @@ fireObj = {
                         //grabs total black card count
                         blackCount = snap.val();
                     }).then(function() {
+                        console.log("black:" + blackCount + " white:" + whiteCount)
+                        let count = 0;
                         //creats 2 arrays of all indexs
                         for (var i = 0; i < whiteCount; i++) {
                             tempArray.white.push(i);
@@ -261,47 +265,78 @@ fireObj = {
                             tempArray.black.push(i);
                         }
                         //create shuffled arrays of indexs
-                        for (var i = 0; i < blackCount; i++) {
-                            let rand = Math.floor(Math.random() * tempArray.black.length);
-                            shuffledArray.black.push(tempArray.black[rand]);
-                            tempArray.black.splice(rand, 1);
+                        // for (var i = 0; i < blackCount; i++) {
+                        //     let rand = Math.floor(Math.random() * tempArray.black.length);
+                        //     shuffledArray.black.push(tempArray.black[rand]);
+                        //     tempArray.black.splice(rand, 1);
+                        // }
+                        // for (var i = 0; i < whiteCount; i++) {
+                        //     let rand = Math.floor(Math.random() * tempArray.white.length);
+                        //     shuffledArray.white.push(tempArray.white[rand]);
+                        //     tempArray.white.splice(rand, 1);
+                        // }
+                        while (count <= blackCount) {
+                            let newArray = [];
+                            for (var i = 0; i < 50; i++) {
+                                let rand = Math.floor(Math.random() * tempArray.black.length);
+                                if (tempArray.black[rand] !== undefined) {
+
+                                    newArray.push(tempArray.black[rand]);
+                                    tempArray.black.splice(rand, 1);
+
+                                }
+                                count++
+                            }
+                            shuffledArray.black.push(newArray);
                         }
-                        for (var i = 0; i < whiteCount; i++) {
-                            let rand = Math.floor(Math.random() * tempArray.white.length);
-                            shuffledArray.white.push(tempArray.white[rand]);
-                            tempArray.white.splice(rand, 1);
+                        tempCOunt = 0;
+                        count = 0;
+                        while (count <= whiteCount) {
+                            let newArray = [];
+                            for (var i = 0; i < 50; i++) {
+                                let rand = Math.floor(Math.random() * tempArray.white.length);
+                                if (tempArray.white[rand] !== undefined) {
+
+                                    newArray.push(tempArray.white[rand]);
+                                    tempArray.white.splice(rand, 1);
+                                }
+                                count++
+                            }
+                            shuffledArray.white.push(newArray);
                         }
                     }) //then2
             }).then(function() { //then1
                 //make new game and add shuffled arrays
                 newGameRef.set(gameObj).then(function() {
-                    let count = 0;
-                    let set = 0;
-                    //loops white total iterations are les sthat total count
-                    while (count < blackCount) {
-                        //loops thru 50 at a time
-                        for (var i = 0; i < 50; i++) {
-                            if (shuffledArray.black[count]) {
+                    newGameRef.child("blackOrder").set(shuffledArray.black)
+                        // let count = 0;
+                        // let set = 0;
+                        // //loops white total iterations are les sthat total count
+                        // while (count < blackCount) {
+                        //     //loops thru 50 at a time
+                        //     for (var i = 0; i < 50; i++) {
+                        //         if (shuffledArray.black[count]) {
 
-                                newGameRef.child("blackOrder").child(set).child(i).set(shuffledArray.black[count]);
-                            } //if
-                            count++;
-                        } //for
-                        set++;
-                    } //while
+                    //             newGameRef.child("blackOrder").child(set).child(i).set(shuffledArray.black[count]);
+                    //         } //if
+                    //         count++;
+                    //     } //for
+                    //     set++;
+                    // } //while
                 }).then(function() {
-                    let count = 0;
-                    let set = 0;
-                    while (count < whiteCount) {
-                        for (var i = 0; i < 50; i++) {
+                    newGameRef.child("whiteOrder").set(shuffledArray.white)
+                        // let count = 0;
+                        // let set = 0;
+                        // while (count < whiteCount) {
+                        //     for (var i = 0; i < 50; i++) {
 
-                            if (shuffledArray.white[count]) {
-                                newGameRef.child("whiteOrder").child(set).child(i).set(shuffledArray.white[count]);
-                            }
-                            count++;
-                        }
-                        set++;
-                    }
+                    //         if (shuffledArray.white[count]) {
+                    //             newGameRef.child("whiteOrder").child(set).child(i).set(shuffledArray.white[count]);
+                    //         }
+                    //         count++;
+                    //     }
+                    //     set++;
+                    // }
                     fireObj.gameState(currentGame);
                 })
             })
@@ -332,10 +367,11 @@ fireObj = {
         },
         dealSevenCards: function(playerKey, whiteOrder, host) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
-
+                    // get first card location
                     let firstChild = Math.floor(snap / 50);
                     let secondChild = (snap % 50);
                     let cards = []
+                        //deal out 7 cards
                     for (var i = 0; i < 7; i++) {
                         //checsk if second child is above 49 whichs means it stored in the nest
                         if (secondChild + i > 49) {
@@ -345,6 +381,7 @@ fireObj = {
                         }
 
                     }
+                    //put them into you hand in database
                     for (var i = 0; i < 7; i++) {
                         playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
                     }
@@ -365,7 +402,7 @@ fireObj = {
                         // get playersKey from currentGameRef
                         var playersKey = snap.val();
                         database.ref('/players/' + playersKey).once('value').then(function(snap) {
-
+                            //display all the cards
                             for (let i = 0; i < 7; i++) {
                                 let newCard = snap.val()[(host ? "host" : currentUid)].hand[i]
                                 let firstNum = Math.floor(snap.val()[(host ? "host" : currentUid)].hand[i] / 50);
@@ -400,9 +437,11 @@ fireObj = {
         },
         dealOneCard: function(playerKey, whiteOrder, host, card) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
+                //grab whitecount
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
+                //find auctally card location
                 let firstNum = Math.floor(newCard / 50)
                 let secondNum = newCard % 50
                 playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard).then(function(snap) {
@@ -441,9 +480,10 @@ fireObj = {
                         playerKey = snap.val().players;
                         playerMax = snap.val().playerLimit;
                         if (snap.val().host.toString() === currentDisplayName) {
+                            //set true if you are the host
                             host = true;
                         }
-
+                        //add host name to top of waiting for players
                         let newTr = $("<tr>");
                         let name = $("<td>").text(snap.val().host);
                         let player = $("<td>").html("<span id ='waitPlayers'>1</span>/" + playerMax);
@@ -454,6 +494,7 @@ fireObj = {
                         newTr.append(player);
                         newTr.append(win);
                         $("#waiting-host-table").append(newTr);
+                        //update total player count
                         currentGameRef.child("totalPlayers").on("value", function(snap) {
                             $("#waitPlayers").text(snap.val());
                         })
@@ -539,47 +580,56 @@ fireObj = {
                                             currentGameRef.child("currentTurn").once("value", function(snap) {
                                                     //display black card
                                                     let pick = 0;
+                                                    let currentTurn = snap.val()
                                                     currentGameRef.child("blackCount").once("value", function(snap) {
+                                                        //find blackCOunt
                                                         let firstNum = Math.floor(snap.val() / 50);
                                                         let secondNum = snap.val() % 50;
+                                                        //find card location
                                                         let firstChild = Math.floor(blackOrder[firstNum][secondNum] / 50)
                                                         let secondChild = blackOrder[firstNum][secondNum] % 50
                                                         blackCardRef.child(firstChild).child(secondChild).once("value", function(snap) {
                                                             pick = snap.val().pick;
                                                             makeElement.newWhiteCard("black", snap.val().text);
                                                         })
-                                                    })
-                                                    if (snap.val() !== (host ? "host" : currentUid)) {
-                                                        // set you as chooser of white card
-                                                        // need to deal with 1 or 2 clicks
+                                                    }).then(function() {
+                                                        if (snap.val() !== (host ? "host" : currentUid)) {
+                                                            // set you as chooser of white card
+                                                            // need to deal with 1 or 2 clicks
+                                                            makeElement.mainClick(pick, host, currentTurn);
 
-                                                    } //if
+                                                        } //if
+                                                    })
+
                                                 }) //currentGameRef
                                                 //black card get pulled from cardRef
                                                 //display black card to all
                                             break;
-                                        case (state.chooseWhite):
-                                            currentGameRef.child("currentTurn").once("value", function(snap) {
-                                                    //display black card
-                                                    if (snap.val() === (host ? "host" : currentUid)) {
-                                                        // set you as chooser of white card
-                                                        currentGameRef.child("blackCount").transaction(function(snap) {
-                                                            return snap + 1
-                                                        })
-                                                    } //if
-                                                }) //currentGameRef
-                                            blackCount++;
+                                            // case (state.chooseWhite):
+                                            //     currentGameRef.child("currentTurn").once("value", function(snap) {
+                                            //             //display black card
+                                            //             if (snap.val() === (host ? "host" : currentUid)) {
+                                            //                 // set you as chooser of white card
+                                            //                 currentGameRef.child("blackCount").transaction(function(snap) {
+                                            //                     return snap + 1
+                                            //                 })
+                                            //             } //if
+                                            //         }) //currentGameRef
+                                            //     blackCount++;
 
-                                            //setup card listen to add white card choice
-                                            //add picked card to player object in currentGameRef
-                                            //if host have count that increase by 1 everytime ad player chooses a card by listening to the player objects in database
-                                            //once hosts count equals player cound-1 change state
-                                            break;
+                                            //     //setup card listen to add white card choice
+                                            //     //add picked card to player object in currentGameRef
+                                            //     //if host have count that increase by 1 everytime ad player chooses a card by listening to the player objects in database
+                                            //     //once hosts count equals player cound-1 change state
+                                            // break;
                                         case (state.pickWhite):
                                             //display all choosed white cards to everyone in random order
                                             currentGameRef.child("currentTurn").once("value", function(snap) {
                                                     if (snap.val() === currentUid) {
-                                                        // set you as chooser of white card
+                                                        currentGameRef.child("blackCount").transaction(function(snap) {
+                                                                return snap + 1
+                                                            })
+                                                            // set you as chooser of white card
                                                     } //if
                                                 }) //currentGameRef
                                                 //current player turn chooses a white card to win
@@ -677,7 +727,7 @@ makeElement = {
         if (card === "black") {
             whiteCard = whiteCard.replace(/_/g, "____")
         }
-        $("#" + card).attr("cardNum", cardNum)
+        $("#" + card + " .flipper .back .btn").attr("cardNum", cardNum)
         $('#' + card + ' .flipper .back p').html(whiteCard);
         if ($("#" + card).hasClass("flip")) {
             $("#" + card).removeClass("flip");
@@ -706,16 +756,75 @@ makeElement = {
     playerInfo: function() {
 
     },
-    mainClick: function(card, loc) {
-        if (loc) {
-            //location1
-            $("#" + card).on("click", function() {
+    mainClick: function(pick, host, currentTurn) {
+        $(".back").hover(function() {
+            $(this).children(".shBtn").show()
+        }, function() {
+            $(this).children(".shBtn").hide()
+        })
 
-            })
+        if (pick === 1) {
+            $(".shBtn").on("click", function() {
+                    cardNum = $(this).attr("cardNum");
+                    currentPlayerRef.child((host ? "host" : currentUid)).update({
+                            chooseWhiteCard1: cardNum
+                        }).then(function() {
+                            $(".back").off();
+                            $(".shBtn").off();
+                            let allPicked = true;
+                            currentPlayerRef.forEach(function(snap) {
+                                    if (snap.key != currentTurn && allPicked) {
+                                        if (snap.val().chosenWhiteCard1 === "") {
+                                            allPicked = false;
+                                        } //if2
+                                    } //if1
+                                }).then(function() {
+                                    if (allPicked) {
+                                        currentGameRef.update({
+                                                state: state.pickWhite
+                                            }) //update
+                                    } //if
+                                }) //then
+                        }) //then
+                }) //click
+
         } else {
-            //location2
-            ("#" + card).on("click", function() {
+            let secondPick = false;
+            let firstCard = "";
+            $(".shBtn").on("click", function() {
+                cardNum = $(this).attr("cardNum");
+                if (secondPick) {
+                    currentPlayerRef.child((host ? "host" : currentUid)).update({
+                            chooseWhiteCard2: cardNum,
+                            chosenWhiteCard1: firstCard
+                        }).then(function() {
+                            $(".back").off();
+                            $(".shBtn").off();
+                            let allPicked = true;
+                            currentPlayerRef.forEach(function(snap) {
+                                    if (snap.key != currentTurn && allPicked) {
+                                        if (snap.val().chosenWhiteCard1 === "" || snap.val().chooseWhiteCard2 === "") {
+                                            allPicked = false;
+                                        } //if2
+                                    } //if1
+                                }).then(function() {
+                                    if (allPicked) {
+                                        currentGameRef.update({
+                                                state: state.pickWhite
+                                            }) //update
+                                    } //if
+                                }) //then
+                        }) //then
+                } else {
 
+                    if (cardNum === firstCard) {
+                        //if card already selected deselect it 
+                        firstCard = ""
+                    } else {
+                        firstCard = cardNum;
+                        secondPick = true;
+                    }
+                }
             })
         }
 
