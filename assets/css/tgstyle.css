@@ -1,4 +1,6 @@
 body {
+    font-family: 'helvetica neue';
+
     height: 100%;
 }
 
@@ -112,6 +114,7 @@ body {
     margin-top: 70px;
     text-align: left;
     margin-left: 20px;
+    font-family: helvetica neue;
     font-weight: bold;
     font-size: 1.7em;
 }
@@ -122,6 +125,7 @@ body {
     text-align: left;
     margin-left: 20px;
     margin-right: 15px;
+    font-family: 'helvetica neue';
     font-weight: bold;
 }
 
@@ -358,10 +362,6 @@ body {
 }
 
 
-
-
-
-
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
@@ -431,18 +431,4 @@ body {
     background-color: #5cb85c;
     color: white;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

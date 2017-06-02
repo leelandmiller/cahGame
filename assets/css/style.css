@@ -85,9 +85,9 @@ form {
     float: right;
 }
 
-button {
+/*button {
     width: 50%;
-}
+}*/
 
 #loginarea {
     background: black;
@@ -95,9 +95,9 @@ button {
     width: 50%;
 }
 
-label {
+/*label {
     color: white;
-}
+}*/
 
 #myNav {
     background-color: black;

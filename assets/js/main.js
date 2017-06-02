@@ -953,11 +953,6 @@ $("#create-game").on("click", function(event) {
 $('#main-view').hide();
 $('.hide-create').hide();
 $('.hide-waiting').hide();
-// $('.flip-container').hide();
-
-// $('.flip-container').on('click', function() {
-//             // $('#card3').show();
-//             $(this).addClass('flip');
 
 
 /////////////// MODAL  /////////////////
@@ -976,11 +971,6 @@ btn.onclick = function() {
     modal.style.display = "block";
     buildBlackSelected();
 }
-
-// When the user clicks on <span> (x), close the modal
-// span.onclick = function() {
-//     modal.style.display = "none";
-// }
 
 // When the user clicks anywhere outside of the modal, close it
 window.onclick = function(event) {
