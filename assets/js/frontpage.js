@@ -60,3 +60,16 @@ function checkingFields(){
 		console.log('nothing');
 	}
 };
+// var cardbutton = $('.shBtn');
+// var cardList = ['#card1', '#card2', '#card3', '#card4', '#card5', '#card6', '#card7'];
+// for(var i < 0, i = cardList.length; i++ );
+
+
+$('.shBtn').on('click', function(){
+	$(this).parent().addClass('glow');
+	console.log(this)
+	// $(cardList[i]).addClass('glow');
+	console.log("clickclick");
+});
+
+
