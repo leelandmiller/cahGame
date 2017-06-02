@@ -774,23 +774,23 @@ makeElement = {
                     currentPlayerRef.child((host ? "host" : currentUid)).update({
                             chosenWhiteCard1: cardNum
                         }).then(function() {
-                            $(".back").off();
-                            $(".shBtn").off();
+                            $(".flip-container").off();
                             let allPicked = true;
                             currentPlayerRef.once("value", function(snap) {
                                 snap.forEach(function(snap) {
-                                        if (snap.key != currentTurn && allPicked) {
-                                            if (snap.val().chosenWhiteCard1 === "") {
-                                                allPicked = false;
-                                            } //if2
-                                        } //if1
-                                    }).then(function() {
-                                        if (allPicked) {
-                                            currentGameRef.update({
-                                                    state: state.pickWhite
-                                                }) //update
-                                        } //if
-                                    }) //then
+                                    if (snap.key != currentTurn && allPicked) {
+                                        if (snap.val().chosenWhiteCard1 === "") {
+                                            console.log(snap.key, "false")
+                                            allPicked = false;
+                                        } //if2
+                                    } //if1
+                                })
+                                if (allPicked) {
+                                    currentGameRef.update({
+                                            state: state.pickWhite
+                                        }) //update
+                                } //if
+                                //then
                             })
                         }) //then
                 }) //click
@@ -807,23 +807,24 @@ makeElement = {
                             chosenWhiteCard2: cardNum,
                             chosenWhiteCard1: firstCard
                         }).then(function() {
-                            $(".back").off();
-                            $(".shBtn").off();
+                            $(".flip-container").off();
                             let allPicked = true;
                             currentPlayerRef.once("value", function(snap) {
                                     snap.forEach(function(snap) {
                                         if (snap.key != currentTurn && allPicked) {
-                                            if (snap.val().chosenWhiteCard1 === "" || snap.val().chooseWhiteCard2 === "") {
+
+                                            if (snap.val().chosenWhiteCard1 === "" || snap.val().chosenWhiteCard2 === "") {
+                                                console.log(snap.key, "false")
                                                 allPicked = false;
                                             } //if2
                                         } //if1
-                                    }).then(function() {
-                                        if (allPicked) {
-                                            currentGameRef.update({
-                                                    state: state.pickWhite
-                                                }) //update
-                                        } //if
                                     })
+                                    if (allPicked) {
+                                        currentGameRef.update({
+                                                state: state.pickWhite
+                                            }) //update
+                                    } //if
+
                                 }) //then
                         }) //then
                 } else {
