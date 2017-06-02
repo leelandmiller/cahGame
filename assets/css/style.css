@@ -1,5 +1,5 @@
 body {
-    font-family: 'helvetica neue';
+    /*font-family: 'helvetica neue';*/
     background: url('../images/background.jpg')no-repeat center center fixed;
     background-size: cover;
     height: 100%;
@@ -154,7 +154,6 @@ label {
     width: 200px;
     height: 300px;
     text-align: center;
-    line-height: 300px;
     font-size: 20px;
     border-radius: 15px;
 }
@@ -207,7 +206,7 @@ label {
     margin-top: 70px;
     text-align: left;
     margin-left: 20px;
-    font-family: helvetica neue;
+    /*font-family: helvetica neue;*/
     font-weight: bold;
     font-size: 1.7em;
 }
@@ -218,7 +217,7 @@ label {
     text-align: left;
     margin-left: 20px;
     margin-right: 15px;
-    font-family: 'helvetica neue';
+    /*font-family: 'helvetica neue';*/
     font-weight: bold;
 }
 
@@ -374,23 +373,27 @@ img {
     bottom: 0;
 }
 
-button.shbtn {
-    margin-top: 50px;
-    font-size: 15px;
-    line-height: 25px !important;
-}
-
-
-button, input, select, textarea {
-    font-family: inherit;
-    font-size: 15px !important;
-    width:150px;
-    line-height: 25px !important;
-    background: transparent;
-    border-top-left:1px solid black;
+div.shBtn {
+    border: 1px solid black;
+    width: 150px;
+    display: inline-block;
     box-shadow: 2px 2px gray;
+    line-height: 25px;
+    position: absolute;
+    bottom: 10px;
+    left: 21px;
 }
 
-button:hover{
-    letter-spacing: 3px;
+.shBtn:hover {
+    letter-spacing: 1px;
+}
+
+.glow {
+    box-shadow: 0 0 11px darkgreen;
+}
+
+textarea,
+input,
+button {
+    outline: none;
 }

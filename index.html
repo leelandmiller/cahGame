@@ -5,6 +5,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="assets/css/tgstyle.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="assets/css/frontpage.css">
     <title></title>
 </head>
@@ -83,7 +84,7 @@
     </nav>
     <!-- MAIN VIEW -->
     <div class="container-fluid" id="main-view">
-        <!-- Trigger/Open The Modal -->
+ <!-- Trigger/Open The Modal -->
         <button id="myBtn">Open Modal</button>
         <!-- The Modal -->
         <div id="myModal" class="modal">
@@ -100,158 +101,168 @@
                 </div>
             </div>
         </div>
-            <div class="row">
-                <div class="col-md-8" id="hideCards">
-                    <!-- CARDS ROW ONE -->
-                    <div class="row cards">
-                        <div class="col-md-3">
-                            <!-- black card -->
-                            <div class="flip-container" id="black">
-                                <div class="flipper">
-                                    <div class="front front-black">
-                                        <p>Coders
-                                            <br>Against
-                                            <br>Humanity</p>
-                                    </div>
-                                    <div class="back back-black">
-                                        <p>This is the back face ________.</p>
-                                    </div>
+        <div class="row">
+            <div class="col-md-8" id="hideCards">
+                <!-- CARDS ROW ONE -->
+                <div class="row cards">
+                    <div class="col-md-3">
+                        <!-- black card -->
+                        <div class="flip-container" id="black">
+                            <div class="flipper">
+                                <div class="front" id="front-black">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity</p>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <!-- card one -->
-                            <div class="flip-container" id="card1">
-                                <div class="flipper">
-                                    <div class="front">
-                                        <p>Coders
-                                            <br>Against
-                                            <br>Humanity
-                                        </p>
-                                    </div>
-                                    <div class="back">
-                                        <p>This is the back face ________.
-                                            <button class="shBtn">Choose Card
-                                            </button>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <!-- card one -->
-                            <div class="flip-container" id="card2">
-                                <div class="flipper">
-                                    <div class="front">
-                                        <p>Coders
-                                            <br>Against
-                                            <br>Humanity
-                                        </p>
-                                    </div>
-                                    <div class="back">
-                                        <p>This is the back face ________.
-                                            <button class="shBtn">Choose Card
-                                            </button>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <!-- card three -->
-                            <div class="flip-container" id="card3">
-                                <div class="flipper">
-                                    <div class="front">
-                                        <p>Coders
-                                            <br>Against
-                                            <br>Humanity
-                                        </p>
-                                    </div>
-                                    <div class="back">
-                                        <p>This is the back face ________.
-                                            <button class="shBtn">Choose Card
-                                            </button>
-                                        </p>
-                                    </div>
+                                <div class="back" id="back-black">
+                                    <p><span></span></p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- CARDS ROW TWO -->
-                    <div class="row cards">
-                        <div class="col-md-3">
-                            <!-- card four -->
-                            <div class="flip-container" id="card4">
-                                <div class="flipper">
-                                    <div class="front">
-                                        <p>Coders
-                                            <br>Against
-                                            <br>Humanity
-                                        </p>
+                    <div class="col-md-3">
+                        <!-- card one -->
+                        <div class="flip-container" id="card1">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity
+                                    </p>
+                                </div>
+                                <div class="back">
+
+                                   <p
+><span></span></p
+>
+                                    <div class="shBtn">Choose Card
                                     </div>
-                                    <div class="back">
-                                        <p>This is the back face ________.
-                                            <button class="shBtn">Choose Card
-                                            </button>
-                                        </p>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <!-- card five -->
-                            <div class="flip-container" id="card5">
-                                <div class="flipper">
-                                    <div class="front">
-                                        <p>Coders
-                                            <br>Against
-                                            <br>Humanity
-                                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card one -->
+                        <div class="flip-container" id="card2">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity
+                                    </p>
+                                </div>
+                                <div class="back">
+
+                                   <p><span></span></p>
+                                    <div class="shBtn">Choose Card
                                     </div>
-                                    <div class="back">
-                                        <p>This is the back face ________.
-                                            <button class="shBtn">Choose Card
-                                            </button>
-                                        </p>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <!-- card six -->
-                            <div class="flip-container" id="card6">
-                                <div class="flipper">
-                                    <div class="front">
-                                        <p>Coders
-                                            <br>Against
-                                            <br>Humanity
-                                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card three -->
+                        <div class="flip-container" id="card3">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity
+                                    </p>
+                                </div>
+                                <div class="back">
+
+                                   <p><span></span></p>
+                                    <div class="shBtn">Choose Card
                                     </div>
-                                    <div class="back">
-                                        <p>This is the back face ________.
-                                            <button class="shBtn">Choose Card
-                                            </button>
-                                        </p>
-                                    </div>
+
+
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <!-- card seven -->
-                            <div class="flip-container" id="card7">
-                                <div class="flipper">
-                                    <div class="front">
-                                        <p>Coders
-                                            <br>Against
-                                            <br>Humanity
-                                        </p>
+                    </div>
+
+                </div>
+                <!-- CARDS ROW TWO -->
+                <div class="row cards">
+                    <div class="col-md-3">
+                        <!-- card four -->
+                        <div class="flip-container" id="card4">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity
+                                    </p>
+                                </div>
+                                <div class="back">
+
+                                   <p><span></span></p>
+                                    <div class="shBtn">Choose Card
                                     </div>
-                                    <div class="back">
-                                        <p>This is the back face ________.
-                                            <button class="shBtn">Choose Card
-                                            </button>
-                                        </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card five -->
+                        <div class="flip-container" id="card5">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity
+                                    </p>
+                                </div>
+                                <div class="back">
+
+                                   <p><span></span></p>
+                                    <div class="shBtn">Choose Card
                                     </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card six -->
+                        <div class="flip-container" id="card6">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity
+                                    </p>
+                                </div>
+                                <div class="back">
+
+                                   <p><span></span></p>
+                                    <div class="shBtn">Choose Card
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <!-- card seven -->
+                        <div class="flip-container" id="card7">
+                            <div class="flipper">
+                                <div class="front">
+                                    <p>Coders
+                                        <br>Against
+                                        <br>Humanity
+                                    </p>
+                                </div>
+                                <div class="back">
+
+                                   <p><span></span></p>
+                                    <div class="shBtn">Choose Card
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -473,12 +484,14 @@
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js " integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=" anonymous "></script>
-        <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js "></script>
-        <script type="text/javascript" src="assets/js/randomFace.js"></script>
-        <script type="text/javascript " src="assets/js/frontpage.js "></script>
-        <script type="text/javascript " src="assets/js/main.js "></script>
-        <script type="text/javascript " src="assets/js/tgmain.js "></script>
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js " integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=" anonymous "></script>
+    <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js "></script>
+    <script type="text/javascript" src="assets/js/randomFace.js"></script>
+    <script type="text/javascript " src="assets/js/frontpage.js "></script>
+    <script type="text/javascript " src="assets/js/main.js "></script>
+
 </body>
 
 </html>
