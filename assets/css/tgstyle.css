@@ -129,6 +129,13 @@ body {
     font-weight: bold;
 }
 
+p.shBtn {
+    position: absolute;
+    bottom: 10px;
+    left: 18px;
+    font-weight: 400;
+}
+
 #waiting {
     /*margin-top: 80px;*/
 }
