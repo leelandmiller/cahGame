@@ -58,6 +58,33 @@ var card = 'card2'; //data from obj
 var whiteCard = 'My humps.'; //data from obj
 
 $('#' + card).on('click', function() {
-        makeElement.newWhiteCard()
-    })
+    makeElement.newWhiteCard()
+})
+
+
+$('#urbanDict').on('click', function() {
+    $('.chat_input').val('/Urban " "');
+    $('.urbantip .tooltiptext').hide();
+})
+
+$('#pearsonDict').on('click', function() {
+    $('.chat_input').val('/Dict " "');
+    $('.urbantip .tooltiptext').hide();
+})
+
+
+$('.urbantip').hover(function() {
+    $('.urbantip .tooltiptext').show();
+}, function() {
+    $('.urbantip .tooltiptext').hide();
+})
+
+
+
+
+
+
+
+
+
 //////////////////////// TESTING ABOVE //////////////////////////
