@@ -2,24 +2,24 @@
 
 
 // CHAT TESTING //
-var sentMessageText = 'This is the Song that never ends...';
-var player1 = 'Tanner';
-var timeSent = '49 mins ago';
-
-var receivedMessageText = '... it just goes on and on again!';
-var player2 = 'Danny';
-var timeReceived = '23 mins ago';
-
-$('#btn-chat').on('click', function() {
-
-    sentMessageText = $('#btn-input').val().trim();
-    console.log(sentMessageText)
-
-    makeElement.buildSentMessage(player1, sentMessageText, timeSent);
-
-    makeElement.buildReceivedMessage(player2, receivedMessageText, timeReceived);
-    $('#btn-input').val('');
-})
+// var sentMessageText = 'This is the Song that never ends...';
+// var player1 = 'Tanner';
+// var timeSent = '49 mins ago';
+//
+// var receivedMessageText = '... it just goes on and on again!';
+// var player2 = 'Danny';
+// var timeReceived = '23 mins ago';
+//
+// $('#btn-chat').on('click', function() {
+//
+//     sentMessageText = $('#btn-input').val().trim();
+//     console.log(sentMessageText)
+//
+//     makeElement.buildSentMessage(player1, sentMessageText, timeSent);
+//
+//     makeElement.buildReceivedMessage(player2, receivedMessageText, timeReceived);
+//     $('#btn-input').val('');
+// })
 
 /// FLIP CONTAINER TEST //
 

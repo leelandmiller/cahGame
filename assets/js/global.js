@@ -18,6 +18,7 @@ let blackCardRef = cardRef.child("/blackCards");
 let whiteCardRef = cardRef.child("/whiteCards");
 let currentPlayerRef = "";
 let currentGameRef = "";
+let currentChatRef = "";
 let currentUid = "";
 let currentGame = "";
 let currentDisplayName = "";
