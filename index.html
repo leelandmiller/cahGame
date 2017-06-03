@@ -383,46 +383,54 @@
             <div class="col-md-4 pull-right hide-waiting" id="right-display ">
                 <div id="right-height">
                     <div class="panel panel-default " id="player-well ">
-                    <div class="panel-heading top-bar ">
-                        <h3 class="panel-title ">
+                        <div class="panel-heading top-bar ">
+                            <h3 class="panel-title ">
                                 <span class="glyphicon glyphicon-user "></span>
-                                Player Info
+                                Player Info | Current Turn: <span id="current-turn-name"></span>
                             </h3>
-                        <div class="panel-body ">
-                            <table class="table table-bordered table-striped " id="create-table">
-                                <tr id="row0">
-                                </tr>
-                                <tr id="row1">
-                                </tr>
-                                <tr id="row2">
-                                </tr>
-                                <tr id="row3">
-                                </tr>
-                            </table>
+                            <div class="panel-body ">
+                                <table class="table table-bordered table-striped " id="create-table">
+                                    <tr id="row0">
+                                    </tr>
+                                    <tr id="row1">
+                                    </tr>
+                                    <tr id="row2">
+                                    </tr>
+                                    <tr id="row3">
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="panel panel-default" id="chat-well">
-                    <div class="panel-heading top-bar">
-                        <div class="col-md-8 col-xs-8">
-                            <h3 class="panel-title">
+                    <div class="panel panel-default" id="chat-well">
+                        <div class="panel-heading top-bar">
+                            <div class="col-md-8 col-xs-8">
+                                <h3 class="panel-title">
                                     <span class="glyphicon glyphicon-comment"></span>
                                     Group Chat
                                 </h3>
+                            </div>
                         </div>
-                    </div>
-                    <div class="panel-body msg_container_base" id="chat">
-                        <!-- messages -->
-                    </div>
-                    <div class="panel-footer">
-                        <div class="input-group">
-                            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
-                            <span class="input-group-btn">
+                        <div class="panel-body msg_container_base" id="chat">
+                            <!-- messages -->
+                        </div>
+                        <div class="panel-footer">
+                            <div class="input-group">
+                                <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                                <span class="input-group-btn">
                                     <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
                                 </span>
+                            </div>
+                            <div class="urbantip">
+                                Dictionary Helper
+                                <div class="tooltiptext">
+                                    <p id="urbanDict">Urban Dictionary: /Urban "<i>search-term</i>"</p>
+                                    <p></p>
+                                    <p id="pearsonDict">Pearson Dictionary: /Dict "<i>search-term</i>"</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
                 </div>
             </div>
         </div>
