@@ -162,7 +162,7 @@ fireObj = {
                     currentTurn: "host",
                     blackCount: 0,
                     whiteCount: 0,
-                    scores: "",
+                    winner: "",
                     chat: {
                         chat: true
                     },
@@ -391,7 +391,7 @@ fireObj = {
                 return snap;
             });
         },
-        showAllChoices: function(currentBlack, currentTurn, pick) {
+        showAllChoices: function(currentBlack, currentTurn, pick, host) {
             modal.style.display = "block";
             currentPlayerRef.once("value", function(snap) {
                 //create a obj to sotre all teh cards
@@ -426,7 +426,7 @@ fireObj = {
 
 
                         }).then(function() {
-                            buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick)
+                            buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick, host)
                         })
 
                     }
@@ -448,7 +448,7 @@ fireObj = {
 
                             })
                         }).then(function() {
-                            buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick, blackCards[rand].secondPick)
+                            buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick, blackCards[rand].secondPick, host)
                         })
                     }
                     players.splice(randNum, 1)

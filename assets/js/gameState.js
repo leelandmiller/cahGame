@@ -13,6 +13,7 @@ gameState = function(key) {
     let pick = 0;
     let currentTurn = "";
     let currentBlack = "";
+    let blackNum = 0;
     $(".hide-create").hide();
     $(".hide-waiting").show();
 
@@ -115,6 +116,7 @@ gameState = function(key) {
                                 //the host starts game and changes to next state
                                 break;
                             case (state.ready):
+
                                 fireObj.dealSevenCards(playerKey, whiteOrder, host);
                                 $("#waiting").hide();
                                 $("#hideCards").show();
@@ -132,9 +134,10 @@ gameState = function(key) {
                                     //find blackCOunt
                                     let firstNum = Math.floor(snap.val() / 50);
                                     let secondNum = snap.val() % 50;
-                                    //find card location
-                                    let firstChild = Math.floor(blackOrder[firstNum][secondNum] / 50)
-                                    let secondChild = blackOrder[firstNum][secondNum] % 50
+                                    blackNum = blackOrder[firstNum][secondNum]
+                                        //find card location
+                                    let firstChild = Math.floor(blackNum / 50)
+                                    let secondChild = blackNum % 50
                                     blackCardRef.child(firstChild).child(secondChild).once("value", function(snap) {
                                         pick = snap.val().pick;
                                         currentBlack = snap.val().text;
@@ -149,78 +152,15 @@ gameState = function(key) {
                                     })
                                 })
 
-                                //currentGameRef
-                                //black card get pulled from cardRef
-                                //display black card to all
                                 break;
-                                // case (state.chooseWhite):
-                                //     currentGameRef.child("currentTurn").once("value", function(snap) {
-                                //             //display black card
-                                //             if (snap.val() === (host ? "host" : currentUid)) {
-                                //                 // set you as chooser of white card
-                                //                 currentGameRef.child("blackCount").transaction(function(snap) {
-                                //                     return snap + 1
-                                //                 })
-                                //             } //if
-                                //         }) //currentGameRef
-                                //     blackCount++;
 
-                                //     //setup card listen to add white card choice
-                                //     //add picked card to player object in currentGameRef
-                                //     //if host have count that increase by 1 everytime ad player chooses a card by listening to the player objects in database
-                                //     //once hosts count equals player cound-1 change state
                                 // break;
                             case (state.pickWhite):
                                 //display all choosed white cards to everyone in random order
-                                fireObj.showAllChoices(currentBlack, currentTurn, pick);
-                                // currentPlayerRef.once("value", function(snap) {
-                                //     //create a obj to sotre all teh cards
-                                //     let blackCards = {};
-                                //     snap.forEach(function(childSnap) {
-                                //             if (currentTurn !== childSnap.key) {
-                                //                 let key = childSnap.key
-                                //                 blackCards[key] = {}
-                                //                     //add display name
+                                fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
 
-                                //                 blackCards[key].name = childSnap.val().displayName;
-                                //                 let firstPick = childSnap.val().chosenWhiteCard1;
-                                //                 let secondPick = childSnap.val().chosenWhiteCard2;
-                                //                 //get first pick text
-                                //                 if (pick >= 1) {
-                                //                     let firstNum = Math.floor(firstPick / 50)
-                                //                     let secondNum = firstPick % 50
-                                //                     whiteCardRef.child(firstNum).child(secondNum).once("value", function(card) {
-                                //                         blackCards[key].firstpick = card.val()
-                                //                         console.log(card.val(), " card1")
 
-                                //                     })
-
-                                //                 }
-                                //                 //second picks text
-                                //                 if (pick === 2) {
-                                //                     let firstNum = Math.floor(secondPick / 50)
-                                //                     let secondNum = secondPick % 50
-                                //                     whiteCardRef.child(firstNum).child(secondNum).once("value", function(card) {
-                                //                         blackCards[key].secondPick = card.val()
-                                //                     })
-                                //                 }
-                                //             }
-                                //         })
-                                //         //get a array of all the players
-                                //     let players = Object.keys(blackCards)
-                                //     for (var i = 0; i < totalPlayers; i++) {
-                                //         let rand = Math.floor(Math.random() * players.length)
-                                //         if (pick === 1) {
-                                //             console.log("test")
-                                //             buildBlackSelected(currentBlack, blackCards[players[rand]].name, blackCards[players[rand]].firstPick)
-                                //         } else {
-                                //             buildBlackSelected(currentBlack, blackCards[players[rand]].name, blackCards[players[rand]].firstPick, blackCards[players[rand]].secondPick)
-                                //         }
-                                //         players.splice(i, 1)
-                                //     }
-                                // })
-
-                                if (currentTurn === currentUid) {
+                                if (currentTurn === (host ? "host" : currentUid)) {
                                     currentGameRef.child("blackCount").transaction(function(snap) {
                                             return snap + 1
                                         })
@@ -231,8 +171,20 @@ gameState = function(key) {
                                 // set min time or wait 5sec after pick
                                 break;
                             case (state.showCards):
-                                // show owner of each white card
-                                //award black card to winner
+                                currentGameRef.child("winner").once("value", function(snap) {
+                                        if (snap.val() === (host ? "host" : currentUid)) {
+                                            currentPlayerRef.child((host ? "host" : currentUid)).child("blackCards").child(blackNum).set(true)
+                                            currentPlayerRef.child((host ? "host" : currentUid)).child("playerBlackCount").transaction(function(snap) {
+                                                return snap + 1
+                                            })
+                                        }
+                                        currentPlayerRef.child((host ? "host" : currentUid)).update({
+                                            chosenWhiteCard1: "",
+                                            chosenWhiteCard2: "",
+                                        })
+                                    })
+                                    // show owner of each white card
+                                    //award black card to winner
                                 break;
                             case (state.nextTurn):
                                 if (host) {
@@ -244,14 +196,16 @@ gameState = function(key) {
                                         currentTurn: playerOrder[playerTurnCount]
                                     })
                                 }
-                                currentPlayerRef.forEach(function(snap) {
-                                        if (snap.val().playerBlackCount == winLimit) {
-                                            //winner(snap.key)
-                                            if (host) {
-                                                //change gamestate
+                                currentPlayerRef.once("value", function(snap) {
+                                        snap.forEach(function(snap) {
+                                            if (snap.val().playerBlackCount == winLimit) {
+                                                //winner(snap.key)
+                                                if (host) {
+                                                    //change gamestate
+                                                }
                                             }
-                                        }
 
+                                        })
                                     })
                                     //check if somebody had reached score limit
                                     //if not start from state.chooseBlack
