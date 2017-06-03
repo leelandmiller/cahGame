@@ -42,7 +42,7 @@ body {
 
 .flip-container {
     perspective: 1000;
-    margin: 18px 0;
+    margin: 9px 0;
 }
 
 
@@ -151,8 +151,8 @@ p.shBtn {
     padding: 6px 23px;
     background-color: grey;
     border-radius: 20px;
-    font-weight: 300;
-    font-size: .8em;
+    font-weight: 300 !important;
+    font-size: .8em !important;
 }
 
 #right-height {
@@ -324,6 +324,50 @@ p.shBtn {
     position: fixed;
     left: 0px;
     bottom: 0;
+}
+
+.urbantip {
+    position: relative;
+    display: block;
+    color: blue;
+    margin-top: 3px;
+    font-size: .8em;
+}
+
+.urbantip .tooltiptext {
+    display: none;
+    width: 280px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px 0;
+    top: -27px;
+    right: 102%; 
+    margin-left: -140px;
+    position: absolute;
+    z-index: 3;
+}
+
+.urbantip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 50%;
+    left: 100%; /* To the right of the tooltip */
+    margin-top: -10px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent transparent black;
+}
+
+
+#urbanDict, #pearsonDict {
+    cursor: pointer;
+}
+
+#urbanDict:hover, #pearsonDict:hover {
+    color: red;
+
 }
 
 
