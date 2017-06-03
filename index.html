@@ -91,7 +91,7 @@
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="row cards" id='selectedBlack'>
-                        <!-- cards added here -->
+                            <!-- cards added here -->
                         </div>
                     </div>
                 </div>
@@ -259,7 +259,6 @@
                                     <th class="text-center">Players Joined</th>
                                     <th class="text-center">Cards</th>
                                 </tr>
-
                             </table>
                             <table class="table table-striped" id="waiting-player-table">
                                 <tr>
@@ -372,9 +371,9 @@
                     </div>
                     <div class="panel-footer">
                         <div class="input-group">
-                            <input id="btn-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
+                            <input id="global-input" type="text" class="form-control input-sm chat_input" placeholder="Write your message here..." />
                             <span class="input-group-btn">
-                                <button type='submit' class="btn btn-primary btn-sm" id="btn-chat">Send</button>
+                                <button type='submit' class="btn btn-primary btn-sm" id="btn-global-chat">Send</button>
                             </span>
                         </div>
                     </div>
@@ -429,10 +428,17 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js " integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=" anonymous "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment-with-locales.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/4.0.0/firebase.js "></script>
     <script type="text/javascript" src="assets/js/randomFace.js"></script>
     <script type="text/javascript " src="assets/js/frontpage.js "></script>
-    <script type="text/javascript " src="assets/js/main.js "></script>
+    <script type="text/javascript " src="assets/js/gameState.js "></script>
+    <script type="text/javascript " src="assets/js/global.js "></script>
+    <script type="text/javascript " src="assets/js/makeElement.js "></script>
+    <script type="text/javascript" src="assets/js/apiCalls.js"></script>
+    <script type="text/javascript " src="assets/js/event.js "></script>
+    <script type="text/javascript " src="assets/js/modal.js "></script>
+    <script type="text/javascript " src="assets/js/main2.js "></script>
     <script type="text/javascript " src="assets/js/tgmain.js "></script>
 </body>
 
