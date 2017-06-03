@@ -373,18 +373,19 @@ fireObj = {
                 }) //then foreach all players checking for all card dealt out then change state
 
         },
-        dealOneCard: function(playerKey, whiteOrder, host, card) {
+        dealOneCard: function(whiteOrder, host, card) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
-                //grab whitecount
+                console.log(whiteOrder)
+                    //grab whitecount
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
                 //find auctally card location
                 let firstNum = Math.floor(newCard / 50)
                 let secondNum = newCard % 50
-                playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(card).set(newCard).then(function(snap) {
+                currentPlayerRef.child((host ? "host" : currentUid) + "/hand").child(card).set(newCard).then(function(snap) {
                     whiteCardRef.child(firstNum).child(secondNum).once("value", function(snap) {}).then(function(snap) {
-                        makeElement.newWhiteCard("card" + (card + 1), snap.val(), newCard)
+                        makeElement.newWhiteCard(card, snap.val(), newCard)
                     })
                 })
                 snap = snap + 1;

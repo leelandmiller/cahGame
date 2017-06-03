@@ -88,11 +88,13 @@ makeElement = {
         if (pick === 1) {
 
             $(".flip-container").on("click", function() {
-                    console.log("clicked")
+                    let cardId = $(this).attr("id");
                     cardNum = $(this).attr("cardNum");
                     currentPlayerRef.child((host ? "host" : currentUid)).update({
                             chosenWhiteCard1: cardNum
                         }).then(function() {
+                            console.log("all args", localWhiteOrder, host, cardId)
+                            fireObj.dealOneCard(localWhiteOrder, host, cardId);
                             $(".flip-container").off();
                             let allPicked = true;
                             currentPlayerRef.once("value", function(snap) {
@@ -106,8 +108,10 @@ makeElement = {
                                 })
                                 if (allPicked) {
                                     currentGameRef.update({
-                                            state: state.pickWhite
-                                        }) //update
+                                        state: state.pickWhite
+                                    }).then(function() {
+
+                                    })
                                 } //if
                                 //then
                             })
@@ -118,14 +122,18 @@ makeElement = {
 
             let secondPick = false;
             let firstCard = "";
+            let firstCardId = "";
             $(".flip-container").on("click", function() {
-                console.log("clicked")
+                let cardId = $(this).attr("id");
                 cardNum = $(this).attr("cardNum");
                 if (secondPick) {
                     currentPlayerRef.child((host ? "host" : currentUid)).update({
                             chosenWhiteCard2: cardNum,
                             chosenWhiteCard1: firstCard
                         }).then(function() {
+                            console.log("all args", localWhiteOrder, host, cardId)
+                            fireObj.dealOneCard(localWhiteOrder, host, cardId);
+                            fireObj.dealOneCard(localWhiteOrder, host, firstCardId)
                             $(".flip-container").off();
                             let allPicked = true;
                             currentPlayerRef.once("value", function(snap) {
@@ -140,8 +148,10 @@ makeElement = {
                                     })
                                     if (allPicked) {
                                         currentGameRef.update({
-                                                state: state.pickWhite
-                                            }) //update
+                                            state: state.pickWhite
+                                        }).then(function() {
+
+                                        })
                                     } //if
 
                                 }) //then
@@ -154,6 +164,7 @@ makeElement = {
                     } else {
                         firstCard = cardNum;
                         secondPick = true;
+                        firstCardId = cardId;
                     }
                 }
             })
