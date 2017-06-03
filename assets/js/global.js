@@ -22,6 +22,7 @@ let currentChatRef = "";
 let currentUid = "";
 let currentGame = "";
 let currentDisplayName = "";
+let localWhiteOrder = "";
 let newAvatar = avatarObj.genAvatarURL();
 let state = {
     open: 0,

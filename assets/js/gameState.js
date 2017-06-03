@@ -34,7 +34,8 @@ gameState = function(key) {
             //grab all data needed to have stored
 
             blackOrder = snap.val().blackOrder;
-            whiteOrder = snap.val().whiteOrder;
+            localWhiteOrder = snap.val().whiteOrder;
+            whiteOrder = localWhiteOrder;
             winLimit = snap.val().winLimit;
             playerKey = snap.val().players;
             playerMax = snap.val().playerLimit;
@@ -182,7 +183,12 @@ gameState = function(key) {
                                 // set min time or wait 5sec after pick
                                 break;
                             case (state.showCards):
+
                                 currentGameRef.child("winner").once("value", function(snap) {
+                                        currentPlayerRef.child(snap.val()).once("value", function(snap) {
+                                            console.log(snap.key, snap.val().displayName)
+                                            $("#" + snap.val().displayName + " .flipper .back").css("background", "gold");
+                                        })
                                         if (snap.val() === (host ? "host" : currentUid)) {
                                             currentPlayerRef.child((host ? "host" : currentUid)).child("blackCards").child(blackNum).set(true)
                                             currentPlayerRef.child((host ? "host" : currentUid)).child("playerBlackCount").transaction(function(snap) {
