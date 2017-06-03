@@ -18,6 +18,17 @@ gameState = function(key) {
     $(".hide-waiting").show();
 
     currentGameRef = gameRef.child(key);
+    currentChatRef = currentGameRef.child('chat');
+    currentChatRef.on('child_added', function(snap) {
+        if (snap.key === 'chat') {} else {
+            let newDiv = $("<div>");
+            let message = $("<p>").text(snap.val().message);
+            let name = $("<strong>").text(snap.val().displayName + ": ");
+            message.prepend(name);
+            newDiv.append(message);
+            $("#chat").append(newDiv)
+        }
+    });
     currentGameRef.once("value", function(snap) {
 
             //grab all data needed to have stored

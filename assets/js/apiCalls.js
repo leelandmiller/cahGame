@@ -8,7 +8,7 @@ let api = {
         }).done(function(data) {
             if (data.results[0].senses[0].subsenses !== undefined) {
                 result = data.results[0].senses[0].subsenses[0].definition;
-                api.displayDef(result, word)
+                api.displayDef(result, word, 'Pearson')
             } else {
                 result = data.results[0].senses[0].definition;
                 api.displayDef(result, word, 'Pearson')
