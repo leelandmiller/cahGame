@@ -21,17 +21,19 @@ window.onclick = function(event) {
 
 
 function buildBlackSelected() {
-    //blackCard, player,  (whiteCard, whiteCard), 
+    //blackCard, player,  (whiteCard, whiteCard), host
     let text = ""
-
-    if (arguments.length === 3) {
-
+    let host = false;
+    let displayName = arguments[1]
+    if (arguments.length === 4) {
+        host = arguments[3]
         if (arguments[0].indexOf("_") === -1) {
             text = arguments[0] + "<br>" + "<span class='white-text'>" + arguments[2] + "</span>"
         } else {
             text = arguments[0].replace(/_/g, "<span class='white-text'>" + arguments[2] + "</span>")
         }
-    } else if (arguments.length === 4) {
+    } else if (arguments.length === 5) {
+        host = arguments[4]
         if (arguments[0].indexOf("_") === -1) {
             text = arguments[0] + "<br>" + "<span class='white-text'>" + arguments[2] + "</span>" + "<br>" + "<span class='white-text'>" + arguments[3] + "</span>"
         } else {
@@ -39,10 +41,10 @@ function buildBlackSelected() {
             text = text.replace(/_/, "<span class='white-text'>" + arguments[3] + "</span>")
         }
     }
-
+    console.log("name", arguments[1])
     let cardContainer = $('<div>').addClass('col-md-3');
 
-    let flipContainer = $('<div>').addClass('flip-container');
+    let flipContainer = $('<div>').addClass('flip-container').attr("id", displayName);
     cardContainer.append(flipContainer);
 
     let flipper = $('<div>').addClass('flipper');
@@ -57,9 +59,14 @@ function buildBlackSelected() {
     flipper.append(back);
     let textBack = $('<p>').html(text)
     back.append(textBack);
-    let name = $("<p>").text(arguments[1]).addClass("black-card-name")
+    let name = $("<p>").text(displayName).addClass("black-card-name")
     back.append(name)
 
     $('#selectedBlack').append(cardContainer);
     cardFlip(cardContainer)
+    currentGameRef.child("currentTurn").once("value", function(snap) {
+        if (snap.val() === (host ? "host" : currentUid)) {
+            makeElement.blackCardClick(displayName)
+        }
+    })
 }

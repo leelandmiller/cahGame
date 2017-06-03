@@ -162,7 +162,7 @@ makeElement = {
     },
     buildOpenGame: function(key, host, winLimit, playerLimit) {
         //TODO: move with other html builders
-        let newTr = $("<tr>");
+        let newTr = $("<tr>").attr("id", key + "Open");
         let hostTh = $("<td>").text(host);
         let players = $("<td>").addClass('text-center');
         let winCount = $("<td>").addClass('text-center');
@@ -200,6 +200,26 @@ makeElement = {
             }
 
         }
+    },
+    blackCardClick: function(name) {
+        $("#" + name).on("click", function() {
+            console.log("activated")
+            let displayName = $(this).attr("id");
+            currentPlayerRef.once("value", function(snap) {
+                snap.forEach(function(childSnap) {
+                    let uid = childSnap.key
+                    console.log(uid)
+                    if (displayName === childSnap.val().displayName) {
+                        currentGameRef.update({
+                            winner: uid,
+                            state: state.showCards
+                        })
+                        $("#selectedBlack div .flip-container").off();
+                    }
+                })
+            })
+
+        })
     }
 
 
