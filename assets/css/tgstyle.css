@@ -120,6 +120,7 @@ body {
 }
 
 .back p {
+    font-size: .9em;
     line-height: 1.2em;
     margin-top: 15px;
     text-align: left;
@@ -131,13 +132,15 @@ body {
 
 p.shBtn {
     position: absolute;
-    bottom: 10px;
-    left: 18px;
+    bottom: 18px;
+    left: 41px;
     font-weight: 400;
+    font-size: 16px;
+    margin: auto;
 }
 
-#waiting {
-    /*margin-top: 80px;*/
+#right-height {
+    min-height: 525px;
 }
 
 #player-well {
@@ -165,7 +168,7 @@ p.shBtn {
 /* CHAT */
 
 #global-chat {
-    height: 575px;
+    height: 525px;
 }
 
 #chat-well {
