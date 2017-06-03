@@ -86,7 +86,8 @@ gameState = function(key) {
                             case (state.open):
 
                                 //TODO: hide game list
-
+                                $("waiting-player-table").html("");
+                                ("#currentPlay").text("")
                                 if (!host) {
                                     // if not the host build and add player object based on player uid
                                     fireObj.buildPlayerObj(key, playerKey)
@@ -128,7 +129,7 @@ gameState = function(key) {
                                 //the host starts game and changes to next state
                                 break;
                             case (state.ready):
-
+                                currentPlayerRef.off()
                                 fireObj.dealSevenCards(playerKey, whiteOrder, host);
                                 $("#waiting").hide();
                                 $("#hideCards").show();
@@ -141,6 +142,10 @@ gameState = function(key) {
                                 currentGameRef.child("currentTurn").once("value", function(snap) {
                                     //display black card
                                     currentTurn = snap.val()
+                                    currentPlayerRef.child(currentTurn).once("value", function(snap) {
+                                        $("#current-turn-name").text(snap.val().displayName)
+                                    })
+
                                 })
                                 currentGameRef.child("blackCount").once("value", function(snap) {
                                     //find blackCOunt
@@ -183,7 +188,7 @@ gameState = function(key) {
                                 // set min time or wait 5sec after pick
                                 break;
                             case (state.showCards):
-
+                                $(".black-card-name").show()
                                 currentGameRef.child("winner").once("value", function(snap) {
                                     currentPlayerRef.child(snap.val()).once("value", function(snap) {
                                         console.log(snap.key, snap.val().displayName)
@@ -236,7 +241,9 @@ gameState = function(key) {
 
                                         })
                                         if (winner) {
-
+                                            currentGameRef.update({
+                                                state: state.gameOver
+                                            })
                                         } else {
                                             currentGameRef.update({
                                                 state: state.chooseBlack
@@ -249,6 +256,7 @@ gameState = function(key) {
                                 //else go to state.gameOver
                                 break;
                             case (state.gameOver):
+
                                 //allow users to return to match making screen
                                 break;
                             case (state.quitGame):

@@ -127,6 +127,14 @@ fireObj = {
                 makeElement.buildOpenGame(snap.key, snap.val().host, snap.val().winLimit, snap.val().playerLimit);
 
             })
+            gameRef.on("child_changed", function(snap) {
+                if (snap.val().state !== state.open) {
+                    $("#" + snap.key + "Open").remove()
+
+                }
+                // 
+            })
+
         },
 
         createNewGame: function(playerCount, winlimit) {
