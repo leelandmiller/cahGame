@@ -32,7 +32,6 @@ gameState = function(key) {
     currentGameRef.once("value", function(snap) {
 
             //grab all data needed to have stored
-
             blackOrder = snap.val().blackOrder;
             localWhiteOrder = snap.val().whiteOrder;
             whiteOrder = localWhiteOrder;
@@ -87,18 +86,23 @@ gameState = function(key) {
                                             }*/
                         switch (data) {
                             case (state.open):
-
+                                fireObj.globalChatOff();
                                 //TODO: hide game list
-                                $("waiting-player-table").html("<tr> <th>Players</th></tr>");
+                                $("#current-turn-name").text("");
+                                for (var i = 0; i < 4; i++) {
+                                    $("#row" + i).html("");
+                                }
+                                $("#waiting-player-table").html("<tbody><tr> <th>Players</th></tr></tbody>");
                                 if (!host) {
                                     // if not the host build and add player object based on player uid
                                     fireObj.buildPlayerObj(key, playerKey)
                                 }
-                                currentGameRef.child("totalPlayers").on("value", function(snap) {
-                                        $("#currentPlay").text(snap.val());
+                                // currentGameRef.child("totalPlayers").on("value", function(snap) {
+                                //         $("#currentPlay").text(snap.val());
 
-                                    })
-                                    //show waitng for game to start screen
+                                //     })
+
+                                //show waitng for game to start screen
                                 currentPlayerRef.on("child_added", function(snap) {
                                     //listen for players joining to update the screen
                                     //call update players screen
@@ -112,7 +116,7 @@ gameState = function(key) {
                                     let newPlayer = $("<th>").text(displayName);
                                     let newTr = $("<tr>");
                                     newTr.append(newPlayer);
-                                    $("#waiting-player-table").append(newTr);
+                                    $("#waiting-player-table tbody").append(newTr);
                                     if (host) {
 
                                         if (playerOrder.length >= 4) {
@@ -131,6 +135,7 @@ gameState = function(key) {
                                 //the host starts game and changes to next state
                                 break;
                             case (state.ready):
+                                currentGameRef.child("totalPlayers").off()
                                 currentPlayerRef.off()
                                 fireObj.dealSevenCards(playerKey, whiteOrder, host);
                                 $("#waiting").hide();
@@ -266,6 +271,17 @@ gameState = function(key) {
                                     //allow users to return to match making screen
                                 break;
                             case (state.quitGame):
+                                if (host) {
+                                    currentGameRef.remove()
+                                    currentPlayerRef.remove()
+                                }
+                                currentGameRef.child("state").off()
+                                fireObj.globalChatOn();
+                                $("#waiting").hide();
+                                $(".hide-waiting").hide();
+                                $(".hide-create").show();
+                                $("#hideCards").hide();
+
                                 break;
                         } //switch
                     } //else

@@ -110,17 +110,27 @@ fireObj = {
             }
         },
         globalChatOn: function() {
+            console.log("globalChat on")
+            $("#global-chat").html("");
             globalChat.on("child_added", function(snap) {
-                //TODO: call add new MSG with snap.val() to global chat
+                if (moment().valueOf() - snap.val().timeStamp >= 3600000) {
+                    globalChat.child(snap.key).remove()
+                } else if (moment().valueOf() - snap.val().timeStamp <= 300000) {
+                    console.log(moment(snap.val().timeStamp).format("h:mm"))
+                    let newDiv = $("<div>");
+                    let message = $("<p>").text(snap.val().message);
+                    let name = $("<strong>").text(snap.val().displayName + ":");
+                    message.prepend(name);
+                    newDiv.append(message);
+                    $("#global-chat").append(newDiv)
+                }
+
             })
         },
-        gameChatOn: function(key) {
-            gameRef.child(key).child("chat").on("child_added", function(snap) {
-                //TODO: call add new MSG with snap.val() to game chat
-            })
-        },
-        gameChatOff: function(key) {
-            gameRef.child(key).child("chat").off();
+
+        globalChatOff: function(key) {
+            console.log("globalChat off")
+            globalChat.off();
         },
         joinGameEvent: function() {
             gameRef.orderByChild("state").equalTo(state.open).on("child_added", function(snap) {
@@ -135,6 +145,10 @@ fireObj = {
                 // 
             })
 
+        },
+        joinGameOff: function() {
+            gameRef.off("child_added");
+            gameRef.off("child_changed")
         },
 
         createNewGame: function(playerCount, winlimit) {
@@ -210,17 +224,7 @@ fireObj = {
                         for (var i = 0; i < blackCount; i++) {
                             tempArray.black.push(i);
                         }
-                        //create shuffled arrays of indexs
-                        // for (var i = 0; i < blackCount; i++) {
-                        //     let rand = Math.floor(Math.random() * tempArray.black.length);
-                        //     shuffledArray.black.push(tempArray.black[rand]);
-                        //     tempArray.black.splice(rand, 1);
-                        // }
-                        // for (var i = 0; i < whiteCount; i++) {
-                        //     let rand = Math.floor(Math.random() * tempArray.white.length);
-                        //     shuffledArray.white.push(tempArray.white[rand]);
-                        //     tempArray.white.splice(rand, 1);
-                        // }
+
                         while (count <= blackCount) {
                             let newArray = [];
                             for (var i = 0; i < 50; i++) {
@@ -255,34 +259,10 @@ fireObj = {
                 //make new game and add shuffled arrays
                 newGameRef.set(gameObj).then(function() {
                     newGameRef.child("blackOrder").set(shuffledArray.black)
-                        // let count = 0;
-                        // let set = 0;
-                        // //loops white total iterations are les sthat total count
-                        // while (count < blackCount) {
-                        //     //loops thru 50 at a time
-                        //     for (var i = 0; i < 50; i++) {
-                        //         if (shuffledArray.black[count]) {
 
-                    //             newGameRef.child("blackOrder").child(set).child(i).set(shuffledArray.black[count]);
-                    //         } //if
-                    //         count++;
-                    //     } //for
-                    //     set++;
-                    // } //while
                 }).then(function() {
                     newGameRef.child("whiteOrder").set(shuffledArray.white)
-                        // let count = 0;
-                        // let set = 0;
-                        // while (count < whiteCount) {
-                        //     for (var i = 0; i < 50; i++) {
 
-                    //         if (shuffledArray.white[count]) {
-                    //             newGameRef.child("whiteOrder").child(set).child(i).set(shuffledArray.white[count]);
-                    //         }
-                    //         count++;
-                    //     }
-                    //     set++;
-                    // }
                     fireObj.gameState(currentGame);
                 })
             })
@@ -319,7 +299,7 @@ fireObj = {
                     let cards = []
                         //deal out 7 cards
                     for (var i = 0; i < 7; i++) {
-                        //checsk if second child is above 49 whichs means it stored in the nest
+                        //checsk if second child is above 49 whichs means it stored in the next firstchild
                         if (secondChild + i > 49) {
                             cards.push(whiteOrder[firstChild + 1][(secondChild + i) - 50])
                         } else {
@@ -401,13 +381,13 @@ fireObj = {
             });
         },
         showAllChoices: function(currentBlack, currentTurn, pick, host) {
+            //display modal
             modal.style.display = "block";
             currentPlayerRef.once("value", function(snap) {
                 //create a obj to sotre all teh cards
                 let blackCards = {};
                 snap.forEach(function(childSnap) {
                         //make sure it isn this users turn
-                        console.log(childSnap.key, childSnap.val().key)
                         if (currentTurn !== childSnap.key) {
                             let key = childSnap.key
                             blackCards[key] = {}
@@ -423,10 +403,12 @@ fireObj = {
                 let players = Object.keys(blackCards)
                 let total = players.length
                 for (var i = 0; i < total; i++) {
+                    //get random player
                     let randNum = Math.floor(Math.random() * players.length)
                     let rand = players[randNum]
 
                     if (pick === 1) {
+                        //find white card text
                         let firstPick = blackCards[rand].firstPick
                         let firstNum = Math.floor(firstPick / 50)
                         let secondNum = firstPick % 50
@@ -435,6 +417,7 @@ fireObj = {
 
 
                         }).then(function() {
+                            //build display black card with white card text
                             buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick, host)
                         })
 

@@ -42,6 +42,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         $("#myNav").show()
         $("#main-view").show();
         $(".hide-create").show();
+        fireObj.globalChatOn();
         currentUid = user.uid;
         userRef.child(currentUid).child("displayName").once("value", function(snap) {
             currentDisplayName = snap.val();
@@ -50,6 +51,8 @@ firebase.auth().onAuthStateChanged(function(user) {
         })
         fireObj.joinGameEvent();
     } else {
+        fireObj.joinGameOff()
+        fireObj.globalChatOff();
         $(".front-page").show();
         $("body").removeClass("coffee-table-bg");
         $("#myNav").hide()
