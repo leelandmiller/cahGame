@@ -53,6 +53,7 @@ gameState = function(key) {
             newTr.append(name);
             newTr.append(player);
             newTr.append(win);
+            $("#waiting-host-table").html("<tr><th>Host</th><th class='text-center'>Players Joined</th><th class='text-center'>Cards</th></tr>")
             $("#waiting-host-table").append(newTr);
             //update total player count
             currentGameRef.child("totalPlayers").on("value", function(snap) {
@@ -70,6 +71,8 @@ gameState = function(key) {
                     let data = snap.val();
                     if (data === null) {
                         //TODO: call quitgame functions
+                        currentGameRef.child("state").off()
+                        currentChatRef.off();
                     } else {
                         /*state = {
                                                 open: 0,
@@ -86,7 +89,7 @@ gameState = function(key) {
                             case (state.open):
 
                                 //TODO: hide game list
-
+                                $("waiting-player-table").html("<tr> <th>Players</th></tr>");
                                 if (!host) {
                                     // if not the host build and add player object based on player uid
                                     fireObj.buildPlayerObj(key, playerKey)
@@ -128,7 +131,7 @@ gameState = function(key) {
                                 //the host starts game and changes to next state
                                 break;
                             case (state.ready):
-
+                                currentPlayerRef.off()
                                 fireObj.dealSevenCards(playerKey, whiteOrder, host);
                                 $("#waiting").hide();
                                 $("#hideCards").show();
@@ -141,6 +144,10 @@ gameState = function(key) {
                                 currentGameRef.child("currentTurn").once("value", function(snap) {
                                     //display black card
                                     currentTurn = snap.val()
+                                    currentPlayerRef.child(currentTurn).once("value", function(snap) {
+                                        $("#current-turn-name").text(snap.val().displayName)
+                                    })
+
                                 })
                                 currentGameRef.child("blackCount").once("value", function(snap) {
                                     //find blackCOunt
@@ -183,27 +190,36 @@ gameState = function(key) {
                                 // set min time or wait 5sec after pick
                                 break;
                             case (state.showCards):
-
+                                $(".black-card-name").show()
                                 currentGameRef.child("winner").once("value", function(snap) {
-                                        currentPlayerRef.child(snap.val()).once("value", function(snap) {
-                                            console.log(snap.key, snap.val().displayName)
-                                            $("#" + snap.val().displayName + " .flipper .back").css("background", "gold");
-                                        })
-                                        if (snap.val() === (host ? "host" : currentUid)) {
-                                            currentPlayerRef.child((host ? "host" : currentUid)).child("blackCards").child(blackNum).set(true)
-                                            currentPlayerRef.child((host ? "host" : currentUid)).child("playerBlackCount").transaction(function(snap) {
-                                                return snap + 1
-                                            })
-                                        }
-                                        currentPlayerRef.child((host ? "host" : currentUid)).update({
-                                            chosenWhiteCard1: "",
-                                            chosenWhiteCard2: "",
-                                        })
+                                    currentPlayerRef.child(snap.val()).once("value", function(snap) {
+                                        console.log(snap.key, snap.val().displayName)
+                                        $("#" + snap.val().displayName + " .flipper .back").css("background", "gold");
                                     })
-                                    // show owner of each white card
-                                    //award black card to winner
+                                    if (snap.val() === (host ? "host" : currentUid)) {
+                                        currentPlayerRef.child((host ? "host" : currentUid)).child("blackCards").child(blackNum).set(true)
+                                        currentPlayerRef.child((host ? "host" : currentUid)).child("playerBlackCount").transaction(function(snap) {
+                                            return snap + 1
+                                        })
+                                    }
+                                    currentPlayerRef.child((host ? "host" : currentUid)).update({
+                                        chosenWhiteCard1: "",
+                                        chosenWhiteCard2: "",
+                                    })
+                                })
+                                if (host) {
+                                    setTimeout(function() {
+                                        currentGameRef.update({
+                                            state: state.nextTurn
+                                        })
+                                    }, 5000)
+                                }
+                                // show owner of each white card
+                                //award black card to winner
                                 break;
                             case (state.nextTurn):
+                                modal.style.display = "none";
+                                $('#selectedBlack').html("")
                                 if (host) {
                                     playerTurnCount++;
                                     if (playerTurnCount === playerOrder.length) {
@@ -213,23 +229,41 @@ gameState = function(key) {
                                         currentTurn: playerOrder[playerTurnCount]
                                     })
                                 }
-                                currentPlayerRef.once("value", function(snap) {
+                                if (host) {
+                                    currentPlayerRef.once("value", function(snap) {
+
+                                        let winner = false;
                                         snap.forEach(function(snap) {
-                                            if (snap.val().playerBlackCount == winLimit) {
+                                            if (snap.val().playerBlackCount === winLimit) {
                                                 //winner(snap.key)
-                                                if (host) {
-                                                    //change gamestate
-                                                }
+
+                                                winner = true;
+
                                             }
 
                                         })
+                                        if (winner) {
+                                            currentGameRef.update({
+                                                state: state.gameOver
+                                            })
+                                        } else {
+                                            currentGameRef.update({
+                                                state: state.chooseBlack
+                                            })
+                                        }
                                     })
-                                    //check if somebody had reached score limit
-                                    //if not start from state.chooseBlack
-                                    //else go to state.gameOver
+                                }
+                                //check if somebody had reached score limit
+                                //if not start from state.chooseBlack
+                                //else go to state.gameOver
                                 break;
                             case (state.gameOver):
-                                //allow users to return to match making screen
+                                currentPlayerRef.once("value", function(snap) {
+                                        snap.forEach(function(childSnap) {
+                                            currentPlayerRef.child(childSnap.key).child("blackCount").off()
+                                        })
+                                    })
+                                    //allow users to return to match making screen
                                 break;
                             case (state.quitGame):
                                 break;

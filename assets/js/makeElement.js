@@ -80,9 +80,9 @@ makeElement = {
         console.log("mainClick called")
         $(".flip-container").hover(function() {
 
-            $(this).children(".flipper").children(".back").children("p").children(".shBtn").show()
+            $(this).children(".flipper").children(".back").children(".shBtn").show()
         }, function() {
-            $(this).children(".flipper").children(".back").children("p").children(".shBtn").hide()
+            $(this).children(".flipper").children(".back").children(".shBtn").hide()
         })
 
         if (pick === 1) {
@@ -127,45 +127,48 @@ makeElement = {
                 let cardId = $(this).attr("id");
                 cardNum = $(this).attr("cardNum");
                 if (secondPick) {
-                    currentPlayerRef.child((host ? "host" : currentUid)).update({
-                            chosenWhiteCard2: cardNum,
-                            chosenWhiteCard1: firstCard
-                        }).then(function() {
-                            console.log("all args", localWhiteOrder, host, cardId)
-                            fireObj.dealOneCard(localWhiteOrder, host, cardId);
-                            fireObj.dealOneCard(localWhiteOrder, host, firstCardId)
-                            $(".flip-container").off();
-                            let allPicked = true;
-                            currentPlayerRef.once("value", function(snap) {
-                                    snap.forEach(function(snap) {
-                                        if (snap.key != currentTurn && allPicked) {
-
-                                            if (snap.val().chosenWhiteCard1 === "" || snap.val().chosenWhiteCard2 === "") {
-                                                console.log(snap.key, "false")
-                                                allPicked = false;
-                                            } //if2
-                                        } //if1
-                                    })
-                                    if (allPicked) {
-                                        currentGameRef.update({
-                                            state: state.pickWhite
-                                        }).then(function() {
-
-                                        })
-                                    } //if
-
-                                }) //then
-                        }) //then
-                } else {
-
                     if (cardNum === firstCard) {
                         //if card already selected deselect it 
                         firstCard = ""
+                        secondPick = false;
                     } else {
-                        firstCard = cardNum;
-                        secondPick = true;
-                        firstCardId = cardId;
+                        currentPlayerRef.child((host ? "host" : currentUid)).update({
+                                chosenWhiteCard2: cardNum,
+                                chosenWhiteCard1: firstCard
+                            }).then(function() {
+                                console.log("all args", localWhiteOrder, host, cardId)
+                                fireObj.dealOneCard(localWhiteOrder, host, cardId);
+                                fireObj.dealOneCard(localWhiteOrder, host, firstCardId)
+                                $(".flip-container").off();
+                                let allPicked = true;
+                                currentPlayerRef.once("value", function(snap) {
+                                        snap.forEach(function(snap) {
+                                            if (snap.key != currentTurn && allPicked) {
+
+                                                if (snap.val().chosenWhiteCard1 === "" || snap.val().chosenWhiteCard2 === "") {
+                                                    console.log(snap.key, "false")
+                                                    allPicked = false;
+                                                } //if2
+                                            } //if1
+                                        })
+                                        if (allPicked) {
+                                            currentGameRef.update({
+                                                state: state.pickWhite
+                                            }).then(function() {
+
+                                            })
+                                        } //if
+
+                                    }) //then
+                            }) //then
                     }
+                } else {
+
+
+                    firstCard = cardNum;
+                    secondPick = true;
+                    firstCardId = cardId;
+
                 }
             })
         }
@@ -190,7 +193,15 @@ makeElement = {
             $("#" + key + "Players").text(snap.val());
         })
         $("#" + key).on("click", function() {
-            fireObj.gameState(key)
+            gameRef.child(key).once("value", function(snap) {
+                let max = snap.val().playerLimit
+                gameRef.child(key).child("totalPlayers").transaction(function(snap) {
+                    if (snap < max) {
+                        fireObj.gameState(key)
+                        return snap
+                    }
+                })
+            })
         })
 
     },

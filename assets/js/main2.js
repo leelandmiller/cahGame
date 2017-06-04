@@ -127,6 +127,14 @@ fireObj = {
                 makeElement.buildOpenGame(snap.key, snap.val().host, snap.val().winLimit, snap.val().playerLimit);
 
             })
+            gameRef.on("child_changed", function(snap) {
+                if (snap.val().state !== state.open) {
+                    $("#" + snap.key + "Open").remove()
+
+                }
+                // 
+            })
+
         },
 
         createNewGame: function(playerCount, winlimit) {
@@ -446,10 +454,11 @@ fireObj = {
                             let secondNum = secondPick % 50
                             whiteCardRef.child(firstNum).child(secondNum).once("value", function(card) {
                                 blackCards[rand].secondPick = card.val()
+                                console.log("second pick:", blackCards[rand].secondPick, card.val())
 
+                            }).then(function() {
+                                buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick, blackCards[rand].secondPick, host)
                             })
-                        }).then(function() {
-                            buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick, blackCards[rand].secondPick, host)
                         })
                     }
                     players.splice(randNum, 1)
