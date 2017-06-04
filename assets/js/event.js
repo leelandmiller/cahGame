@@ -48,6 +48,34 @@ $("#btn-global-chat").on("click", function() {
 
     }
 })
+firebase.auth().onAuthStateChanged(function(user) {
+    if (user) {
+        $(".front-page").hide();
+        $("body").addClass("coffee-table-bg");
+        $("#myNav").show()
+        $("#main-view").show();
+        $(".hide-create").show();
+        fireObj.globalChatOn();
+        currentUid = user.uid;
+        userRef.child(currentUid).child("displayName").once("value", function(snap) {
+            currentDisplayName = snap.val();
+        }).then(function() {
+            $("#user-name").text(currentDisplayName);
+        })
+        fireObj.joinGameEvent();
+    } else {
+        fireObj.joinGameOff()
+        fireObj.globalChatOff();
+        $(".front-page").show();
+        $("body").removeClass("coffee-table-bg");
+        $("#myNav").hide()
+        $("#main-view").hide();
+        $(".hide-create").hide();
+        $(".hide-waiting").hide();
+    }
+
+
+})
 
 // globalChat.on("child_added", function(snap) {
 //     if (moment().valueOf() - snap.val().timeStamp >= 3600000) {

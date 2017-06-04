@@ -397,6 +397,7 @@ fireObj = {
         showAllChoices: function(currentBlack, currentTurn, pick, host) {
             //display modal
             modal.style.display = "block";
+            toastr.clear();
             currentPlayerRef.once("value", function(snap) {
                 //create a obj to sotre all teh cards
                 let blackCards = {};
@@ -460,6 +461,9 @@ fireObj = {
                     }
                     players.splice(randNum, 1)
 
+                }
+                if (currentTurn === (host ? "host" : currentUid)) {
+                    toastr.warning("<h1>Pick a Winner</h1>", "", { positionClass: "toast-top-full-width", preventDuplicates: true, timeOut: 0, extendedTimeOut: 0 })
                 }
 
             })

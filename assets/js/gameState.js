@@ -145,6 +145,7 @@ gameState = function(key) {
                                 //call next state
                                 break;
                             case (state.chooseBlack):
+                                toastr.clear();
 
                                 currentGameRef.child("currentTurn").once("value", function(snap) {
                                     //display black card
@@ -168,8 +169,9 @@ gameState = function(key) {
                                         makeElement.newWhiteCard("black", currentBlack);
                                     }).then(function() {
                                         if (currentTurn !== (host ? "host" : currentUid)) {
-                                            // set you as chooser of white card
-                                            // need to deal with 1 or 2 clicks
+                                            toastr.warning("<h1>Pick " + pick + (pick === 2 ? " cards" : " card" + "</h1>"), "", { positionClass: "toast-top-full-width", preventDuplicates: true, timeOut: 0, extendedTimeOut: 0 })
+                                                // set you as chooser of white card
+                                                // need to deal with 1 or 2 clicks
                                             makeElement.mainClick(pick, host, currentTurn);
 
                                         } //if
@@ -210,7 +212,7 @@ gameState = function(key) {
                                             let firstChild = Math.floor(blackNum / 50);
                                             let secondChild = blackNum % 50;
                                             if (snap.child(firstChild).child(secondChild).exists()) {
-                                                usersRef.child(currentUid + "/blackCards").child(firstChild).child(secondChild).transaction(function(snap) {
+                                                userRef.child(currentUid + "/blackCards").child(firstChild).child(secondChild).transaction(function(snap) {
                                                     return snap + 1;
                                                 })
                                             } else {
