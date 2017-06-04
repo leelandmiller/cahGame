@@ -40,6 +40,7 @@ let api = {
             this.callUrbanApi(word);
         } else {
             //display error
+            toastr.error('Error: try (/Dict "word") or(/Urban "word")');
             console.log('Error: try (/Dict "word") or(/Urban "word")')
         }
     },
@@ -54,14 +55,16 @@ let api = {
     }
 }
 
+
 $('#btn-chat').on('click', function() {
     let message = $('#btn-input').val().trim();
     $('#btn-input').val('');
     if (message === '') {
-
+        toastr.error('Your message was empty...maybe try typing something...');
     } else if (message.startsWith('/Dict') || message.startsWith('/Urban')) {
         api.checkCall(message);
     } else {
+        // check if searchQuery starts with '/', for api call error
         currentGameRef.child('chat').push().set({
             message: message,
             displayName: currentDisplayName,
