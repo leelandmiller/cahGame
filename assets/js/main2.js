@@ -4,6 +4,7 @@ fireObj = {
             firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
                 var errorCode = error.code;
                 var errorMessage = error.message;
+                toastr.error(errorMessage, errorCode, { positionClass: "toast-top-center" })
             })
 
         },
@@ -16,10 +17,13 @@ fireObj = {
 
             if (password !== passConfrim) {
                 //checks taht passwords match
-                return "passwords dont match";
+                toastr.error("Passwords dont match", "Error", { positionClass: "toast-top-center" })
+                return
             } else if (!(password.length >= 6)) {
                 //checks that it is at least 6 char long
-                return "password is not long enough must be at least 6 characters long"
+                toastr.error("password is not long enough must be at least 6 characters long", "Error", { positionClass: "toast-top-center" })
+
+                return
             } else {
                 for (var i = 0; i < password.length; i++) {
                     //makes sure it has at least 1 number and letter
@@ -40,9 +44,11 @@ fireObj = {
 
             } //else
             if (!containsNumber) {
-                return "must contain at least one number";
+                toastr.error("must contain at least one number", "Error", { positionClass: "toast-top-center" })
+                return;
             } else if (!containsLetter) {
-                return "must contain at least one letter";
+                toastr.error("must contain at least one letter", "Error", { positionClass: "toast-top-center" })
+                return;
             }
 
             this.createAcct(password, displayName, email);

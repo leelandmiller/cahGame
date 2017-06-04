@@ -61,7 +61,7 @@ $('#btn-chat').on('click', function() {
     $('#btn-input').val('');
     if (message === '') {
         toastr.error('Your message was empty...maybe try typing something...');
-    } else if (message.startsWith('/Dict') || message.startsWith('/Urban')) {
+    } else if (message.startsWith('/')) {
         api.checkCall(message);
     } else {
         // check if searchQuery starts with '/', for api call error
