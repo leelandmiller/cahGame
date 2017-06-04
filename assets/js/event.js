@@ -38,7 +38,7 @@ $("#btn-global-chat").on("click", function() {
     let message = $("#global-input").val().trim();
     $("#global-input").val("")
     if (message === "") {
-
+        toastr.error('Your message was empty...maybe try typing something...');
     } else {
         globalChat.push().set({
             message: message,
