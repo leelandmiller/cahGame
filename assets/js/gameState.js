@@ -198,13 +198,24 @@ gameState = function(key) {
                                 $(".black-card-name").show()
                                 currentGameRef.child("winner").once("value", function(snap) {
                                     currentPlayerRef.child(snap.val()).once("value", function(snap) {
-                                        console.log(snap.key, snap.val().displayName)
                                         $("#" + snap.val().displayName + " .flipper .back").css("background", "gold");
                                     })
                                     if (snap.val() === (host ? "host" : currentUid)) {
                                         currentPlayerRef.child((host ? "host" : currentUid)).child("blackCards").child(blackNum).set(true)
                                         currentPlayerRef.child((host ? "host" : currentUid)).child("playerBlackCount").transaction(function(snap) {
-                                            return snap + 1
+                                                return snap + 1
+                                            })
+                                            //ad black card to user's profile totals
+                                        userRef.child(currentUid).child("blackCards").once("value", function(snap) {
+                                            let firstChild = Math.floor(blackNum / 50);
+                                            let secondChild = blackNum % 50;
+                                            if (snap.child(firstChild).child(secondChild).exists()) {
+                                                usersRef.child(currentUid + "/blackCards").child(firstChild).child(secondChild).transaction(function(snap) {
+                                                    return snap + 1;
+                                                })
+                                            } else {
+                                                usersRef.child(currentUid + "/blackCards").child(firstChild).child(secondChild).set(1)
+                                            }
                                         })
                                     }
                                     currentPlayerRef.child((host ? "host" : currentUid)).update({

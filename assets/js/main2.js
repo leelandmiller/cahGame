@@ -134,15 +134,23 @@ fireObj = {
         },
         joinGameEvent: function() {
             gameRef.orderByChild("state").equalTo(state.open).on("child_added", function(snap) {
-                makeElement.buildOpenGame(snap.key, snap.val().host, snap.val().winLimit, snap.val().playerLimit);
+                if (snap.val().totalPlayers !== parseInt(snap.val().playerLimit)) {
+                    makeElement.buildOpenGame(snap.key, snap.val().host, snap.val().winLimit, snap.val().playerLimit);
+                }
 
             })
             gameRef.on("child_changed", function(snap) {
-                if (snap.val().state !== state.open) {
+                console.log(snap.val().totalPlayers, snap.val().playerLimit)
+                if (snap.val().state !== state.open || snap.val().totalPlayers === parseInt(snap.val().playerLimit)) {
+
                     $("#" + snap.key + "Open").remove()
 
                 }
-                // 
+
+            })
+            gameRef.on("child_removed", function(snap) {
+                $("#" + snap.key + "Open").remove()
+
             })
 
         },
