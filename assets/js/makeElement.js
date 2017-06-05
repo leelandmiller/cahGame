@@ -77,7 +77,6 @@ makeElement = {
 
     },
     mainClick: function(pick, host, currentTurn) {
-        console.log("mainClick called")
         $(".flip-container").hover(function() {
 
             $(this).children(".flipper").children(".back").children(".shBtn").show()
@@ -93,7 +92,6 @@ makeElement = {
                     currentPlayerRef.child((host ? "host" : currentUid)).update({
                             chosenWhiteCard1: cardNum
                         }).then(function() {
-                            console.log("all args", localWhiteOrder, host, cardId)
                             fireObj.dealOneCard(localWhiteOrder, host, cardId);
                             $(".flip-container").off();
                             let allPicked = true;
@@ -101,7 +99,6 @@ makeElement = {
                                 snap.forEach(function(snap) {
                                     if (snap.key != currentTurn && allPicked) {
                                         if (snap.val().chosenWhiteCard1 === "") {
-                                            console.log(snap.key, "false")
                                             allPicked = false;
                                         } //if2
                                     } //if1
@@ -128,7 +125,8 @@ makeElement = {
                 cardNum = $(this).attr("cardNum");
                 if (secondPick) {
                     if (cardNum === firstCard) {
-                        //if card already selected deselect it 
+                        $(this).removeClass("glow")
+                            //if card already selected deselect it 
                         firstCard = ""
                         secondPick = false;
                     } else {
@@ -136,9 +134,9 @@ makeElement = {
                                 chosenWhiteCard2: cardNum,
                                 chosenWhiteCard1: firstCard
                             }).then(function() {
-                                console.log("all args", localWhiteOrder, host, cardId)
                                 fireObj.dealOneCard(localWhiteOrder, host, cardId);
                                 fireObj.dealOneCard(localWhiteOrder, host, firstCardId)
+                                $("#" + firstCardId).removeClass("glow")
                                 $(".flip-container").off();
                                 let allPicked = true;
                                 currentPlayerRef.once("value", function(snap) {
@@ -146,7 +144,6 @@ makeElement = {
                                             if (snap.key != currentTurn && allPicked) {
 
                                                 if (snap.val().chosenWhiteCard1 === "" || snap.val().chosenWhiteCard2 === "") {
-                                                    console.log(snap.key, "false")
                                                     allPicked = false;
                                                 } //if2
                                             } //if1
@@ -163,7 +160,7 @@ makeElement = {
                             }) //then
                     }
                 } else {
-
+                    $(this).addClass("glow")
 
                     firstCard = cardNum;
                     secondPick = true;
@@ -225,12 +222,10 @@ makeElement = {
     },
     blackCardClick: function(name) {
         $("#" + name).on("click", function() {
-            console.log("activated")
             let displayName = $(this).attr("id");
             currentPlayerRef.once("value", function(snap) {
                 snap.forEach(function(childSnap) {
                     let uid = childSnap.key
-                    console.log(uid)
                     if (displayName === childSnap.val().displayName) {
                         currentGameRef.update({
                             winner: uid,

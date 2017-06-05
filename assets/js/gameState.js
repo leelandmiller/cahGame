@@ -182,6 +182,8 @@ gameState = function(key) {
 
                                 // break;
                             case (state.pickWhite):
+                                //prevent it getting stuck on state change
+                                $(".shBtn").hide();
                                 //display all choosed white cards to everyone in random order
                                 fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
 
@@ -216,7 +218,7 @@ gameState = function(key) {
                                                     return snap + 1;
                                                 })
                                             } else {
-                                                usersRef.child(currentUid + "/blackCards").child(firstChild).child(secondChild).set(1)
+                                                userRef.child(currentUid + "/blackCards").child(firstChild).child(secondChild).set(1)
                                             }
                                         })
                                     }

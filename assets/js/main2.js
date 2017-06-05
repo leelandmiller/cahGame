@@ -17,11 +17,11 @@ fireObj = {
 
             if (password !== passConfrim) {
                 //checks taht passwords match
-                toastr.error("Passwords dont match", "Error", { positionClass: "toast-top-center" })
+                toastr.error("Passwords don't match", "Error", { positionClass: "toast-top-center" })
                 return
             } else if (!(password.length >= 6)) {
                 //checks that it is at least 6 char long
-                toastr.error("password is not long enough must be at least 6 characters long", "Error", { positionClass: "toast-top-center" })
+                toastr.error("Password is not long enough to satisfy anyone. Must be at least 6 characters long", "Error", { positionClass: "toast-top-center" })
 
                 return
             } else {
@@ -44,10 +44,10 @@ fireObj = {
 
             } //else
             if (!containsNumber) {
-                toastr.error("must contain at least one number", "Error", { positionClass: "toast-top-center" })
+                toastr.error("Must contain at least one number", "Error", { positionClass: "toast-top-center" })
                 return;
             } else if (!containsLetter) {
-                toastr.error("must contain at least one letter", "Error", { positionClass: "toast-top-center" })
+                toastr.error("Must contain at least one letter", "Error", { positionClass: "toast-top-center" })
                 return;
             }
 
@@ -64,7 +64,8 @@ fireObj = {
                 }
             }).then(function() {
                 if (nameExists) {
-                    // return "that displayName already exists try another"
+                    toastr.error("That display name already exists", "Error", { positionClass: "toast-top-center" })
+                        // return "that displayName already exists try another"
                 } else {
                     firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
                         var errorCode = error.code;
@@ -116,7 +117,6 @@ fireObj = {
             }
         },
         globalChatOn: function() {
-            console.log("globalChat on")
             $("#global-chat").html("");
             globalChat.on("child_added", function(snap) {
                 if (moment().valueOf() - snap.val().timeStamp >= 3600000) {
@@ -135,7 +135,6 @@ fireObj = {
         },
 
         globalChatOff: function(key) {
-            console.log("globalChat off")
             globalChat.off();
         },
         joinGameEvent: function() {
@@ -146,7 +145,6 @@ fireObj = {
 
             })
             gameRef.on("child_changed", function(snap) {
-                console.log(snap.val().totalPlayers, snap.val().playerLimit)
                 if (snap.val().state !== state.open || snap.val().totalPlayers === parseInt(snap.val().playerLimit)) {
 
                     $("#" + snap.key + "Open").remove()
@@ -377,8 +375,8 @@ fireObj = {
         },
         dealOneCard: function(whiteOrder, host, card) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
-                console.log(whiteOrder)
-                    //grab whitecount
+
+                //grab whitecount
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
@@ -432,8 +430,14 @@ fireObj = {
 
 
                         }).then(function() {
-                            //build display black card with white card text
-                            buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick, host)
+                            let args = {
+                                    currentBlack: currentBlack,
+                                    displayName: blackCards[rand].name,
+                                    firstPick: blackCards[rand].firstPick,
+                                    host: host
+                                }
+                                //build display black card with white card text
+                            buildBlackSelected(args)
                         })
 
                     }
@@ -455,7 +459,14 @@ fireObj = {
                                 console.log("second pick:", blackCards[rand].secondPick, card.val())
 
                             }).then(function() {
-                                buildBlackSelected(currentBlack, blackCards[rand].name, blackCards[rand].firstPick, blackCards[rand].secondPick, host)
+                                let args = {
+                                    currentBlack: currentBlack,
+                                    displayName: blackCards[rand].name,
+                                    firstPick: blackCards[rand].firstPick,
+                                    secondPick: blackCards[rand].secondPick,
+                                    host: host
+                                }
+                                buildBlackSelected(args)
                             })
                         })
                     }

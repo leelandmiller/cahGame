@@ -38,7 +38,7 @@ function cardFlip(el) {
     } else {
         $(el).addClass('flip');
     }
-    console.log(el.id);
+
 }
 
 
@@ -50,25 +50,26 @@ $('.flip-container').on('click', function() {
     } else {
         $(this).addClass('flip');
     }
-    console.log(this.id);
+
 })
 
 // NEW WHITE CARD TEST //
-var card = 'card2'; //data from obj
-var whiteCard = 'My humps.'; //data from obj
+// var card = 'card2'; //data from obj
+// var whiteCard = 'My humps.'; //data from obj
 
-$('#' + card).on('click', function() {
-    makeElement.newWhiteCard()
-})
+// $('#' + card).on('click', function() {
+//     makeElement.newWhiteCard()
+// })
+
 
 
 $('#urbanDict').on('click', function() {
-    $('.chat_input').val('/Urban " "');
+    $('.chat_input').val('/Urban ""');
     $('.urbantip .tooltiptext').hide();
 })
 
 $('#pearsonDict').on('click', function() {
-    $('.chat_input').val('/Dict " "');
+    $('.chat_input').val('/Dict ""');
     $('.urbantip .tooltiptext').hide();
 })
 

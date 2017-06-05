@@ -6,7 +6,7 @@ var btn = document.getElementById("myBtn");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
-// When the user clicks the button, open the modal 
+// When the user clicks the button, open the modal
 // btn.onclick = function() {
 //     modal.style.display = "block";
 //     //buildBlackSelected("this is first word  this is the second right herer?", "bob", "word1", "word2");
@@ -19,30 +19,29 @@ var span = document.getElementsByClassName("close")[0];
 //     }
 // }
 
-
-function buildBlackSelected() {
+// args = blackCard, displayName, firstPick, secondPick, host
+function buildBlackSelected(args) {
     //blackCard, player,  (whiteCard, whiteCard), host
     let text = ""
     let host = false;
-    let displayName = arguments[1]
-    let blackCard = arguments[0]
-    if (arguments.length === 4) {
-        host = arguments[3]
+    let displayName = args.displayName;
+    let blackCard = args.currentBlack
+    if (Object.keys(args).length === 4) {
+        host = args.host;
         if (blackCard.indexOf("_") === -1) {
-            text = blackCard + "<br>" + "<span class='white-text'>" + arguments[2] + "</span>"
+            text = blackCard + "<br>" + "<span class='white-text'>" + args.firstPick + "</span>"
         } else {
-            text = blackCard.replace(/_/g, "<span class='white-text'>" + arguments[2] + "</span>")
+            text = blackCard.replace(/_/g, "<span class='white-text'>" + args.firstPick + "</span>")
         }
-    } else if (arguments.length === 5) {
-        host = arguments[4]
+    } else if (Object.keys(args).length === 5) {
+        host = args.host;
         if (blackCard.indexOf("_") === -1) {
-            text = blackCard + "<br>" + "<span class='white-text'>" + arguments[2] + "</span>" + "<br>" + "<span class='white-text'>" + arguments[3] + "</span>"
+            text = blackCard + "<br>" + "<span class='white-text'>" + args.firstPick + "</span>" + "<br>" + "<span class='white-text'>" + args.secondPick + "</span>"
         } else {
-            text = blackCard.replace(/_/, "<span class='white-text'>" + arguments[2] + "</span>")
-            text = text.replace(/_/, "<span class='white-text'>" + arguments[3] + "</span>")
+            text = blackCard.replace(/_/, "<span class='white-text'>" + args.firstPick + "</span>")
+            text = text.replace(/_/, "<span class='white-text'>" + args.secondPick + "</span>")
         }
     }
-    console.log("name", arguments[1])
     let cardContainer = $('<div>').addClass('col-md-3');
 
     let flipContainer = $('<div>').addClass('flip-container').attr("id", displayName);

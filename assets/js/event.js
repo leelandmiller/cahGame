@@ -77,35 +77,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 })
 
-// globalChat.on("child_added", function(snap) {
-//     if (moment().valueOf() - snap.val().timeStamp >= 3600000) {
-//         globalChat.child(snap.key).remove()
-//     } else if (moment().valueOf() - snap.val().timeStamp <= 300000) {
-//         console.log(moment(snap.val().timeStamp).format("h:mm"))
-//         let newDiv = $("<div>");
-//         let message = $("<p>").text(snap.val().message);
-//         let name = $("<strong>").text(snap.val().displayName + ":");
-//         message.prepend(name);
-//         newDiv.append(message);
-//         $("#global-chat").append(newDiv)
-//     }
 
-// })
-
-
-
-
-// gameRef.orderByChild('state').equalTo(state.open).on('child_added', function(snap) {
-//     var hostName = snap.val().host;
-//     var joinBtn = '<button class="btn btn-default" id="' + snap.key + '">Join</button>';
-
-//     var newGameData = $('<tr>').html('<td>' + hostName + '</td><td>' + snap.val().totalPlayers + '/' + snap.val().playerLimit + '</td><td>' + snap.val().winLimit + '</td><td>' + joinBtn + '</td>');
-//     $('#table-row').append(newGameData);
-
-//     $('#' + snap.key).on('click', function() {
-//         fireObj.gameState(snap.key);
-//     });
-// });
 
 
 $("#create-game").on("click", function(event) {
