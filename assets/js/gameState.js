@@ -1,5 +1,6 @@
-gameState = function(key) {
+gameState = function(key, rejoin) {
     let host = false;
+    let reJoin = rejoin
     let blackOrder = [];
     let whiteOrder = [];
     let winLimit = 0;
@@ -64,8 +65,23 @@ gameState = function(key) {
 
         }).then(function() {
             currentPlayerRef = playerRef.child(playerKey);
-            currentGameRef.onDisconnect().remove();
-            currentPlayerRef.onDisconnect().remove();
+            currentPlayerRef.child((host ? "host" : currentUid)).onDisconnect().update({
+                playerState: {
+                    connected: false,
+                    timeStamp: firebase.database.ServerValue.TIMESTAMP
+                }
+            })
+            if (host) {
+                currentGameRef.onDisconnect().update({
+                    state: state.quitGame
+                })
+            }
+            if (reJoin) {
+                currentPlayerRef.child(currentUid).child("playerState").update({
+                    connected: true,
+                    timeStamp: 0
+                })
+            }
             currentGameRef.child("state").on("value", function(snap) {
                     let data = snap.val();
                     if (data === null) {
@@ -86,6 +102,7 @@ gameState = function(key) {
                                             }*/
                         switch (data) {
                             case (state.open):
+
                                 fireObj.globalChatOff();
                                 //TODO: hide game list
                                 $("#current-turn-name").text("");
@@ -93,10 +110,14 @@ gameState = function(key) {
                                     $("#row" + i).html("");
                                 }
                                 $("#waiting-player-table").html("<tbody><tr> <th>Players</th></tr></tbody>");
-                                if (!host) {
+                                if (!host && !reJoin) {
                                     // if not the host build and add player object based on player uid
                                     fireObj.buildPlayerObj(key, playerKey)
+                                    userRef.child(currentUid).update({
+                                        joinedGame: key
+                                    })
                                 }
+
                                 // currentGameRef.child("totalPlayers").on("value", function(snap) {
                                 //         $("#currentPlay").text(snap.val());
 
@@ -109,10 +130,6 @@ gameState = function(key) {
                                     let displayName = snap.val().displayName
                                     makeElement.buildPlayerList(playerKey, snap.key, displayName);
                                     if (host) playerOrder.push(snap.key);
-                                    if (snap.key != "host") {
-
-
-                                    }
                                     let newPlayer = $("<th>").text(displayName);
                                     let newTr = $("<tr>");
                                     newTr.append(newPlayer);
@@ -145,6 +162,11 @@ gameState = function(key) {
                                 //call next state
                                 break;
                             case (state.chooseBlack):
+                                if (reJoin) {
+                                    reJoin.showHand();
+                                    reJoin.buiidList();
+                                    reJoin = false;
+                                }
                                 toastr.clear();
 
                                 currentGameRef.child("currentTurn").once("value", function(snap) {
@@ -182,6 +204,15 @@ gameState = function(key) {
 
                                 // break;
                             case (state.pickWhite):
+                                if (reJoin) {
+                                    reJoin.showHand();
+                                    let playerReJoin = reJoin.getBlackCard(key)
+                                    reJoin.buiidList();
+                                    currentBlack = playerReJoin.currentBlack;
+                                    currentTurn = playerReJoin.currentTurn;
+                                    pick = playerReJoin.pick;
+                                    reJoin = false;
+                                }
                                 //prevent it getting stuck on state change
                                 $(".shBtn").hide();
                                 //display all choosed white cards to everyone in random order
@@ -199,6 +230,14 @@ gameState = function(key) {
                                 // set min time or wait 5sec after pick
                                 break;
                             case (state.showCards):
+                                if (reJoin) {
+                                    let playerReJoin = reJoin.getBlackCard(key)
+                                    reJoin.buiidList();
+                                    currentBlack = playerReJoin.currentBlack;
+                                    currentTurn = playerReJoin.currentTurn;
+                                    pick = playerReJoin.pick;
+                                    reJoin = false;
+                                }
                                 $(".black-card-name").show()
                                 currentGameRef.child("winner").once("value", function(snap) {
                                     currentPlayerRef.child(snap.val()).once("value", function(snap) {
@@ -228,11 +267,53 @@ gameState = function(key) {
                                     })
                                 })
                                 if (host) {
-                                    setTimeout(function() {
-                                        currentGameRef.update({
-                                            state: state.nextTurn
+                                    currentPlayerRef.once("value", function(snap) {
+                                        playerDisconnected = false;
+                                        discconnectedKey = "";
+                                        let disconnectCount = 0;
+                                        snap.forEach(function(childSnap) {
+                                            if (!childSnap.val().playerState.connected) {
+                                                playerDisconnected = true;
+                                                discconnectedKey = snap.key;
+                                                disconnectCount++
+                                            }
                                         })
-                                    }, 5000)
+                                        if (disconnectCount > 1) {
+                                            currentGameRef.update({
+                                                state: state.quitGame
+                                            })
+                                        } else if (playerDisconnected) {
+                                            let counter = 0;
+                                            let interval = setInterval(function() {
+                                                currentPlayerRef.child(discconnectedKey).once("value", function(snap) {
+                                                    counter++
+                                                    if (counter >= 30) {
+                                                        currentPlayerRef.child(discconnectedKey).remove()
+                                                        clearInterval(interval)
+                                                        let index = playerOrder.indexOf(discconnectedKey);
+                                                        playerOrder.slice(index, 1)
+                                                    }
+                                                    if (snap.val().playerState.connected) {
+                                                        setTimeout(function() {
+                                                            currentGameRef.update({
+                                                                state: state.nextTurn
+                                                            })
+                                                        }, 5000)
+
+                                                        clearInterval(interval);
+                                                    } //if
+                                                })
+                                            }, 1000)
+                                        } else {
+                                            setTimeout(function() {
+                                                currentGameRef.update({
+                                                    state: state.nextTurn
+                                                })
+                                            }, 5000)
+                                        }
+
+                                    })
+
                                 }
                                 // show owner of each white card
                                 //award black card to winner
@@ -286,6 +367,9 @@ gameState = function(key) {
                                     //allow users to return to match making screen
                                 break;
                             case (state.quitGame):
+                                userRef.child(currentUid).update({
+                                    joinedGame: ""
+                                })
                                 if (host) {
                                     currentGameRef.remove()
                                     currentPlayerRef.remove()

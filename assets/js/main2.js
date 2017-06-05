@@ -214,6 +214,10 @@ fireObj = {
                     chosenWhiteCard1: "",
                     chosenWhiteCard2: "",
                     uid: currentUid,
+                    playerState: {
+                        connected: true,
+                        timeStamp: 0
+                    },
                     displayName: currentDisplayName,
                     playerBlackCount: 0
                 }
@@ -295,6 +299,10 @@ fireObj = {
                     chosenWhiteCard1: "",
                     chosenWhiteCard2: "",
                     uid: currentUid,
+                    playerState: {
+                        connected: true,
+                        timeStamp: 0
+                    },
                     displayName: currentDisplayName,
                     playerBlackCount: 0
                 }
