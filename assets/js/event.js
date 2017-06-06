@@ -58,44 +58,45 @@ firebase.auth().onAuthStateChanged(function(user) {
         fireObj.globalChatOn();
         currentUid = user.uid;
         userRef.child(currentUid).once("value", function(snap) {
-                currentDisplayName = snap.val().displayName;
-                let game = snap.val().joinedGame;
-                if (game != "") {
-                    gameRef.once("value", function(snap) {
-                            if (snap.val().child(game).exists()) {
-                                playerRef.child(snap.val().players).once("value", function(snap) {
-                                    if (snap.val().child(currentUid).exists()) {
-                                        fireObj.gameState(game, true);
-                                    } else {
-                                        userRef.child(currentUid).update({
-                                            joinedGame: ""
-                                        })
-                                    }
+            currentDisplayName = snap.val().displayName;
+            let game = snap.val().joinedGame;
+            if (game != "") {
+                gameRef.once("value", function(snap) {
+                        if (snap.child(game).exists()) {
+                            let players = snap.child(game).val().players;
+                            playerRef.child(players).once("value", function(snap) {
+                                if (snap.child(currentUid).exists()) {
+                                    fireObj.gameState(game, true);
+                                } else {
+                                    userRef.child(currentUid).update({
+                                        joinedGame: ""
+                                    })
+                                }
 
-                                })
+                            })
 
-                            } else {
-                                userRef.child(currentUid).update({
-                                    joinedGame: ""
-                                })
-                            }
-                        }) //once
-                } //if
-            }
+                        } else {
+                            userRef.child(currentUid).update({
+                                joinedGame: ""
+                            })
+                        }
+                    }) //once
+            } //if
+
         }).then(function() {
-        $("#user-name").text(currentDisplayName);
-    })
-    fireObj.joinGameEvent();
-} else {
-    fireObj.joinGameOff()
-    fireObj.globalChatOff();
-    $(".front-page").show();
-    $("body").removeClass("coffee-table-bg");
-    $("#myNav").hide()
-    $("#main-view").hide();
-    $(".hide-create").hide();
-    $(".hide-waiting").hide();
-}
+            $("#user-name").text(currentDisplayName);
+        })
+        fireObj.joinGameEvent();
+    } else {
+        fireObj.joinGameOff()
+        fireObj.globalChatOff();
+        $(".front-page").show();
+        $("body").removeClass("coffee-table-bg");
+        $("#myNav").hide()
+        $("#main-view").hide();
+        $(".hide-create").hide();
+        $(".hide-waiting").hide();
+    }
 
 
 })

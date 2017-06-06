@@ -91,8 +91,6 @@ makeElement = {
                                 if (allPicked) {
                                     currentGameRef.update({
                                         state: state.pickWhite
-                                    }).then(function() {
-
                                     })
                                 } //if
                                 //then

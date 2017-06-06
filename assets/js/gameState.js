@@ -1,6 +1,6 @@
-gameState = function(key, rejoin) {
+gameState = function(key, rejoined) {
     let host = false;
-    let reJoin = rejoin
+    let reJoined = rejoined
     let blackOrder = [];
     let whiteOrder = [];
     let winLimit = 0;
@@ -78,7 +78,7 @@ gameState = function(key, rejoin) {
                     state: state.quitGame
                 })
             }
-            if (reJoin) {
+            if (reJoined) {
                 currentPlayerRef.child(currentUid).child("playerState").update({
                     connected: true,
                     timeStamp: 0
@@ -112,7 +112,7 @@ gameState = function(key, rejoin) {
                                     $("#row" + i).html("");
                                 }
                                 $("#waiting-player-table").html("<tbody><tr> <th>Players</th></tr></tbody>");
-                                if (!host && !reJoin) {
+                                if (!host && !reJoined) {
                                     // if not the host build and add player object based on player uid
                                     fireObj.buildPlayerObj(key, playerKey)
                                     userRef.child(currentUid).update({
@@ -165,28 +165,28 @@ gameState = function(key, rejoin) {
                                 //call next state
                                 break;
                             case (state.chooseBlack):
-                                if (reJoin) {
+                                if (rejoined) {
                                     reJoin.showHand(key, whiteOrder);
-                                    reJoin.buiidList();
-                                    reJoin = false;
+                                    reJoin.buildList(playerKey);
+                                    reJoined = false;
                                 }
                                 toastr.clear();
                                 if (host) {
                                     let timeOutCount = 0;
                                     disconnectTO = setInterval(function() {
                                         currentPlayerRef.once("value", function(snap) {
-                                            playerDisconnected = false;
-                                            discconnectedKey = "";
+                                            let playerDisconnected = false;
+                                            let disconnectedKey = "";
                                             let disconnectCount = 0;
                                             snap.forEach(function(childSnap) {
-                                                //check for disconnect
-                                                if (!childSnap.val().playerState.connected) {
-                                                    //grab player key and increase count
-                                                    playerDisconnected = true;
-                                                    discconnectedKey = snap.key;
-                                                    disconnectCount++
-                                                }
-                                            })
+                                                    //check for disconnect
+                                                    if (!childSnap.val().playerState.connected) {
+                                                        //grab player key and increase count
+                                                        playerDisconnected = true;
+                                                        disconnectedKey = snap.key;
+                                                        disconnectCount++
+                                                    } //if
+                                                }) //forEach
                                             if (disconnectCount > 1) {
                                                 //if more than one disconnect quit game
                                                 currentGameRef.update({
@@ -196,23 +196,36 @@ gameState = function(key, rejoin) {
                                                 //if player disconnected check ever second for 30 secions if the reconnected yet
                                                 let counter = 0;
                                                 let interval = setInterval(function() {
-                                                    currentPlayerRef.child(discconnectedKey).once("value", function(snap) {
+                                                    currentPlayerRef.child(disconnectedKey).once("value", function(snap) {
                                                         counter++
                                                         if (counter >= 30) {
                                                             //at 30 cehcks delete player from playersred and playerorder adn proceed to nect state
-                                                            currentPlayerRef.child(discconnectedKey).remove()
+                                                            currentPlayerRef.child(disconnectedKey).remove()
                                                             clearInterval(interval)
-                                                            let index = playerOrder.indexOf(discconnectedKey);
+                                                            let index = playerOrder.indexOf(disconnectedKey);
                                                             playerOrder.slice(index, 1)
-                                                            if (discconnectedKey === currentTurn) {
+                                                            if (disconnectedKey === currentTurn) {
                                                                 //if their turn skip to nect turn
                                                                 currentGameRef.update({
                                                                     state: state.nextTurn
                                                                 })
                                                             } else {
                                                                 //if not their turn skip to pickWhite
-                                                                currentGameRef.update({
-                                                                    state: state.pickWhite
+                                                                let allPicked = true;
+                                                                currentPlayerRef.once("value", function(snap) {
+                                                                    snap.forEach(function(snap) {
+                                                                        if (snap.key != currentTurn && allPicked) {
+                                                                            if (snap.val().chosenWhiteCard1 === "") {
+                                                                                allPicked = false;
+                                                                            } //if2
+                                                                        } //if1
+                                                                    })
+                                                                    if (allPicked) {
+                                                                        currentGameRef.update({
+                                                                            state: state.pickWhite
+                                                                        })
+                                                                    } //if
+                                                                    //then
                                                                 })
 
                                                             }
@@ -268,14 +281,14 @@ gameState = function(key, rejoin) {
                                 if (host) {
                                     clearInterval(disconnectTO);
                                 }
-                                if (reJoin) {
+                                if (reJoined) {
                                     reJoin.showHand(key, whiteOrder);
                                     let playerReJoin = reJoin.getBlackCard(key)
-                                    reJoin.buiidList();
+                                    reJoin.buildList(playerKey);
                                     currentBlack = playerReJoin.currentBlack;
                                     currentTurn = playerReJoin.currentTurn;
                                     pick = playerReJoin.pick;
-                                    reJoin = false;
+                                    reJoined = false;
                                 }
                                 //prevent it getting stuck on state change
                                 $(".shBtn").hide();
@@ -294,13 +307,13 @@ gameState = function(key, rejoin) {
                                 // set min time or wait 5sec after pick
                                 break;
                             case (state.showCards):
-                                if (reJoin) {
-                                    let playerReJoin = reJoin.getBlackCard(key)
-                                    reJoin.buiidList();
+                                if (reJoined) {
+                                    let playerReJoin = reJoin.getBlackCard(key, blackOrder)
+                                    reJoin.buildList(playerKey);
                                     currentBlack = playerReJoin.currentBlack;
                                     currentTurn = playerReJoin.currentTurn;
                                     pick = playerReJoin.pick;
-                                    reJoin = false;
+                                    reJoined = false;
                                 }
                                 $(".black-card-name").show()
                                 currentGameRef.child("winner").once("value", function(snap) {
@@ -442,6 +455,7 @@ gameState = function(key, rejoin) {
                                     //allow users to return to match making screen
                                 break;
                             case (state.quitGame):
+                                modal.style.display = "none";
                                 userRef.child(currentUid).update({
                                     joinedGame: ""
                                 })
