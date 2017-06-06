@@ -61,21 +61,6 @@ makeElement = {
         }
     },
 
-    gamesToJoin: function() {
-
-    },
-
-    waitingHost: function() {
-
-    },
-
-    waitingPlayers: function() {
-
-    },
-
-    playerInfo: function() {
-
-    },
     mainClick: function(pick, host, currentTurn) {
         $(".flip-container").hover(function() {
 

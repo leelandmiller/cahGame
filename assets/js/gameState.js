@@ -15,6 +15,8 @@ gameState = function(key, rejoin) {
     let currentTurn = "";
     let currentBlack = "";
     let blackNum = 0;
+    let haveDisconnect = false;
+    let disconnectTO = "";
     $(".hide-create").hide();
     $(".hide-waiting").show();
 
@@ -157,17 +159,76 @@ gameState = function(key, rejoin) {
                                 fireObj.dealSevenCards(playerKey, whiteOrder, host);
                                 $("#waiting").hide();
                                 $("#hideCards").show();
+
                                 // deal out cards
                                 // display cards their cards
                                 //call next state
                                 break;
                             case (state.chooseBlack):
                                 if (reJoin) {
-                                    reJoin.showHand();
+                                    reJoin.showHand(key, whiteOrder);
                                     reJoin.buiidList();
                                     reJoin = false;
                                 }
                                 toastr.clear();
+                                if (host) {
+                                    let timeOutCount = 0;
+                                    disconnectTO = setInterval(function() {
+                                        currentPlayerRef.once("value", function(snap) {
+                                            playerDisconnected = false;
+                                            discconnectedKey = "";
+                                            let disconnectCount = 0;
+                                            snap.forEach(function(childSnap) {
+                                                //check for disconnect
+                                                if (!childSnap.val().playerState.connected) {
+                                                    //grab player key and increase count
+                                                    playerDisconnected = true;
+                                                    discconnectedKey = snap.key;
+                                                    disconnectCount++
+                                                }
+                                            })
+                                            if (disconnectCount > 1) {
+                                                //if more than one disconnect quit game
+                                                currentGameRef.update({
+                                                    state: state.quitGame
+                                                })
+                                            } else if (playerDisconnected) {
+                                                //if player disconnected check ever second for 30 secions if the reconnected yet
+                                                let counter = 0;
+                                                let interval = setInterval(function() {
+                                                    currentPlayerRef.child(discconnectedKey).once("value", function(snap) {
+                                                        counter++
+                                                        if (counter >= 30) {
+                                                            //at 30 cehcks delete player from playersred and playerorder adn proceed to nect state
+                                                            currentPlayerRef.child(discconnectedKey).remove()
+                                                            clearInterval(interval)
+                                                            let index = playerOrder.indexOf(discconnectedKey);
+                                                            playerOrder.slice(index, 1)
+                                                            if (discconnectedKey === currentTurn) {
+                                                                //if their turn skip to nect turn
+                                                                currentGameRef.update({
+                                                                    state: state.nextTurn
+                                                                })
+                                                            } else {
+                                                                //if not their turn skip to pickWhite
+                                                                currentGameRef.update({
+                                                                    state: state.pickWhite
+                                                                })
+
+                                                            }
+                                                        }
+                                                        if (snap.val().playerState.connected) {
+                                                            //if reconnect do nothing because if their turn it will go to nect state anyway 
+                                                            //if isnth thier turn wont change til they select
+                                                            clearInterval(interval);
+                                                        } //if
+                                                    })
+                                                }, 1000)
+                                            }
+
+                                        })
+                                    }, 30000)
+                                }
 
                                 currentGameRef.child("currentTurn").once("value", function(snap) {
                                     //display black card
@@ -204,8 +265,11 @@ gameState = function(key, rejoin) {
 
                                 // break;
                             case (state.pickWhite):
+                                if (host) {
+                                    clearInterval(disconnectTO);
+                                }
                                 if (reJoin) {
-                                    reJoin.showHand();
+                                    reJoin.showHand(key, whiteOrder);
                                     let playerReJoin = reJoin.getBlackCard(key)
                                     reJoin.buiidList();
                                     currentBlack = playerReJoin.currentBlack;
@@ -261,10 +325,7 @@ gameState = function(key, rejoin) {
                                             }
                                         })
                                     }
-                                    currentPlayerRef.child((host ? "host" : currentUid)).update({
-                                        chosenWhiteCard1: "",
-                                        chosenWhiteCard2: "",
-                                    })
+
                                 })
                                 if (host) {
                                     currentPlayerRef.once("value", function(snap) {
@@ -272,28 +333,37 @@ gameState = function(key, rejoin) {
                                         discconnectedKey = "";
                                         let disconnectCount = 0;
                                         snap.forEach(function(childSnap) {
+                                            //check for disconnect
                                             if (!childSnap.val().playerState.connected) {
+                                                //grab player key and increase count
                                                 playerDisconnected = true;
                                                 discconnectedKey = snap.key;
                                                 disconnectCount++
                                             }
                                         })
                                         if (disconnectCount > 1) {
+                                            //if more than one disconnect quit game
                                             currentGameRef.update({
                                                 state: state.quitGame
                                             })
                                         } else if (playerDisconnected) {
+                                            //if player disconnected check ever second for 30 secions if the reconnected yet
                                             let counter = 0;
                                             let interval = setInterval(function() {
                                                 currentPlayerRef.child(discconnectedKey).once("value", function(snap) {
                                                     counter++
                                                     if (counter >= 30) {
+                                                        //at 30 cehcks delete player from playersred and playerorder adn proceed to nect state
                                                         currentPlayerRef.child(discconnectedKey).remove()
                                                         clearInterval(interval)
                                                         let index = playerOrder.indexOf(discconnectedKey);
                                                         playerOrder.slice(index, 1)
+                                                        currentGameRef.update({
+                                                            state: state.nextTurn
+                                                        })
                                                     }
                                                     if (snap.val().playerState.connected) {
+                                                        //if the reconnect go to nect state;
                                                         setTimeout(function() {
                                                             currentGameRef.update({
                                                                 state: state.nextTurn
@@ -305,6 +375,7 @@ gameState = function(key, rejoin) {
                                                 })
                                             }, 1000)
                                         } else {
+                                            //if none disconnected move to next state
                                             setTimeout(function() {
                                                 currentGameRef.update({
                                                     state: state.nextTurn
@@ -320,6 +391,10 @@ gameState = function(key, rejoin) {
                                 break;
                             case (state.nextTurn):
                                 modal.style.display = "none";
+                                currentPlayerRef.child((host ? "host" : currentUid)).update({
+                                    chosenWhiteCard1: "",
+                                    chosenWhiteCard2: "",
+                                })
                                 $('#selectedBlack').html("")
                                 if (host) {
                                     playerTurnCount++;
