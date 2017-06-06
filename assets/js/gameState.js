@@ -283,32 +283,46 @@ gameState = function(key, rejoined) {
                                 }
                                 if (reJoined) {
                                     reJoin.showHand(key, whiteOrder);
-                                    let playerReJoin = reJoin.getBlackCard(key)
-                                    reJoin.buildList(playerKey);
-                                    currentBlack = playerReJoin.currentBlack;
-                                    currentTurn = playerReJoin.currentTurn;
-                                    pick = playerReJoin.pick;
-                                    reJoined = false;
+                                    let playerReJoin = Promise.resolve(reJoin.newGetBlackCard(blackOrder))
+                                    console.log(playerReJoin)
+                                    playerReJoin.then(function(result) {
+
+                                            reJoin.buildList(playerKey);
+                                            currentBlack = result.currentBlack;
+                                            currentTurn = result.currentTurn;
+                                            pick = result.pick;
+                                            console.log(result)
+                                            reJoined = false;
+                                            fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
+                                        })
+                                        // reJoin.buildList(playerKey);
+                                        // currentBlack = playerReJoin.currentBlack;
+                                        // currentTurn = playerReJoin.currentTurn;
+                                        // pick = playerReJoin.pick;
+                                        // console.log(playerReJoin)
+                                        // reJoined = false;
                                 }
                                 //prevent it getting stuck on state change
                                 $(".shBtn").hide();
                                 //display all choosed white cards to everyone in random order
-                                fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
+                                if (!reJoined) fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
 
 
-                                if (currentTurn === (host ? "host" : currentUid)) {
-                                    currentGameRef.child("blackCount").transaction(function(snap) {
-                                            return snap + 1
-                                        })
-                                        // set you as chooser of white card
-                                } //if
+                                // if (currentTurn === (host ? "host" : currentUid)) {
+                                //     currentGameRef.child("blackCount").transaction(function(snap) {
+                                //             return snap + 1
+                                //         })
+                                //         // set you as chooser of white card
+                                // } //if
+
                                 //currentGameRef
                                 //current player turn chooses a white card to win
                                 // set min time or wait 5sec after pick
                                 break;
                             case (state.showCards):
                                 if (reJoined) {
-                                    let playerReJoin = reJoin.getBlackCard(key, blackOrder)
+                                    console.log(blackOrder)
+                                    let playerReJoin = reJoin.newGetBlackCard(blackOrder)
                                     reJoin.buildList(playerKey);
                                     currentBlack = playerReJoin.currentBlack;
                                     currentTurn = playerReJoin.currentTurn;
@@ -408,6 +422,12 @@ gameState = function(key, rejoined) {
                                     chosenWhiteCard1: "",
                                     chosenWhiteCard2: "",
                                 })
+                                if (currentTurn === (host ? "host" : currentUid)) {
+                                    currentGameRef.child("blackCount").transaction(function(snap) {
+                                            return snap + 1
+                                        })
+                                        // set you as chooser of white card
+                                } //if
                                 $('#selectedBlack').html("")
                                 if (host) {
                                     playerTurnCount++;
