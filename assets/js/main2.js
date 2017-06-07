@@ -216,7 +216,7 @@ fireObj = {
                     chosenWhiteCard2: "",
                     uid: currentUid,
                     playerState: {
-                        connected: true,
+                        connected: 1,
                         timeStamp: 0
                     },
                     displayName: currentDisplayName,
@@ -301,7 +301,7 @@ fireObj = {
                     chosenWhiteCard2: "",
                     uid: currentUid,
                     playerState: {
-                        connected: true,
+                        connected: 1,
                         timeStamp: 0
                     },
                     displayName: currentDisplayName,
