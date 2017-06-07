@@ -78,9 +78,7 @@ let setBadgeColor = function() {
         let secondId = "";
         let thirdId = "";
         snap.forEach(function(childSnap) {
-                console.log("forEach", childSnap.key)
                 let blackCount = childSnap.val().playerBlackCount
-                console.log("blackCount", blackCount)
                 if (blackCount > first) {
                     console.log(childSnap.key, " is first")
                     third = second;
@@ -103,7 +101,6 @@ let setBadgeColor = function() {
         snap.forEach(function(childSnap) {
             let blackCount = childSnap.val().playerBlackCount
             if (childSnap.key === firstId) {
-                console.log(childSnap.key, " is set")
                 $("#" + firstId + "blackCount").parent(".badge").css("background", "gold")
             } else if (childSnap.key === secondId) {
                 if (second === first && first !== 0) {
