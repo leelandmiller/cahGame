@@ -96,6 +96,7 @@ gameState = function(key, rejoined) {
                             currentPlayerRef.onDisconnect().cancel()
                             currentGameRef.onDisconnect().cancel()
                         }
+                        toastr.clear();
                         currentPlayerRef.child(currentUid).onDisconnect().cancel()
                         currentGameRef.child("state").off()
                         fireObj.globalChatOn();
@@ -170,6 +171,7 @@ gameState = function(key, rejoined) {
                             case (state.ready):
                                 currentGameRef.child("totalPlayers").off()
                                 currentPlayerRef.off()
+                                setBadgeColor()
                                 fireObj.dealSevenCards(playerKey, whiteOrder, host);
                                 $("#waiting").hide();
                                 $("#hideCards").show();
@@ -377,7 +379,8 @@ gameState = function(key, rejoined) {
                                         discconnectedKey = "";
                                         let disconnectCount = 0;
                                         snap.forEach(function(childSnap) {
-                                            //check for disconnect
+                                            console.log(childSnap.val())
+                                                //check for disconnect
                                             if (!childSnap.val().playerState.connected) {
                                                 //grab player key and increase count
                                                 playerDisconnected = true;
@@ -500,6 +503,7 @@ gameState = function(key, rejoined) {
                                     currentPlayerRef.onDisconnect().cancel()
                                     currentGameRef.onDisconnect().cancel()
                                 }
+                                toastr.clear();
                                 currentPlayerRef.child(currentUid).onDisconnect().cancel()
                                 currentChatRef.off();
                                 currentGameRef.child("state").off()

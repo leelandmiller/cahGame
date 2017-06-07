@@ -57,7 +57,6 @@ let newGetBlackCard = function(blackOrder) {
             returnObj.pick = snap.val().pick;
             returnObj.currentBlack = snap.val().text;
             makeElement.newWhiteCard("black", returnObj.currentBlack);
-            console.log(returnObj)
             return returnObj
         })
     })
@@ -67,6 +66,75 @@ let reJoin = {
     buildList: buildList,
     showHand: showHand,
     newGetBlackCard: newGetBlackCard
+}
+let setBadgeColor = function() {
+
+    currentPlayerRef.on("value", function(snap) {
+
+        let first = 0;
+        let second = 0;
+        let third = 0;
+        let firstId = "";
+        let secondId = "";
+        let thirdId = "";
+        snap.forEach(function(childSnap) {
+                console.log("forEach", childSnap.key)
+                let blackCount = childSnap.val().playerBlackCount
+                console.log("blackCount", blackCount)
+                if (blackCount > first) {
+                    console.log(childSnap.key, " is first")
+                    third = second;
+                    thirdId = secondId;
+                    second = first;
+                    secondId = firstId;
+                    first = blackCount;
+                    firstId = childSnap.key;
+                } else if (blackCount > second) {
+                    third = second;
+                    thirdId = secondId;
+                    second = blackCount;
+                    secondId = childSnap.key
+                } else if (blackCount > third) {
+                    third = blackCount;
+                    thirdId = childSnap.key
+                }
+
+            }) //forEach
+        snap.forEach(function(childSnap) {
+            let blackCount = childSnap.val().playerBlackCount
+            if (childSnap.key === firstId) {
+                console.log(childSnap.key, " is set")
+                $("#" + firstId + "blackCount").parent(".badge").css("background", "gold")
+            } else if (childSnap.key === secondId) {
+                if (second === first && first !== 0) {
+                    $("#" + secondId + "blackCount").parent(".badge").css("background", "gold")
+                } else {
+                    $("#" + secondId + "blackCount").parent(".badge").css("background", "silver")
+                }
+            } else if (childSnap.key === thirdId) {
+                if (third === first && first !== 0) {
+                    $("#" + thirdId + "blackCount").parent(".badge").css("background", "gold")
+                } else if (third === second && second !== 0) {
+                    $("#" + thirdId + "blackCount").parent(".badge").css("background", "silver")
+                } else {
+                    $("#" + thirdId + "blackCount").parent(".badge").css("background", "darkgoldenrod")
+                }
+            } else {
+                if (blackCount === first && first !== 0) {
+                    $("#" + childSnap.key + "blackCount").parent(".badge").css("background", "gold")
+                } else if (blackCount === second && second !== 0) {
+                    $("#" + childSnap.key + "blackCount").parent(".badge").css("background", "silver")
+                } else if (blackCount === third && third !== 0) {
+                    $("#" + childSnap.key + "blackCount").parent(".badge").css("background", "darkgoldenrod")
+                } else {
+                    $("#" + childSnap.key + "blackCount").parent(".badge").css("background", "black")
+                }
+
+            }
+        })
+
+
+    })
 }
 
 //if on chooseBlack or picjWhite have host check for disconnected players and 
