@@ -49,7 +49,7 @@ let api = {
         }
     },
     displayDef: function(def, word, dict) {
-        console.log(word + " : " + def)
+        // console.log(word + " : " + def)
         let newDiv = $("<div>");
         let newDef = $("<p>").text(def);
         let newWord = $("<strong>").text('(' + dict + ' Dict) - ' + word + ": ");

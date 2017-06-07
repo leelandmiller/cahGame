@@ -36,6 +36,27 @@ let state = {
     quitGame: 8
 }
 
+let chatCallback = function() {
+    let message = $('#btn-input').val().trim();
+    $('#btn-input').val('');
+    if (message === '') {
+        toastr.error('Your message was empty...maybe try typing something...', '', {
+            closeButton: true,
+            timeout: 10000,
+            positionClass: 'toast-bottom-right'
+        });
+    } else if (message.startsWith('/')) {
+        api.checkCall(message);
+    } else {
+        // check if searchQuery starts with '/', for api call error
+        currentGameRef.child('chat').push().set({
+            message: message,
+            displayName: currentDisplayName,
+            timeStamp: firebase.database.ServerValue.TIMESTAMP
+        });
+    }
+}
+
 
 toastr.options = {
     "closeButton": true,

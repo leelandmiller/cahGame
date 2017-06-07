@@ -109,7 +109,7 @@ makeElement = {
                 if (secondPick) {
                     if (cardNum === firstCard) {
                         $(this).removeClass("glow")
-                            //if card already selected deselect it 
+                            //if card already selected deselect it
                         firstCard = ""
                         secondPick = false;
                     } else {
@@ -189,11 +189,12 @@ makeElement = {
         let isSet = false;
         for (var i = 0; i < 4; i++) {
             if ($("#row" + i).children().length < 2 && !isSet) {
-                let newTd = $("<td>").text(displayName + " - x");
+                let newTd = $("<td>").text(displayName + " - ");
+                let badgeSpan = $('<span>').addClass('badge');
                 let newSpan = $("<span>").attr("id", uid + "blackCount").text("0");
                 let newGlyph = $("<span>").addClass("glyphicon glyphicon-stop");
-
-                newTd.append(newSpan).append(newGlyph);
+                badgeSpan.append(newSpan).append(newGlyph);
+                newTd.append(badgeSpan);
                 $("#row" + i).append(newTd);
                 isSet = true;
                 playerRef.child(playerKey + "/" + uid).child("playerBlackCount").on("value", function(snap) {
