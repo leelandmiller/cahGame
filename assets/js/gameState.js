@@ -67,15 +67,12 @@ gameState = function(key, rejoined) {
 
         }).then(function() {
             currentPlayerRef = playerRef.child(playerKey);
-            currentPlayerRef.child((host ? "host" : currentUid)).onDisconnect().update({
-                playerState: {
-                    connected: false,
-                    timeStamp: firebase.database.ServerValue.TIMESTAMP
-                }
-            })
-            if (host) {
-                currentGameRef.onDisconnect().update({
-                    state: state.quitGame
+            if (!host) {
+                currentPlayerRef.child(currentUid).onDisconnect().update({
+                    playerState: {
+                        connected: false,
+                        timeStamp: firebase.database.ServerValue.TIMESTAMP
+                    }
                 })
             }
             if (reJoined) {
@@ -88,7 +85,24 @@ gameState = function(key, rejoined) {
                     let data = snap.val();
                     if (data === null) {
                         //TODO: call quitgame functions
+                        currentPlayerRef.child(currentUid).onDisconnect().cancel()
+                        modal.style.display = "none";
+                        userRef.child(currentUid).update({
+                            joinedGame: ""
+                        })
+                        if (host) {
+                            currentGameRef.remove()
+                            currentPlayerRef.remove()
+                            currentPlayerRef.onDisconnect().cancel()
+                            currentGameRef.onDisconnect().cancel()
+                        }
+                        currentPlayerRef.child(currentUid).onDisconnect().cancel()
                         currentGameRef.child("state").off()
+                        fireObj.globalChatOn();
+                        $("#waiting").hide();
+                        $(".hide-waiting").hide();
+                        $(".hide-create").show();
+                        $("#hideCards").hide();
                         currentChatRef.off();
                     } else {
                         /*state = {
@@ -189,14 +203,13 @@ gameState = function(key, rejoined) {
                                                 }) //forEach
                                             if (disconnectCount > 1) {
                                                 //if more than one disconnect quit game
-                                                currentGameRef.update({
-                                                    state: state.quitGame
-                                                })
+                                                currentGameRef.remove();
                                             } else if (playerDisconnected) {
                                                 //if player disconnected check ever second for 30 secions if the reconnected yet
                                                 let counter = 0;
                                                 let interval = setInterval(function() {
                                                     currentPlayerRef.child(disconnectedKey).once("value", function(snap) {
+                                                        console.log(snap.val().playerState)
                                                         counter++
                                                         if (counter >= 30) {
                                                             //at 30 cehcks delete player from playersred and playerorder adn proceed to nect state
@@ -284,7 +297,6 @@ gameState = function(key, rejoined) {
                                 if (reJoined) {
                                     reJoin.showHand(key, whiteOrder);
                                     let playerReJoin = Promise.resolve(reJoin.newGetBlackCard(blackOrder))
-                                    console.log(playerReJoin)
                                     playerReJoin.then(function(result) {
 
                                             reJoin.buildList(playerKey);
@@ -322,12 +334,17 @@ gameState = function(key, rejoined) {
                             case (state.showCards):
                                 if (reJoined) {
                                     console.log(blackOrder)
-                                    let playerReJoin = reJoin.newGetBlackCard(blackOrder)
-                                    reJoin.buildList(playerKey);
-                                    currentBlack = playerReJoin.currentBlack;
-                                    currentTurn = playerReJoin.currentTurn;
-                                    pick = playerReJoin.pick;
-                                    reJoined = false;
+                                    let playerReJoin = Promise.resolve(reJoin.newGetBlackCard(blackOrder))
+                                    playerReJoin.then(function(result) {
+
+                                        reJoin.buildList(playerKey);
+                                        currentBlack = result.currentBlack;
+                                        currentTurn = result.currentTurn;
+                                        pick = result.pick;
+                                        console.log(result)
+                                        reJoined = false;
+                                        fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
+                                    })
                                 }
                                 $(".black-card-name").show()
                                 currentGameRef.child("winner").once("value", function(snap) {
@@ -370,9 +387,7 @@ gameState = function(key, rejoined) {
                                         })
                                         if (disconnectCount > 1) {
                                             //if more than one disconnect quit game
-                                            currentGameRef.update({
-                                                state: state.quitGame
-                                            })
+                                            currentGameRef.remove()
                                         } else if (playerDisconnected) {
                                             //if player disconnected check ever second for 30 secions if the reconnected yet
                                             let counter = 0;
@@ -482,7 +497,11 @@ gameState = function(key, rejoined) {
                                 if (host) {
                                     currentGameRef.remove()
                                     currentPlayerRef.remove()
+                                    currentPlayerRef.onDisconnect().cancel()
+                                    currentGameRef.onDisconnect().cancel()
                                 }
+                                currentPlayerRef.child(currentUid).onDisconnect().cancel()
+                                currentChatRef.off();
                                 currentGameRef.child("state").off()
                                 fireObj.globalChatOn();
                                 $("#waiting").hide();

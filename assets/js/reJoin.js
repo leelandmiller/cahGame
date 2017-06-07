@@ -27,33 +27,7 @@ let showHand = function(key, whiteOrder) {
 
 }
 
-let getBlackCard = function(key, blackOrder) {
-    let returnObj = {}
-    currentGameRef.child("currentTurn").once("value", function(snap) {
-        //display black card
-        returnObj.currentTurn = snap.val()
-        currentPlayerRef.child(returnObj.currentTurn).once("value", function(snap) {
-            $("#current-turn-name").text(snap.val().displayName)
-        })
 
-    })
-    currentGameRef.child("blackCount").once("value", function(snap) {
-        //find blackCOunt
-        let firstNum = Math.floor(snap.val() / 50);
-        let secondNum = snap.val() % 50;
-        blackNum = blackOrder[firstNum][secondNum]
-            //find card location
-        let firstChild = Math.floor(blackNum / 50)
-        let secondChild = blackNum % 50
-        blackCardRef.child(firstChild).child(secondChild).once("value", function(snap) {
-            returnObj.pick = snap.val().pick;
-            returnObj.currentBlack = snap.val().text;
-            makeElement.newWhiteCard("black", returnObj.currentBlack);
-        })
-    })
-
-
-}
 
 let getCurrentTurn = function() {
     return currentGameRef.once("value").then(function(snap) {
@@ -91,7 +65,6 @@ let newGetBlackCard = function(blackOrder) {
 }
 let reJoin = {
     buildList: buildList,
-    getBlackCard: getBlackCard,
     showHand: showHand,
     newGetBlackCard: newGetBlackCard
 }

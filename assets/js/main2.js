@@ -165,7 +165,6 @@ fireObj = {
 
         createNewGame: function(playerCount, winlimit) {
             let newGameRef = gameRef.push();
-
             let newPlayerRef = playerRef.push();
             let playerKey = newPlayerRef.key
             let whiteCount = 0;
@@ -178,7 +177,9 @@ fireObj = {
                 white: [],
                 black: []
             };
-            //grab the key to the enw game
+            gameRef.child(newGameRef.key).onDisconnect().remove()
+            playerRef.child(newPlayerRef.key).onDisconnect().remove()
+                //grab the key to the enw game
             currentGame = newGameRef.key;
             //build the game obj for database
             let gameObj = {

@@ -62,7 +62,7 @@ firebase.auth().onAuthStateChanged(function(user) {
             let game = snap.val().joinedGame;
             if (game != "") {
                 gameRef.once("value", function(snap) {
-                        if (snap.child(game).exists()) {
+                        if (snap.child(game).exists() && snap.child(game).child("host").val() !== currentDisplayName) {
                             let players = snap.child(game).val().players;
                             playerRef.child(players).once("value", function(snap) {
                                 if (snap.child(currentUid).exists()) {
