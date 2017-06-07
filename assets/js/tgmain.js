@@ -63,18 +63,16 @@ $('.flip-container').on('click', function() {
 function setCaretPosition(elemId, caretPos) {
     var elem = document.getElementById(elemId);
 
-    if(elem != null) {
-        if(elem.createTextRange) {
+    if (elem != null) {
+        if (elem.createTextRange) {
             var range = elem.createTextRange();
             range.move('character', caretPos);
             range.select();
-        }
-        else {
-            if(elem.selectionStart) {
+        } else {
+            if (elem.selectionStart) {
                 elem.focus();
                 elem.setSelectionRange(caretPos, caretPos);
-            }
-            else
+            } else
                 elem.focus();
         }
     }
@@ -112,8 +110,35 @@ $('.urbantip').hover(function() {
     $('.urbantip .tooltiptext').hide();
 })
 
+////// Modals //////
+// Show Results Modal
+$('#myBtn').on('click', function() {
+    // CODE NEED FOR PROJECT BELOW
+    $('#endModal').show();
+    $("#main-view").wrap("<div class='blur'></div>");
+});
+// Hide Results Modal
+$('#btn-quit-game').on('click', function() {
+    // CODE NEED FOR PROJECT BELOW
+    $('#main-view').unwrap();
+    $('#endModal').hide();
+
+});
 
 
+// Show Black Card Modal
+$('#myBtn2').on('click', function() {
+    $('.game-center').hide(); // TESTING
+    $('#hideCards').show(); // TESTING
+    $('.hide-waiting').show(); // TESTING
+    $('#waiting').hide(); // TESTING
+
+    // CODE NEED FOR PROJECT BELOW
+    $('#myModal').show();
+    $("#hideCards").wrap("<div class='blur'></div>");
+
+
+});
 
 
 
