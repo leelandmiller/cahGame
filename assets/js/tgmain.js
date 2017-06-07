@@ -110,19 +110,36 @@ $('.urbantip').hover(function() {
     $('.urbantip .tooltiptext').hide();
 })
 
-// Modal
+////// Modals //////
+// Show Results Modal
 $('#myBtn').on('click', function() {
-    console.log('click')
+    // CODE NEED FOR PROJECT BELOW
     $('#endModal').show();
     $("#main-view").wrap("<div class='blur'></div>");
 });
-
+// Hide Results Modal
 $('#btn-quit-game').on('click', function() {
+    // CODE NEED FOR PROJECT BELOW
     $('#main-view').unwrap();
     $('#endModal').hide();
 
+});
 
-})
+
+// Show Black Card Modal
+$('#myBtn2').on('click', function() {
+    $('.game-center').hide(); // TESTING
+    $('#hideCards').show(); // TESTING
+    $('.hide-waiting').show(); // TESTING
+    $('#waiting').hide(); // TESTING
+
+    // CODE NEED FOR PROJECT BELOW
+    $('#myModal').show();
+    $("#hideCards").wrap("<div class='blur'></div>");
+
+
+});
+
 
 
 
