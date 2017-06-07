@@ -322,10 +322,8 @@ p.shBtn {
     background-color: #555;
 }
 
-.btn-group.dropup {
-    position: fixed;
-    left: 0px;
-    bottom: 0;
+#results-chat-body {
+    /*height: 206px;*/
 }
 
 .urbantip {
@@ -518,10 +516,43 @@ p.shBtn {
     cursor: pointer;
 }
 
+#game-results,
+#results-chat {
+    padding: 0;
+    margin-right: 20px;
+}
+
+.quit-btn {
+    padding: 15px
+}
+
+#endModal {
+    z-index: 3;
+    padding-top: 8px;
+}
+
 .modal-header {
     padding: 2px 16px;
-    background-color: #5cb85c;
     color: white;
+    background-color: #5cb85c;
+    margin-bottom: 40px;
+}
+
+#winner {
+    display: none;
+}
+
+#loser {
+    /*display: none;*/
+    background-color: red;
+}
+
+.blur {
+    filter: blur(6px);
+}
+
+.no-blur {
+    filter: blur(0px);
 }
 
 .modal-body {

@@ -63,18 +63,16 @@ $('.flip-container').on('click', function() {
 function setCaretPosition(elemId, caretPos) {
     var elem = document.getElementById(elemId);
 
-    if(elem != null) {
-        if(elem.createTextRange) {
+    if (elem != null) {
+        if (elem.createTextRange) {
             var range = elem.createTextRange();
             range.move('character', caretPos);
             range.select();
-        }
-        else {
-            if(elem.selectionStart) {
+        } else {
+            if (elem.selectionStart) {
                 elem.focus();
                 elem.setSelectionRange(caretPos, caretPos);
-            }
-            else
+            } else
                 elem.focus();
         }
     }
@@ -112,9 +110,19 @@ $('.urbantip').hover(function() {
     $('.urbantip .tooltiptext').hide();
 })
 
+// Modal
+$('#myBtn').on('click', function() {
+    console.log('click')
+    $('#endModal').show();
+    $("#main-view").wrap("<div class='blur'></div>");
+});
+
+$('#btn-quit-game').on('click', function() {
+    $('#main-view').unwrap();
+    $('#endModal').hide();
 
 
-
+})
 
 
 
