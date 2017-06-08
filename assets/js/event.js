@@ -4,7 +4,6 @@ $('.hide-game-center').hide();
 $("#susubmit").on("click", function() {
     let email = $("#emailInput").val().trim();
     let password = $("#pwone").val();
-    console.log(email, password)
     if (email === "" || password === "") {
         $(".errormsg").text("password or email is blank").show();
     } else {

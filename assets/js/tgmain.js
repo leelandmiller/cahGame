@@ -118,12 +118,13 @@ $('#myBtn').on('click', function() {
     $("#main-view").wrap("<div class='blur'></div>");
 });
 // Hide Results Modal
-$('#btn-quit-game').on('click', function() {
-    // CODE NEED FOR PROJECT BELOW
-    $('#main-view').unwrap();
-    $('#endModal').hide();
+// $('#btn-quit-game').on('click', function() {
+            //     // CODE NEED FOR PROJECT BELOW
+            //     $('#main-view').unwrap();
+            //     $('#endModal').hide();
 
-});
+            // });
+
 
 
 // Show Black Card Modal

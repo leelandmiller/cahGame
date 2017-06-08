@@ -80,7 +80,6 @@ let setBadgeColor = function() {
         snap.forEach(function(childSnap) {
                 let blackCount = childSnap.val().playerBlackCount
                 if (blackCount > first) {
-                    console.log(childSnap.key, " is first")
                     third = second;
                     thirdId = secondId;
                     second = first;

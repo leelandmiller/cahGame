@@ -87,6 +87,7 @@ gameState = function(key, rejoined) {
                         //TODO: call quitgame functions
                         currentPlayerRef.child(currentUid).onDisconnect().cancel()
                         modal.style.display = "none";
+                        $("#hideCards").unwrap()
                         userRef.child(currentUid).update({
                             joinedGame: ""
                         })
@@ -492,8 +493,7 @@ gameState = function(key, rejoined) {
                                         discconnectedKey = "";
                                         let disconnectCount = 0;
                                         snap.forEach(function(childSnap) {
-                                            console.log(childSnap.val())
-                                                //check for disconnect
+                                            //check for disconnect
                                             if (childSnap.val().playerState.connected === 2) {
                                                 currentPlayerRef.child(childSnap.key).remove()
                                                 let index = playerOrder.indexOf(childSnap.key);
@@ -562,6 +562,7 @@ gameState = function(key, rejoined) {
                                 break;
                             case (state.nextTurn):
                                 modal.style.display = "none";
+                                $("#hideCards").unwrap()
                                 currentPlayerRef.child((host ? "host" : currentUid)).update({
                                     chosenWhiteCard1: "",
                                     chosenWhiteCard2: "",
@@ -587,7 +588,8 @@ gameState = function(key, rejoined) {
 
                                         let winner = false;
                                         snap.forEach(function(snap) {
-                                            if (snap.val().playerBlackCount === winLimit) {
+                                            console.log(snap.val().playerBlackCount, "winLimit", winLimit)
+                                            if (snap.val().playerBlackCount === parseInt(winLimit)) {
                                                 //winner(snap.key)
 
                                                 winner = true;
@@ -611,15 +613,128 @@ gameState = function(key, rejoined) {
                                 //else go to state.gameOver
                                 break;
                             case (state.gameOver):
+                                toastr.clear()
+                                currentPlayerRef.once("value", function(snap) {
+                                    snap.forEach(function(childSnap) {
+                                        currentPlayerRef.child(childSnap.key).child("blackCount").off()
+                                    })
+                                })
+                                let gameWinner = ""
+                                let amWinner = false;
                                 currentPlayerRef.once("value", function(snap) {
                                         snap.forEach(function(childSnap) {
-                                            currentPlayerRef.child(childSnap.key).child("blackCount").off()
+                                            if (childSnap.val().playerBlackCount === parseInt(winLimit)) {
+
+                                                if (childSnap.key === (host ? "host" : currentUid)) {
+                                                    amWinner = true;
+                                                }
+                                                gameWinner = childSnap.key
+                                                let isSet = false;
+                                                for (var i = 0; i < 4; i++) {
+                                                    if ($("#winnerRow" + i).children().length < 2 && !isSet) {
+                                                        let newTd = $("<td>").text(childSnap.val().displayName + " - ");
+                                                        let badgeSpan = $('<span>').addClass('badge').css("background", "gold");
+                                                        let newSpan = $("<span>").text(childSnap.val().playerBlackCount);
+                                                        let newGlyph = $("<span>").addClass("glyphicon glyphicon-stop");
+                                                        badgeSpan.append(newSpan).append(newGlyph);
+                                                        newTd.append(badgeSpan);
+                                                        $("#winnerRow" + i).append(newTd);
+                                                        isSet = true;
+
+                                                    }
+
+                                                }
+                                            } else {
+                                                let isSet = false;
+                                                for (var i = 0; i < 4; i++) {
+                                                    if ($("#winnerRow" + i).children().length < 2 && !isSet) {
+                                                        let newTd = $("<td>").text(childSnap.val().displayName + " - ");
+                                                        let badgeSpan = $('<span>').addClass('badge');
+                                                        let newSpan = $("<span>").text(childSnap.val().playerBlackCount);
+                                                        let newGlyph = $("<span>").addClass("glyphicon glyphicon-stop");
+                                                        badgeSpan.append(newSpan).append(newGlyph);
+                                                        newTd.append(badgeSpan);
+                                                        $("#winnerRow" + i).append(newTd);
+                                                        isSet = true;
+
+                                                    }
+
+                                                }
+                                            }
+                                        })
+                                        if (amWinner) {
+                                            $("#loser").hide()
+                                            $("#winner").show()
+                                        }
+                                        currentChatRef.off("child_added")
+                                        currentChatRef.on('child_added', function(snap) {
+                                            if (snap.key === 'chat') {} else {
+                                                let newDiv = $("<div>");
+                                                let message = $("<p>").text(snap.val().message);
+                                                let name = $("<strong>").text(snap.val().displayName + ": ");
+                                                message.prepend(name);
+                                                newDiv.append(message);
+                                                $("#results-chat-body").append(newDiv)
+                                            }
+                                        });
+                                        $('#btn-result-chat').on('click', function() {
+                                            let message = $('#btn-result-input').val().trim();
+                                            $('#btn-result-input').val('');
+                                            if (message === '') {
+                                                toastr.error('Your message was empty...maybe try typing something...', '', {
+                                                    closeButton: true,
+                                                    timeout: 10000,
+                                                    positionClass: 'toast-bottom-right'
+                                                });
+                                            } else if (message.startsWith('/')) {
+                                                api.checkCall(message);
+                                            } else {
+                                                // check if searchQuery starts with '/', for api call error
+                                                currentGameRef.child('chat').push().set({
+                                                    message: message,
+                                                    displayName: currentDisplayName,
+                                                    timeStamp: firebase.database.ServerValue.TIMESTAMP
+                                                });
+                                            }
+                                        });
+                                        $('#endModal').show();
+                                        $("#main-view").wrap("<div class='blur'></div>");
+                                        $("#btn-quit-game").on("click", function() {
+                                            userRef.child(currentUid).update({
+                                                joinedGame: ""
+                                            })
+                                            toastr.clear();
+                                            currentPlayerRef.child(currentUid).onDisconnect().cancel()
+                                            currentChatRef.off();
+                                            currentGameRef.child("state").off()
+                                            fireObj.globalChatOn();
+                                            if (host) {
+                                                currentPlayerRef.onDisconnect().cancel()
+                                                currentGameRef.onDisconnect().cancel()
+                                            }
+                                            $('#btn-result-chat').off()
+                                            $("#waiting").hide();
+                                            $(".hide-waiting").hide();
+                                            $(".hide-create").show();
+                                            $("#hideCards").hide();
+                                            $('#endModal').hide();
+                                            $("#main-view").unwrap();
+                                            $("btn-quit-game").off();
+                                            currentPlayerRef.once("value", function(snap) {
+                                                if (snap.numChildren() < 2) {
+                                                    currentGameRef.remove()
+                                                    currentPlayerRef.remove()
+                                                } else {
+                                                    currentPlayerRef.child((host ? "host" : currentUid)).remove()
+                                                }
+                                            })
                                         })
                                     })
                                     //allow users to return to match making screen
                                 break;
                             case (state.quitGame):
                                 modal.style.display = "none";
+                                $("#hideCards").unwrap()
                                 userRef.child(currentUid).update({
                                     joinedGame: ""
                                 })
