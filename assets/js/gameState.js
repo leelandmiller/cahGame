@@ -588,7 +588,6 @@ gameState = function(key, rejoined) {
 
                                         let winner = false;
                                         snap.forEach(function(snap) {
-                                            console.log(snap.val().playerBlackCount, "winLimit", winLimit)
                                             if (snap.val().playerBlackCount === parseInt(winLimit)) {
                                                 //winner(snap.key)
 
@@ -663,8 +662,17 @@ gameState = function(key, rejoined) {
                                             }
                                         })
                                         if (amWinner) {
+                                            $("#winner-animation").show();
+                                            setTimeout(function() {
+                                                $("#winner-animation").fadeOut();
+                                            }, 4000)
                                             $("#loser").hide()
                                             $("#winner").show()
+                                        } else {
+                                            $("#sad-face-animation").show();
+                                            setTimeout(function() {
+                                                $("#sad-face-animation").fadeOut();
+                                            }, 4000)
                                         }
                                         currentChatRef.off("child_added")
                                         currentChatRef.on('child_added', function(snap) {
