@@ -135,6 +135,16 @@ gameState = function(key, rejoined) {
                                         joinedGame: key
                                     })
                                 }
+                                // ---- QUIT GAME LISTENER ---- //
+                                $('body').on('click', '#quit-game-confirm', function() {
+                                    $('.cd-popup').removeClass('is-visible');
+                                    if (!host) {
+                                        currentPlayerRef.child(currentUid).remove();
+                                        userRef.child(currentUid).update({
+                                            joinedGame: ''
+                                        })
+                                    }
+                                });
 
                                 // currentGameRef.child("totalPlayers").on("value", function(snap) {
                                 //         $("#currentPlay").text(snap.val());
@@ -282,7 +292,7 @@ gameState = function(key, rejoined) {
                                                             }
                                                         }
                                                         if (snap.val().playerState.connected) {
-                                                            //if reconnect do nothing because if their turn it will go to nect state anyway 
+                                                            //if reconnect do nothing because if their turn it will go to nect state anyway
                                                             //if isnth thier turn wont change til they select
                                                             clearInterval(interval);
                                                         } //if
@@ -423,7 +433,7 @@ gameState = function(key, rejoined) {
                                                             }
                                                         }
                                                         if (snap.val().playerState.connected) {
-                                                            //if reconnect do nothing because if their turn it will go to nect state anyway 
+                                                            //if reconnect do nothing because if their turn it will go to nect state anyway
                                                             //if isnth thier turn wont change til they select
                                                             clearInterval(interval);
                                                         } //if
