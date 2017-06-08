@@ -85,9 +85,16 @@ $('.chat_input').on('focusin', function() {
             chatCallback();
         }
     });
+
+    $('#global-input').on('keyup', function(event) {
+        if (event.keyCode === 13) {
+            globalChatCallback();
+        }
+    });
 });
 
 $('.chat_input').on('focusout', function() {
+    $('#global-input').off('keyup');
     $('#btn-input').off('keyup');
 });
 
