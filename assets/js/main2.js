@@ -383,7 +383,7 @@ fireObj = {
         },
         dealOneCard: function(whiteOrder, host, card) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
-                let handLoc = parseInt(card.splice(4)) - 1
+                let handLoc = parseInt(card.slice(4)) - 1
                     //grab whitecount
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
