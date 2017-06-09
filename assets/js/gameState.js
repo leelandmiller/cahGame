@@ -548,15 +548,15 @@ gameState = function(key, rejoined) {
                                 modal.style.display = "none";
                                 $("#hideCards").unwrap()
                                 currentPlayerRef.child((host ? "host" : currentUid)).update({
-                                    chosenWhiteCard1: "",
-                                    chosenWhiteCard2: "",
-                                })
-                                if (currentTurn === (host ? "host" : currentUid)) {
-                                    currentGameRef.child("blackCount").transaction(function(snap) {
-                                            return snap + 1
-                                        })
-                                        // set you as chooser of white card
-                                } //if
+                                        chosenWhiteCard1: "",
+                                        chosenWhiteCard2: "",
+                                    })
+                                    // if (currentTurn === (host ? "host" : currentUid)) {
+                                    //     currentGameRef.child("blackCount").transaction(function(snap) {
+                                    //             return snap + 1
+                                    //         })
+                                    //         // set you as chooser of white card
+                                    // } //if
                                 $('#selectedBlack').html("")
                                 if (host) {
                                     playerTurnCount++;
@@ -565,32 +565,36 @@ gameState = function(key, rejoined) {
                                     }
                                     currentGameRef.update({
                                         currentTurn: playerOrder[playerTurnCount]
-                                    })
-                                }
-                                if (host) {
-                                    currentPlayerRef.once("value", function(snap) {
-
-                                        let winner = false;
-                                        snap.forEach(function(snap) {
-                                            if (snap.val().playerBlackCount === parseInt(winLimit)) {
-                                                //winner(snap.key)
-
-                                                winner = true;
-
-                                            }
-
+                                    }).then(function() {
+                                        currentGameRef.child("blackCount").transaction(function(snap) {
+                                            return snap + 1
                                         })
-                                        if (winner) {
-                                            currentGameRef.update({
-                                                state: state.gameOver
+                                    }).then(function() {
+                                        currentPlayerRef.once("value", function(snap) {
+
+                                            let winner = false;
+                                            snap.forEach(function(snap) {
+                                                if (snap.val().playerBlackCount === parseInt(winLimit)) {
+                                                    //winner(snap.key)
+
+                                                    winner = true;
+
+                                                }
+
                                             })
-                                        } else {
-                                            currentGameRef.update({
-                                                state: state.chooseBlack
-                                            })
-                                        }
+                                            if (winner) {
+                                                currentGameRef.update({
+                                                    state: state.gameOver
+                                                })
+                                            } else {
+                                                currentGameRef.update({
+                                                    state: state.chooseBlack
+                                                })
+                                            }
+                                        })
                                     })
                                 }
+
                                 //check if somebody had reached score limit
                                 //if not start from state.chooseBlack
                                 //else go to state.gameOver
