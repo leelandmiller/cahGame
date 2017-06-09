@@ -143,7 +143,18 @@ gameState = function(key, rejoined) {
                                         userRef.child(currentUid).update({
                                             joinedGame: ''
                                         })
+                                        // let total = 0;
+                                        currentGameRef.child('totalPlayers').transaction(function(snap) {
+                                            return snap - 1;
+                                        });
                                     }
+
+                                    fireObj.globalChatOn();
+                                    $("#waiting").hide();
+                                    $(".hide-waiting").hide();
+                                    $(".hide-create").show();
+                                    $("#hideCards").hide();
+                                    currentChatRef.off();
                                 });
 
                                 // currentGameRef.child("totalPlayers").on("value", function(snap) {
@@ -159,7 +170,7 @@ gameState = function(key, rejoined) {
                                     makeElement.buildPlayerList(playerKey, snap.key, displayName);
                                     if (host) playerOrder.push(snap.key);
                                     let newPlayer = $("<th>").text(displayName);
-                                    let newTr = $("<tr>");
+                                    let newTr = $("<tr>").attr('id', snap.key + 'waiting-list');
                                     newTr.append(newPlayer);
                                     $("#waiting-player-table tbody").append(newTr);
                                     if (host) {
@@ -176,12 +187,17 @@ gameState = function(key, rejoined) {
 
                                 }); //currentPlayerRef.on()
 
+                                currentPlayerRef.on('child_removed', function(snap) {
+                                    $('#' + snap.key + 'blackCount').parents('td').remove();
+                                    $('#' + snap.key + 'waiting-list').remove();
+                                });
+
 
                                 //the host starts game and changes to next state
                                 break;
                             case (state.ready):
                                 currentGameRef.child("totalPlayers").off()
-                                currentPlayerRef.off()
+                                currentPlayerRef.off('child_added');
                                 setBadgeColor()
                                 fireObj.dealSevenCards(playerKey, whiteOrder, host);
                                 $("#waiting").hide();
