@@ -22,6 +22,16 @@ body {
     background-size: cover;
 }
 
+/*.toast-info < .toast-message h1 {
+    padding-bottom: 0px;
+}*/
+
+.toast-message h1 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    text-align: center;
+}
+
 #myNav {
     background-color: black;
 }
