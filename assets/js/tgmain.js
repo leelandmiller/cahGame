@@ -141,7 +141,7 @@ $('#myBtn2').on('click', function() {
 });
 
 
-// Quit Game
+// Quit Game //
 $('#nav-quit-game').on('click', function() {
     $('.cd-popup').addClass('is-visible')
 
