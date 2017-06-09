@@ -453,7 +453,7 @@ gameState = function(key, rejoined) {
                                             return snap + 1;
                                         })
                                         currentPlayerRef.child((host ? "host" : currentUid)).child("blackCards").child(blackNum).set(true)
-                                        currentPlayerRef.child((host ? "host" : currentUid)).child("playeBlackCount").transaction(function(snap) {
+                                        currentPlayerRef.child((host ? "host" : currentUid)).child("playerBlackCount").transaction(function(snap) {
                                                 return snap + 1
                                             })
                                             //ad black card to user's profile totals
