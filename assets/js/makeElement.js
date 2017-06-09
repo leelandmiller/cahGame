@@ -199,7 +199,7 @@ makeElement = {
         let isSet = false;
         for (var i = 0; i < 4; i++) {
             if ($("#row" + i).children().length < 2 && !isSet) {
-                let newTd = $("<td>").text(displayName + " - ");
+                let newTd = $("<td>").text(displayName + " - ").attr("data-id", uid).addClass("openProfile");
                 let badgeSpan = $('<span>').addClass('badge');
                 let newSpan = $("<span>").attr("id", uid + "blackCount").text("0");
                 let newGlyph = $("<span>").addClass("glyphicon glyphicon-stop");
@@ -210,6 +210,11 @@ makeElement = {
                 playerRef.child(playerKey + "/" + uid).child("playerBlackCount").on("value", function(snap) {
                     $("#" + uid + "blackCount").text(snap.val())
                 })
+                if (uid === "host") {
+                    currentPlayerRef.child("host").child("uid").once("value", function(snap) {
+                        newTd.attr("data-id", snap.val())
+                    })
+                }
             }
 
         }
@@ -233,5 +238,76 @@ makeElement = {
         })
     }
 
+
+}
+let profile = {
+
+    profileUpdate: function(name, imgSrc) {
+        $('#profile-name').text(name);
+        $('#frame').attr('src', imgSrc);
+    },
+
+    blackCardTotal: function(totalBlackCount) {
+        $('#totalBlackCount').html('');
+        let tableRow = $('<tr>');
+        let tableContent = $('<td>').text(totalBlackCount);
+        tableRow.append(tableContent);
+        $('#totalBlackCount').append(tableRow);
+    },
+
+    mostWonBlack: function(mostWonText, numberWonCount) {
+        let tableRow = $('<tr>');
+        let tableText = $('<td>').text(mostWonText);
+        let tableNumber = $('<td>').text(numberWonCount);
+        tableRow.append(tableText);
+        tableRow.append(tableNumber);
+        $('#mostWonBlack').append(tableRow);
+    },
+
+    buildProfile: function(userId) {
+        userRef.child(userId).once('value', function(snap) {
+            profile.profileUpdate(snap.val().displayName, snap.val().profile.pic);
+            profile.blackCardTotal(snap.val().totalBlackCount);
+        })
+        userRef.child(userId).child("blackCards").once("value", function(snap) {
+            let first = 0;
+            let second = 0;
+            let third = 0
+            let firstNum = 0;
+            let firstNum2 = 0
+            let secondNum = 0;
+            let secondNum2 = 0
+            let thirdNum = 0;
+            let thirdNum2 = 0
+            snap.forEach(function(firstSnap) {
+                    firstSnap.forEach(function(secondSnap) {
+                            if (secondSnap.val() > first) {
+                                first = secondSnap.val()
+                                firstNum2 = secondSnap.key
+                                firstNum = firstSnap.key
+                            } else if (secondSnap.val() > second) {
+                                second = secondSnap.val()
+                                secondNum2 = secondSnap.key
+                                secondNum = firstSnap.key
+                            } else if (secondSnap.val() > third) {
+                                third = secondSnap.val()
+                                thirdNum2 = secondSnap.key
+                                thirdNum = firstSnap.key
+                            }
+                        }) //forEach2
+                }) //forEach1
+            blackCardRef.child(firstNum).child(firstNum2).child("text").once("value", function(snap) {
+                    profile.mostWonBlack(snap.val(), first)
+                }).then(function() {
+                    blackCardRef.child(secondNum).child(secondNum2).child("text").once("value", function(snap) {
+                        profile.mostWonBlack(snap.val(), second)
+                    }).then(function() {
+                        blackCardRef.child(thirdNum).child(thirdNum2).child("text").once("value", function(snap) {
+                            profile.mostWonBlack(snap.val(), third)
+                        })
+                    })
+                }) //once
+        })
+    }
 
 }

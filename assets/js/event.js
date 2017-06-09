@@ -72,7 +72,7 @@ firebase.auth().onAuthStateChanged(function(user) {
             } //if
 
         }).then(function() {
-            $("#user-name").text(currentDisplayName);
+            $("#user-name").text(currentDisplayName).attr("data-id", currentUid).addClass("openProfile");
         })
         fireObj.joinGameEvent();
     } else {
@@ -85,11 +85,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         $(".hide-create").hide();
         $(".hide-waiting").hide();
     }
-
-
 })
-
-
 
 $("#create-game").on("click", function(event) {
     event.preventDefault();
@@ -97,7 +93,16 @@ $("#create-game").on("click", function(event) {
     let winCount = $("#numCards").val();
     fireObj.createNewGame(playerCount, winCount);
 })
-
+$(document).on("click", ".openProfile", function() {
+    let uid = $(this).attr("data-id");
+    profile.buildProfile(uid);
+    $("#myProfile").show();
+})
+$("#closeProfile").on("click", function() {
+    $("#myProfile").hide();
+    $("#totalBlackCount").html("");
+    $("#mostWonBlack").html("");
+})
 $('#main-view').hide();
 $('.hide-create').hide();
 $('.hide-waiting').hide();
