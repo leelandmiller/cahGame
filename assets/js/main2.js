@@ -383,15 +383,15 @@ fireObj = {
         },
         dealOneCard: function(whiteOrder, host, card) {
             currentGameRef.child("whiteCount").transaction(function(snap) {
-
-                //grab whitecount
+                let handLoc = parseInt(card.splice(4)) - 1
+                    //grab whitecount
                 let firstChild = Math.floor(snap / 50);
                 let secondChild = (snap % 50);
                 let newCard = whiteOrder[firstChild][secondChild];
                 //find auctally card location
                 let firstNum = Math.floor(newCard / 50)
                 let secondNum = newCard % 50
-                currentPlayerRef.child((host ? "host" : currentUid) + "/hand").child(card).set(newCard).then(function(snap) {
+                currentPlayerRef.child((host ? "host" : currentUid) + "/hand").child(handLoc).set(newCard).then(function(snap) {
                     whiteCardRef.child(firstNum).child(secondNum).once("value", function(snap) {}).then(function(snap) {
                         makeElement.newWhiteCard(card, snap.val(), newCard)
                     })
