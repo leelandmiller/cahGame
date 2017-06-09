@@ -19,7 +19,6 @@ gameState = function(key, rejoined) {
     let disconnectTO = "";
     $(".hide-create").hide();
     $(".hide-waiting").show();
-
     currentGameRef = gameRef.child(key);
     currentChatRef = currentGameRef.child('chat');
     currentChatRef.on('child_added', function(snap) {
@@ -33,7 +32,6 @@ gameState = function(key, rejoined) {
         }
     });
     currentGameRef.once("value", function(snap) {
-
             //grab all data needed to have stored
             blackOrder = snap.val().blackOrder;
             localWhiteOrder = snap.val().whiteOrder;
@@ -61,10 +59,6 @@ gameState = function(key, rejoined) {
             currentGameRef.child("totalPlayers").on("value", function(snap) {
                 $("#waitPlayers").text(snap.val());
             })
-
-
-
-
         }).then(function() {
             currentPlayerRef = playerRef.child(playerKey);
             if (!host) {
@@ -92,6 +86,7 @@ gameState = function(key, rejoined) {
                             joinedGame: ""
                         })
                         if (host) {
+                            clearInterval(disconnectTO);
                             currentGameRef.remove()
                             currentPlayerRef.remove()
                             currentPlayerRef.onDisconnect().cancel()
@@ -107,17 +102,6 @@ gameState = function(key, rejoined) {
                         $("#hideCards").hide();
                         currentChatRef.off();
                     } else {
-                        /*state = {
-                                                open: 0,
-                                                ready: 1,
-                                                chooseBlack: 2,
-                                                chooseWhite: 3,
-                                                pickWhite: 4,
-                                                showCards: 5,
-                                                nextTurn: 6,
-                                                gameOver: 7,
-                                                quitGame: 8
-                                            }*/
                         switch (data) {
                             case (state.open):
 
@@ -141,9 +125,9 @@ gameState = function(key, rejoined) {
                                     if (!host) {
                                         currentPlayerRef.child(currentUid).remove();
                                         userRef.child(currentUid).update({
-                                            joinedGame: ''
-                                        })
-                                        // let total = 0;
+                                                joinedGame: ''
+                                            })
+                                            // let total = 0;
                                         currentGameRef.child('totalPlayers').transaction(function(snap) {
                                             return snap - 1;
                                         });
@@ -156,12 +140,6 @@ gameState = function(key, rejoined) {
                                     $("#hideCards").hide();
                                     currentChatRef.off();
                                 });
-
-                                // currentGameRef.child("totalPlayers").on("value", function(snap) {
-                                //         $("#currentPlay").text(snap.val());
-
-                                //     })
-
                                 //show waitng for game to start screen
                                 currentPlayerRef.on("child_added", function(snap) {
                                     //listen for players joining to update the screen
@@ -178,21 +156,16 @@ gameState = function(key, rejoined) {
                                         if (playerOrder.length >= 4) {
                                             $("#loading-gif").hide();
                                             $("#forceStart").show();
-
                                             //if player count >= 4 allow host to start
-
                                         }
                                         // if the host listen for player count to playerLimit
                                     } //if
 
                                 }); //currentPlayerRef.on()
-
                                 currentPlayerRef.on('child_removed', function(snap) {
                                     $('#' + snap.key + 'blackCount').parents('td').remove();
                                     $('#' + snap.key + 'waiting-list').remove();
                                 });
-
-
                                 //the host starts game and changes to next state
                                 break;
                             case (state.ready):
@@ -319,7 +292,6 @@ gameState = function(key, rejoined) {
                                         })
                                     }, 1000)
                                 }
-
                                 currentGameRef.child("currentTurn").once("value", function(snap) {
                                     //display black card
                                     currentTurn = snap.val()
@@ -350,10 +322,7 @@ gameState = function(key, rejoined) {
                                         } //if
                                     })
                                 })
-
                                 break;
-
-                                // break;
                             case (state.pickWhite):
                                 if (host) {
                                     clearInterval(disconnectTO);
@@ -363,20 +332,15 @@ gameState = function(key, rejoined) {
                                     let playerReJoin = Promise.resolve(reJoin.newGetBlackCard(blackOrder))
                                     playerReJoin.then(function(result) {
 
-                                            reJoin.buildList(playerKey);
-                                            currentBlack = result.currentBlack;
-                                            currentTurn = result.currentTurn;
-                                            pick = result.pick;
-                                            console.log(result)
-                                            reJoined = false;
-                                            fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
-                                        })
-                                        // reJoin.buildList(playerKey);
-                                        // currentBlack = playerReJoin.currentBlack;
-                                        // currentTurn = playerReJoin.currentTurn;
-                                        // pick = playerReJoin.pick;
-                                        // console.log(playerReJoin)
-                                        // reJoined = false;
+                                        reJoin.buildList(playerKey);
+                                        currentBlack = result.currentBlack;
+                                        currentTurn = result.currentTurn;
+                                        pick = result.pick;
+                                        console.log(result)
+                                        reJoined = false;
+                                        fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
+                                    })
+
                                 }
                                 //prevent it getting stuck on state change
                                 $(".shBtn").hide();
@@ -460,15 +424,6 @@ gameState = function(key, rejoined) {
                                         })
                                     }, 1000)
                                 }
-
-                                // if (currentTurn === (host ? "host" : currentUid)) {
-                                //     currentGameRef.child("blackCount").transaction(function(snap) {
-                                //             return snap + 1
-                                //         })
-                                //         // set you as chooser of white card
-                                // } //if
-
-                                //currentGameRef
                                 //current player turn chooses a white card to win
                                 // set min time or wait 5sec after pick
                                 break;
@@ -494,8 +449,11 @@ gameState = function(key, rejoined) {
                                         $("#" + snap.val().displayName + " .flipper .back").css("background", "gold");
                                     })
                                     if (snap.val() === (host ? "host" : currentUid)) {
+                                        userRef.child(currentUid).child("totalBlackCount").transaction(function(snap) {
+                                            return snap + 1;
+                                        })
                                         currentPlayerRef.child((host ? "host" : currentUid)).child("blackCards").child(blackNum).set(true)
-                                        currentPlayerRef.child((host ? "host" : currentUid)).child("playerBlackCount").transaction(function(snap) {
+                                        currentPlayerRef.child((host ? "host" : currentUid)).child("playeBlackCount").transaction(function(snap) {
                                                 return snap + 1
                                             })
                                             //ad black card to user's profile totals
