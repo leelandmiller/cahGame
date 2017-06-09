@@ -19,6 +19,7 @@ gameState = function(key, rejoined) {
     let disconnectTO = "";
     $(".hide-create").hide();
     $(".hide-waiting").show();
+    $("#forceStart").hide();
     $("#chat").html("")
     currentGameRef = gameRef.child(key);
     currentChatRef = currentGameRef.child('chat');
@@ -328,7 +329,7 @@ gameState = function(key, rejoined) {
                                                 // need to deal with 1 or 2 clicks
                                             makeElement.mainClick(pick, host, currentTurn);
 
-                                        } else if (currentTurn === (host ? 'host' : currentUid)){
+                                        } else if (currentTurn === (host ? 'host' : currentUid)) {
                                             toastr.warning("<h1>It's Your Turn</h1>", "", {
                                                 positionClass: "toast-top-full-width",
                                                 preventDuplicates: true,
