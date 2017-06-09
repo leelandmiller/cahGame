@@ -77,6 +77,11 @@ makeElement = {
                     currentPlayerRef.child((host ? "host" : currentUid)).update({
                             chosenWhiteCard1: cardNum
                         }).then(function() {
+                            currentChatRef.push({
+                                displayName: "System",
+                                message: currentDisplayName + " has Picked.",
+                                timeStamp: firebase.database.ServerValue.TIMESTAMP
+                            })
                             fireObj.dealOneCard(localWhiteOrder, host, cardId);
                             $(".flip-container").off();
                             let allPicked = true;
@@ -117,6 +122,11 @@ makeElement = {
                                 chosenWhiteCard2: cardNum,
                                 chosenWhiteCard1: firstCard
                             }).then(function() {
+                                currentChatRef.push({
+                                    displayName: "System",
+                                    message: currentDisplayName + " has Picked.",
+                                    timeStamp: firebase.database.ServerValue.TIMESTAMP
+                                })
                                 fireObj.dealOneCard(localWhiteOrder, host, cardId);
                                 fireObj.dealOneCard(localWhiteOrder, host, firstCardId)
                                 $("#" + firstCardId).removeClass("glow")

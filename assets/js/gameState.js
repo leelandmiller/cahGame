@@ -314,7 +314,12 @@ gameState = function(key, rejoined) {
                                         makeElement.newWhiteCard("black", currentBlack);
                                     }).then(function() {
                                         if (currentTurn !== (host ? "host" : currentUid)) {
-                                            toastr.warning("<h1>Pick " + pick + (pick === 2 ? " cards" : " card" + "</h1>"), "", { positionClass: "toast-top-full-width", preventDuplicates: true, timeOut: 0, extendedTimeOut: 0 })
+                                            toastr.warning("<h1>Pick " + pick + (pick === 2 ? " cards" : " card" + "</h1>"), "", {
+                                                    positionClass: "toast-top-full-width",
+                                                    preventDuplicates: true,
+                                                    timeOut: 0,
+                                                    extendedTimeOut: 0
+                                                })
                                                 // set you as chooser of white card
                                                 // need to deal with 1 or 2 clicks
                                             makeElement.mainClick(pick, host, currentTurn);
