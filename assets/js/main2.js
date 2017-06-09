@@ -232,7 +232,6 @@ fireObj = {
                         //grabs total black card count
                         blackCount = snap.val();
                     }).then(function() {
-                        console.log("black:" + blackCount + " white:" + whiteCount)
                         let count = 0;
                         //creats 2 arrays of all indexs
                         for (var i = 0; i < whiteCount; i++) {
@@ -404,6 +403,7 @@ fireObj = {
         showAllChoices: function(currentBlack, currentTurn, pick, host) {
             //display modal
             modal.style.display = "block";
+            $("#hideCards").wrap("<div class='blur'></div>");
             toastr.clear();
             currentPlayerRef.once("value", function(snap) {
                 //create a obj to sotre all teh cards

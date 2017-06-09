@@ -19,7 +19,6 @@ gameState = function(key, rejoined) {
     let disconnectTO = "";
     $(".hide-create").hide();
     $(".hide-waiting").show();
-
     currentGameRef = gameRef.child(key);
     currentChatRef = currentGameRef.child('chat');
     currentChatRef.on('child_added', function(snap) {
@@ -33,7 +32,6 @@ gameState = function(key, rejoined) {
         }
     });
     currentGameRef.once("value", function(snap) {
-
             //grab all data needed to have stored
             blackOrder = snap.val().blackOrder;
             localWhiteOrder = snap.val().whiteOrder;
@@ -61,10 +59,6 @@ gameState = function(key, rejoined) {
             currentGameRef.child("totalPlayers").on("value", function(snap) {
                 $("#waitPlayers").text(snap.val());
             })
-
-
-
-
         }).then(function() {
             currentPlayerRef = playerRef.child(playerKey);
             if (!host) {
@@ -87,10 +81,12 @@ gameState = function(key, rejoined) {
                         //TODO: call quitgame functions
                         currentPlayerRef.child(currentUid).onDisconnect().cancel()
                         modal.style.display = "none";
+                        $("#hideCards").unwrap()
                         userRef.child(currentUid).update({
                             joinedGame: ""
                         })
                         if (host) {
+                            clearInterval(disconnectTO);
                             currentGameRef.remove()
                             currentPlayerRef.remove()
                             currentPlayerRef.onDisconnect().cancel()
@@ -106,17 +102,6 @@ gameState = function(key, rejoined) {
                         $("#hideCards").hide();
                         currentChatRef.off();
                     } else {
-                        /*state = {
-                                                open: 0,
-                                                ready: 1,
-                                                chooseBlack: 2,
-                                                chooseWhite: 3,
-                                                pickWhite: 4,
-                                                showCards: 5,
-                                                nextTurn: 6,
-                                                gameOver: 7,
-                                                quitGame: 8
-                                            }*/
                         switch (data) {
                             case (state.open):
 
@@ -134,12 +119,27 @@ gameState = function(key, rejoined) {
                                         joinedGame: key
                                     })
                                 }
+                                // ---- QUIT GAME LISTENER ---- //
+                                $('body').on('click', '#quit-game-confirm', function() {
+                                    $('.cd-popup').removeClass('is-visible');
+                                    if (!host) {
+                                        currentPlayerRef.child(currentUid).remove();
+                                        userRef.child(currentUid).update({
+                                                joinedGame: ''
+                                            })
+                                            // let total = 0;
+                                        currentGameRef.child('totalPlayers').transaction(function(snap) {
+                                            return snap - 1;
+                                        });
+                                    }
 
-                                // currentGameRef.child("totalPlayers").on("value", function(snap) {
-                                //         $("#currentPlay").text(snap.val());
-
-                                //     })
-
+                                    fireObj.globalChatOn();
+                                    $("#waiting").hide();
+                                    $(".hide-waiting").hide();
+                                    $(".hide-create").show();
+                                    $("#hideCards").hide();
+                                    currentChatRef.off();
+                                });
                                 //show waitng for game to start screen
                                 currentPlayerRef.on("child_added", function(snap) {
                                     //listen for players joining to update the screen
@@ -148,7 +148,7 @@ gameState = function(key, rejoined) {
                                     makeElement.buildPlayerList(playerKey, snap.key, displayName);
                                     if (host) playerOrder.push(snap.key);
                                     let newPlayer = $("<th>").text(displayName);
-                                    let newTr = $("<tr>");
+                                    let newTr = $("<tr>").attr('id', snap.key + 'waiting-list');
                                     newTr.append(newPlayer);
                                     $("#waiting-player-table tbody").append(newTr);
                                     if (host) {
@@ -156,21 +156,21 @@ gameState = function(key, rejoined) {
                                         if (playerOrder.length >= 4) {
                                             $("#loading-gif").hide();
                                             $("#forceStart").show();
-
                                             //if player count >= 4 allow host to start
-
                                         }
                                         // if the host listen for player count to playerLimit
                                     } //if
 
                                 }); //currentPlayerRef.on()
-
-
+                                currentPlayerRef.on('child_removed', function(snap) {
+                                    $('#' + snap.key + 'blackCount').parents('td').remove();
+                                    $('#' + snap.key + 'waiting-list').remove();
+                                });
                                 //the host starts game and changes to next state
                                 break;
                             case (state.ready):
                                 currentGameRef.child("totalPlayers").off()
-                                currentPlayerRef.off()
+                                currentPlayerRef.off('child_added');
                                 setBadgeColor()
                                 fireObj.dealSevenCards(playerKey, whiteOrder, host);
                                 $("#waiting").hide();
@@ -281,7 +281,7 @@ gameState = function(key, rejoined) {
                                                             }
                                                         }
                                                         if (snap.val().playerState.connected) {
-                                                            //if reconnect do nothing because if their turn it will go to nect state anyway 
+                                                            //if reconnect do nothing because if their turn it will go to nect state anyway
                                                             //if isnth thier turn wont change til they select
                                                             clearInterval(interval);
                                                         } //if
@@ -292,7 +292,6 @@ gameState = function(key, rejoined) {
                                         })
                                     }, 1000)
                                 }
-
                                 currentGameRef.child("currentTurn").once("value", function(snap) {
                                     //display black card
                                     currentTurn = snap.val()
@@ -323,10 +322,7 @@ gameState = function(key, rejoined) {
                                         } //if
                                     })
                                 })
-
                                 break;
-
-                                // break;
                             case (state.pickWhite):
                                 if (host) {
                                     clearInterval(disconnectTO);
@@ -336,20 +332,15 @@ gameState = function(key, rejoined) {
                                     let playerReJoin = Promise.resolve(reJoin.newGetBlackCard(blackOrder))
                                     playerReJoin.then(function(result) {
 
-                                            reJoin.buildList(playerKey);
-                                            currentBlack = result.currentBlack;
-                                            currentTurn = result.currentTurn;
-                                            pick = result.pick;
-                                            console.log(result)
-                                            reJoined = false;
-                                            fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
-                                        })
-                                        // reJoin.buildList(playerKey);
-                                        // currentBlack = playerReJoin.currentBlack;
-                                        // currentTurn = playerReJoin.currentTurn;
-                                        // pick = playerReJoin.pick;
-                                        // console.log(playerReJoin)
-                                        // reJoined = false;
+                                        reJoin.buildList(playerKey);
+                                        currentBlack = result.currentBlack;
+                                        currentTurn = result.currentTurn;
+                                        pick = result.pick;
+                                        console.log(result)
+                                        reJoined = false;
+                                        fireObj.showAllChoices(currentBlack, currentTurn, pick, host);
+                                    })
+
                                 }
                                 //prevent it getting stuck on state change
                                 $(".shBtn").hide();
@@ -422,7 +413,7 @@ gameState = function(key, rejoined) {
                                                             }
                                                         }
                                                         if (snap.val().playerState.connected) {
-                                                            //if reconnect do nothing because if their turn it will go to nect state anyway 
+                                                            //if reconnect do nothing because if their turn it will go to nect state anyway
                                                             //if isnth thier turn wont change til they select
                                                             clearInterval(interval);
                                                         } //if
@@ -433,15 +424,6 @@ gameState = function(key, rejoined) {
                                         })
                                     }, 1000)
                                 }
-
-                                // if (currentTurn === (host ? "host" : currentUid)) {
-                                //     currentGameRef.child("blackCount").transaction(function(snap) {
-                                //             return snap + 1
-                                //         })
-                                //         // set you as chooser of white card
-                                // } //if
-
-                                //currentGameRef
                                 //current player turn chooses a white card to win
                                 // set min time or wait 5sec after pick
                                 break;
@@ -467,8 +449,11 @@ gameState = function(key, rejoined) {
                                         $("#" + snap.val().displayName + " .flipper .back").css("background", "gold");
                                     })
                                     if (snap.val() === (host ? "host" : currentUid)) {
+                                        userRef.child(currentUid).child("totalBlackCount").transaction(function(snap) {
+                                            return snap + 1;
+                                        })
                                         currentPlayerRef.child((host ? "host" : currentUid)).child("blackCards").child(blackNum).set(true)
-                                        currentPlayerRef.child((host ? "host" : currentUid)).child("playerBlackCount").transaction(function(snap) {
+                                        currentPlayerRef.child((host ? "host" : currentUid)).child("playeBlackCount").transaction(function(snap) {
                                                 return snap + 1
                                             })
                                             //ad black card to user's profile totals
@@ -492,8 +477,7 @@ gameState = function(key, rejoined) {
                                         discconnectedKey = "";
                                         let disconnectCount = 0;
                                         snap.forEach(function(childSnap) {
-                                            console.log(childSnap.val())
-                                                //check for disconnect
+                                            //check for disconnect
                                             if (childSnap.val().playerState.connected === 2) {
                                                 currentPlayerRef.child(childSnap.key).remove()
                                                 let index = playerOrder.indexOf(childSnap.key);
@@ -562,6 +546,7 @@ gameState = function(key, rejoined) {
                                 break;
                             case (state.nextTurn):
                                 modal.style.display = "none";
+                                $("#hideCards").unwrap()
                                 currentPlayerRef.child((host ? "host" : currentUid)).update({
                                     chosenWhiteCard1: "",
                                     chosenWhiteCard2: "",
@@ -587,7 +572,7 @@ gameState = function(key, rejoined) {
 
                                         let winner = false;
                                         snap.forEach(function(snap) {
-                                            if (snap.val().playerBlackCount === winLimit) {
+                                            if (snap.val().playerBlackCount === parseInt(winLimit)) {
                                                 //winner(snap.key)
 
                                                 winner = true;
@@ -611,15 +596,137 @@ gameState = function(key, rejoined) {
                                 //else go to state.gameOver
                                 break;
                             case (state.gameOver):
+                                toastr.clear()
+                                currentPlayerRef.once("value", function(snap) {
+                                    snap.forEach(function(childSnap) {
+                                        currentPlayerRef.child(childSnap.key).child("blackCount").off()
+                                    })
+                                })
+                                let gameWinner = ""
+                                let amWinner = false;
                                 currentPlayerRef.once("value", function(snap) {
                                         snap.forEach(function(childSnap) {
-                                            currentPlayerRef.child(childSnap.key).child("blackCount").off()
+                                            if (childSnap.val().playerBlackCount === parseInt(winLimit)) {
+
+                                                if (childSnap.key === (host ? "host" : currentUid)) {
+                                                    amWinner = true;
+                                                }
+                                                gameWinner = childSnap.key
+                                                let isSet = false;
+                                                for (var i = 0; i < 4; i++) {
+                                                    if ($("#winnerRow" + i).children().length < 2 && !isSet) {
+                                                        let newTd = $("<td>").text(childSnap.val().displayName + " - ");
+                                                        let badgeSpan = $('<span>').addClass('badge').css("background", "gold");
+                                                        let newSpan = $("<span>").text(childSnap.val().playerBlackCount);
+                                                        let newGlyph = $("<span>").addClass("glyphicon glyphicon-stop");
+                                                        badgeSpan.append(newSpan).append(newGlyph);
+                                                        newTd.append(badgeSpan);
+                                                        $("#winnerRow" + i).append(newTd);
+                                                        isSet = true;
+
+                                                    }
+
+                                                }
+                                            } else {
+                                                let isSet = false;
+                                                for (var i = 0; i < 4; i++) {
+                                                    if ($("#winnerRow" + i).children().length < 2 && !isSet) {
+                                                        let newTd = $("<td>").text(childSnap.val().displayName + " - ");
+                                                        let badgeSpan = $('<span>').addClass('badge');
+                                                        let newSpan = $("<span>").text(childSnap.val().playerBlackCount);
+                                                        let newGlyph = $("<span>").addClass("glyphicon glyphicon-stop");
+                                                        badgeSpan.append(newSpan).append(newGlyph);
+                                                        newTd.append(badgeSpan);
+                                                        $("#winnerRow" + i).append(newTd);
+                                                        isSet = true;
+
+                                                    }
+
+                                                }
+                                            }
+                                        })
+                                        if (amWinner) {
+                                            $("#winner-animation").show();
+                                            setTimeout(function() {
+                                                $("#winner-animation").fadeOut();
+                                            }, 4000)
+                                            $("#loser").hide()
+                                            $("#winner").show()
+                                        } else {
+                                            $("#sad-face-animation").show();
+                                            setTimeout(function() {
+                                                $("#sad-face-animation").fadeOut();
+                                            }, 4000)
+                                        }
+                                        currentChatRef.off("child_added")
+                                        currentChatRef.on('child_added', function(snap) {
+                                            if (snap.key === 'chat') {} else {
+                                                let newDiv = $("<div>");
+                                                let message = $("<p>").text(snap.val().message);
+                                                let name = $("<strong>").text(snap.val().displayName + ": ");
+                                                message.prepend(name);
+                                                newDiv.append(message);
+                                                $("#results-chat-body").append(newDiv)
+                                            }
+                                        });
+                                        $('#btn-result-chat').on('click', function() {
+                                            let message = $('#btn-result-input').val().trim();
+                                            $('#btn-result-input').val('');
+                                            if (message === '') {
+                                                toastr.error('Your message was empty...maybe try typing something...', '', {
+                                                    closeButton: true,
+                                                    timeout: 10000,
+                                                    positionClass: 'toast-bottom-right'
+                                                });
+                                            } else if (message.startsWith('/')) {
+                                                api.checkCall(message);
+                                            } else {
+                                                // check if searchQuery starts with '/', for api call error
+                                                currentGameRef.child('chat').push().set({
+                                                    message: message,
+                                                    displayName: currentDisplayName,
+                                                    timeStamp: firebase.database.ServerValue.TIMESTAMP
+                                                });
+                                            }
+                                        });
+                                        $('#endModal').show();
+                                        $("#main-view").wrap("<div class='blur'></div>");
+                                        $("#btn-quit-game").on("click", function() {
+                                            userRef.child(currentUid).update({
+                                                joinedGame: ""
+                                            })
+                                            toastr.clear();
+                                            currentPlayerRef.child(currentUid).onDisconnect().cancel()
+                                            currentChatRef.off();
+                                            currentGameRef.child("state").off()
+                                            fireObj.globalChatOn();
+                                            if (host) {
+                                                currentPlayerRef.onDisconnect().cancel()
+                                                currentGameRef.onDisconnect().cancel()
+                                            }
+                                            $('#btn-result-chat').off()
+                                            $("#waiting").hide();
+                                            $(".hide-waiting").hide();
+                                            $(".hide-create").show();
+                                            $("#hideCards").hide();
+                                            $('#endModal').hide();
+                                            $("#main-view").unwrap();
+                                            $("btn-quit-game").off();
+                                            currentPlayerRef.once("value", function(snap) {
+                                                if (snap.numChildren() < 2) {
+                                                    currentGameRef.remove()
+                                                    currentPlayerRef.remove()
+                                                } else {
+                                                    currentPlayerRef.child((host ? "host" : currentUid)).remove()
+                                                }
+                                            })
                                         })
                                     })
                                     //allow users to return to match making screen
                                 break;
                             case (state.quitGame):
                                 modal.style.display = "none";
+                                $("#hideCards").unwrap()
                                 userRef.child(currentUid).update({
                                     joinedGame: ""
                                 })

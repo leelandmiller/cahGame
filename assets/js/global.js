@@ -36,6 +36,26 @@ let state = {
     quitGame: 8
 }
 
+let globalChatCallback = function() {
+    let message = $("#global-input").val().trim();
+    $("#global-input").val("")
+    if (message === "") {
+        toastr.error('Your message was empty...maybe try typing something...', '', {
+            closeButton: true,
+            timeout: 10000,
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: true,
+        });
+    } else {
+        globalChat.push().set({
+            message: message,
+            displayName: currentDisplayName,
+            timeStamp: firebase.database.ServerValue.TIMESTAMP
+        })
+
+    }
+}
+
 let chatCallback = function() {
     let message = $('#btn-input').val().trim();
     $('#btn-input').val('');
@@ -43,7 +63,8 @@ let chatCallback = function() {
         toastr.error('Your message was empty...maybe try typing something...', '', {
             closeButton: true,
             timeout: 10000,
-            positionClass: 'toast-bottom-right'
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: true,
         });
     } else if (message.startsWith('/')) {
         api.checkCall(message);

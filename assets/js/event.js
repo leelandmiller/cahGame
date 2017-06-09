@@ -4,7 +4,6 @@ $('.hide-game-center').hide();
 $("#susubmit").on("click", function() {
     let email = $("#emailInput").val().trim();
     let password = $("#pwone").val();
-    console.log(email, password)
     if (email === "" || password === "") {
         $(".errormsg").text("password or email is blank").show();
     } else {
@@ -34,24 +33,7 @@ $("#forceStart").on("click", function() {
         state: state.ready
     })
 })
-$("#btn-global-chat").on("click", function() {
-    let message = $("#global-input").val().trim();
-    $("#global-input").val("")
-    if (message === "") {
-        toastr.error('Your message was empty...maybe try typing something...', '', {
-            closeButton: true,
-            timeout: 10000,
-            positionClass: 'toast-bottom-right'
-        });
-    } else {
-        globalChat.push().set({
-            message: message,
-            displayName: currentDisplayName,
-            timeStamp: firebase.database.ServerValue.TIMESTAMP
-        })
-
-    }
-})
+$("#btn-global-chat").on("click", globalChatCallback);
 $('#btn-chat').on('click', chatCallback);
 
 firebase.auth().onAuthStateChanged(function(user) {
