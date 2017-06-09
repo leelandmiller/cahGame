@@ -329,12 +329,12 @@ gameState = function(key, rejoined) {
                                             makeElement.mainClick(pick, host, currentTurn);
 
                                         } else if (currentTurn === (host ? 'host' : currentUid)){
-                                            toastr.warning("<h1>It's Your Turn</h1>"), "", {
+                                            toastr.warning("<h1>It's Your Turn</h1>", "", {
                                                 positionClass: "toast-top-full-width",
                                                 preventDuplicates: true,
                                                 timeOut: 0,
                                                 extendedTimeOut: 0
-                                            }
+                                            });
                                         }
                                     })
                                 })
