@@ -31,6 +31,16 @@ body {
     background-size: cover;
 }
 
+/*.toast-info < .toast-message h1 {
+    padding-bottom: 0px;
+}*/
+
+.toast-message h1 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+    text-align: center;
+}
+
 #myNav {
     background-color: black;
 }
@@ -463,7 +473,7 @@ p.shBtn {
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
-    z-index: 1;
+    z-index: 2;
     /* Sit on top */
     padding-top: 70px;
     /* Location of the box */

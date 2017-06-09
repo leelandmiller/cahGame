@@ -1,6 +1,6 @@
-body {
+/*body {
     text-align: center;
-}
+}*/
 
 
 /* The Modal (background) */
@@ -26,21 +26,19 @@ body {
 
 #myProfile .modal-content {
     background-color: #fefefe;
-    margin: auto;
+    /*margin: auto;*/
     padding: 10px;
     border: 2px solid #000;
-    width: 50%;
+    /*width: 50%;*/
     border-radius: 0px;
 }
 
-.btn,
-.btn-primary {
+.edit-profile {
     background-color: black;
     color: white;
 }
 
-.btn:hover,
-.btn-primary:hover {
+.edit-profile:hover {
     background-color: white;
     color: black;
 }
@@ -68,10 +66,10 @@ body {
 }
 
 .profile-content {
-    display: inline-block;
-    width: 330px;
+    /*display: inline-block;*/
+    /*width: 330px;*/
     border: 2px solid #000;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
     background: white;
 }
 
@@ -122,5 +120,6 @@ img#frame {
     height: auto;
     background-color: #ffe;
     margin-left: 30px;
-    margin-bottom: 10px
+    margin-bottom: 10px;
+    margin-top: 20px;
 }
