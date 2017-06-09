@@ -128,7 +128,9 @@ fireObj = {
                     let name = $("<strong>").text(snap.val().displayName + ":");
                     message.prepend(name);
                     newDiv.append(message);
-                    $("#global-chat").append(newDiv)
+                    $("#global-chat").append(newDiv).animate({
+                        scrollTop: div.offset().top
+                    }, 100)
                 }
 
             })
@@ -465,7 +467,6 @@ fireObj = {
                             let secondNum = secondPick % 50
                             whiteCardRef.child(firstNum).child(secondNum).once("value", function(card) {
                                 blackCards[rand].secondPick = card.val()
-                                console.log("second pick:", blackCards[rand].secondPick, card.val())
 
                             }).then(function() {
                                 let args = {

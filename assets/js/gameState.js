@@ -19,6 +19,7 @@ gameState = function(key, rejoined) {
     let disconnectTO = "";
     $(".hide-create").hide();
     $(".hide-waiting").show();
+    $("#chat").html("")
     currentGameRef = gameRef.child(key);
     currentChatRef = currentGameRef.child('chat');
     currentChatRef.on('child_added', function(snap) {
@@ -28,7 +29,9 @@ gameState = function(key, rejoined) {
             let name = $("<strong>").text(snap.val().displayName + ": ");
             message.prepend(name);
             newDiv.append(message);
-            $("#chat").append(newDiv)
+            $("#chat").append(newDiv).animate({
+                scrollTop: div.offset().top
+            }, 100)
         }
     });
     currentGameRef.once("value", function(snap) {
@@ -182,6 +185,7 @@ gameState = function(key, rejoined) {
                                 break;
                             case (state.chooseBlack):
                                 if (rejoined) {
+                                    setBadgeColor()
                                     reJoin.showHand(key, whiteOrder);
                                     reJoin.buildList(playerKey);
                                     reJoined = false;
@@ -333,6 +337,7 @@ gameState = function(key, rejoined) {
                                     clearInterval(disconnectTO);
                                 }
                                 if (reJoined) {
+                                    setBadgeColor()
                                     reJoin.showHand(key, whiteOrder);
                                     let playerReJoin = Promise.resolve(reJoin.newGetBlackCard(blackOrder))
                                     playerReJoin.then(function(result) {
@@ -435,7 +440,7 @@ gameState = function(key, rejoined) {
                             case (state.showCards):
                                 clearInterval(disconnectTO);
                                 if (reJoined) {
-                                    console.log(blackOrder)
+                                    setBadgeColor()
                                     let playerReJoin = Promise.resolve(reJoin.newGetBlackCard(blackOrder))
                                     playerReJoin.then(function(result) {
 
