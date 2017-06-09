@@ -3,6 +3,15 @@ body {
     height: 100%;
 }
 
+#toast-container>div {
+    padding-bottom: 0px;
+}
+
+.toast-message h1 {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
 #winner-animation {
     display: none;
     position: absolute;

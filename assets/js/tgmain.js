@@ -1,7 +1,6 @@
 $('#selectedBlack').on('click', '.flip-container', function() {
     cardFlip(this);
 
-    console.log('flip container', this);
 });
 
 

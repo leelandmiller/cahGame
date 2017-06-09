@@ -55,28 +55,8 @@ let api = {
         let newWord = $("<strong>").text('(' + dict + ' Dict) - ' + word + ": ");
         newDef.prepend(newWord);
         newDiv.append(newDef);
-        $('#chat').append(newDiv);
+        $('#chat').append(newDiv).animate({
+            scrollTop: div.offset().top
+        }, 100);
     }
 }
-
-// currentChatRef.on('child_added', function(snap) {
-//     console.log(snap.val());
-//     let newDiv = $("<div>");
-//     let message = $("<p>").text(snap.val().message);
-//     let name = $("<strong>").text(snap.val().displayName + ":");
-//     message.prepend(name);
-//     newDiv.append(message);
-//     $("#chat").append(newDiv)
-// });
-
-
-////////////TESTING//////////
-// api.checkCall('/Dict "cat"');
-// api.checkCall('/Dict "dog"');
-// api.checkCall('/Dict "asdafas')
-// api.checkCall('/Dict asdafas"')
-
-// api.checkCall('/Urban "cat"');
-// api.checkCall('/Urban "dog"');
-// api.checkCall('/Urban "asdafas')
-// api.checkCall('/Urban asdafas"')
