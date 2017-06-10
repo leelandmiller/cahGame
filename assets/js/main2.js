@@ -122,14 +122,13 @@ fireObj = {
                 if (moment().valueOf() - snap.val().timeStamp >= 3600000) {
                     globalChat.child(snap.key).remove()
                 } else if (moment().valueOf() - snap.val().timeStamp <= 300000) {
-                    console.log(moment(snap.val().timeStamp).format("h:mm"))
                     let newDiv = $("<div>");
                     let message = $("<p>").text(snap.val().message);
                     let name = $("<strong>").text(snap.val().displayName + ":");
                     message.prepend(name);
                     newDiv.append(message);
                     $("#global-chat").append(newDiv).animate({
-                        scrollTop: div.offset().top
+                        scrollTop: newDiv.offset().top
                     }, 100)
                 }
 
@@ -321,7 +320,7 @@ fireObj = {
                     let cards = []
                         //deal out 7 cards
                     for (var i = 0; i < 7; i++) {
-                        //checsk if second child is above 49 whichs means it stored in the next firstchild
+                        //check if second child is above 49 whichs means it stored in the next firstchild
                         if (secondChild + i > 49) {
                             cards.push(whiteOrder[firstChild + 1][(secondChild + i) - 50])
                         } else {
@@ -333,6 +332,7 @@ fireObj = {
                     for (var i = 0; i < 7; i++) {
                         playerRef.child(playerKey + "/" + (host ? "host" : currentUid) + "/hand").child(i).set(cards[i]);
                     }
+                    //increase whiteCount by 7 for next player
                     snap = snap + 7;
                     return snap;
 

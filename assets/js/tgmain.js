@@ -16,15 +16,6 @@ function cardFlip(el) {
 
 
 // Game Card Listener //
-// 
-
-// NEW WHITE CARD TEST //
-// var card = 'card2'; //data from obj
-// var whiteCard = 'My humps.'; //data from obj
-
-// $('#' + card).on('click', function() {
-//     makeElement.newWhiteCard()
-// })
 function setCaretPosition(elemId, caretPos) {
     var elem = document.getElementById(elemId);
 
@@ -94,12 +85,10 @@ $('#myBtn').on('click', function() {
 // Show Black Card Modal
 
 
-// Quit Game
+// Quit Game //
 $('#nav-quit-game').on('click', function() {
     $('.cd-popup').addClass('is-visible')
 
 })
-
-
 
 //////////////////////// TESTING ABOVE //////////////////////////
