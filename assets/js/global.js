@@ -43,7 +43,8 @@ let globalChatCallback = function() {
         toastr.error('Your message was empty...maybe try typing something...', '', {
             closeButton: true,
             timeout: 10000,
-            positionClass: 'toast-bottom-right'
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: true,
         });
     } else {
         globalChat.push().set({
@@ -62,7 +63,8 @@ let chatCallback = function() {
         toastr.error('Your message was empty...maybe try typing something...', '', {
             closeButton: true,
             timeout: 10000,
-            positionClass: 'toast-bottom-right'
+            positionClass: 'toast-bottom-right',
+            preventDuplicates: true,
         });
     } else if (message.startsWith('/')) {
         api.checkCall(message);
