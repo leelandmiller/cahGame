@@ -8,10 +8,10 @@ let api = {
         }).done(function(data) {
             if (data.results[0].senses[0].subsenses !== undefined) {
                 result = data.results[0].senses[0].subsenses[0].definition;
-                api.displayDef(result, word)
+                api.displayDef(result, word, 'Pearson')
             } else {
                 result = data.results[0].senses[0].definition;
-                api.displayDef(result, word)
+                api.displayDef(result, word, 'Pearson')
             }
 
         });
@@ -23,7 +23,7 @@ let api = {
             url: baseURL + word,
         }).done(function(data) {
             result = data.list[0].definition;
-            api.displayDef(result, word)
+            api.displayDef(result, word, 'Urban')
         });
     },
     checkCall: function(message) {
@@ -40,21 +40,23 @@ let api = {
             this.callUrbanApi(word);
         } else {
             //display error
+            toastr.error('Error: try (/Dict "word") or(/Urban "word")', '', {
+                closeButton: true,
+                timeout: 10000,
+                positionClass: 'toast-bottom-right'
+            });
             console.log('Error: try (/Dict "word") or(/Urban "word")')
         }
     },
-    displayDef: function(def, word) {
-        console.log(word + " : " + def)
+    displayDef: function(def, word, dict) {
+        // console.log(word + " : " + def)
+        let newDiv = $("<div>");
+        let newDef = $("<p>").text(def);
+        let newWord = $("<strong>").text('(' + dict + ' Dict) - ' + word + ": ");
+        newDef.prepend(newWord);
+        newDiv.append(newDef);
+        $('#chat').append(newDiv).animate({
+            scrollTop: newDiv.offset().top
+        }, 100);
     }
 }
-
-////////////TESTING//////////
-// api.checkCall('/Dict "cat"');
-// api.checkCall('/Dict "dog"');
-// api.checkCall('/Dict "asdafas')
-// api.checkCall('/Dict asdafas"')
-
-// api.checkCall('/Urban "cat"');
-// api.checkCall('/Urban "dog"');
-// api.checkCall('/Urban "asdafas')
-// api.checkCall('/Urban asdafas"')
