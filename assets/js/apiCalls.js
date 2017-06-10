@@ -56,7 +56,7 @@ let api = {
         newDef.prepend(newWord);
         newDiv.append(newDef);
         $('#chat').append(newDiv).animate({
-            scrollTop: div.offset().top
+            scrollTop: newDiv.offset().top
         }, 100);
     }
 }

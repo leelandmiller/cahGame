@@ -31,7 +31,7 @@ gameState = function(key, rejoined) {
             message.prepend(name);
             newDiv.append(message);
             $("#chat").append(newDiv).animate({
-                scrollTop: div.offset().top
+                scrollTop: newDiv.offset().top
             }, 100)
         }
     });
@@ -155,7 +155,7 @@ gameState = function(key, rejoined) {
                                 if (!host && !reJoined) {
                                     // if not host, build and add your player obj based on uid
                                     fireObj.buildPlayerObj(key, playerKey)
-                                    // store game key in your userRef, used in case of disconnect
+                                        // store game key in your userRef, used in case of disconnect
                                     userRef.child(currentUid).update({
                                         joinedGame: key
                                     })
@@ -165,7 +165,7 @@ gameState = function(key, rejoined) {
                                 currentPlayerRef.on("child_added", function(snap) {
 
                                     let displayName = snap.val().displayName
-                                    // build list of players & scores in display
+                                        // build list of players & scores in display
                                     makeElement.buildPlayerList(playerKey, snap.key, displayName);
                                     // if host, push new player into playerOrder array
                                     if (host) playerOrder.push(snap.key);
@@ -703,7 +703,9 @@ gameState = function(key, rejoined) {
                                                 let name = $("<strong>").text(snap.val().displayName + ": ");
                                                 message.prepend(name);
                                                 newDiv.append(message);
-                                                $("#results-chat-body").append(newDiv)
+                                                $("#results-chat-body").append(newDiv).animate({
+                                                    scrollTop: newDiv.offset().top
+                                                }, 100)
                                             }
                                         });
                                         $('#btn-result-chat').on('click', function() {
