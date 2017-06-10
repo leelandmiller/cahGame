@@ -106,51 +106,70 @@ gameState = function(key, rejoined) {
                         $("#hideCards").hide();
                         currentChatRef.off();
                     } else {
+                        // ---- QUIT GAME LISTENER ---- //
+                        $('body').on('click', '#quit-game-confirm', function() {
+                            // hide 'quit-game' modal in display
+                            $('.cd-popup').removeClass('is-visible');
+                            if (!host) {
+                                // remove yourself from currentPlayers for the game
+                                currentPlayerRef.child(currentUid).remove();
+                                //the host starts game and changes to next state
+                                userRef.child(currentUid).update({
+                                    joinedGame: ''
+                                })
+                            }
+                            // enable global chat, update display
+                            fireObj.globalChatOn();
+                            $("#waiting").hide();
+                            $(".hide-waiting").hide();
+                            $(".hide-create").show();
+                            $("#hideCards").hide();
+                            currentChatRef.off();
+                        });
+                        // listen for player being removed from game
+                        currentPlayerRef.on('child_removed', function(snap) {
+                            if (host) {
+                                // remove the player from playerOrder array
+                                let index = playerOrder.indexOf(currentUid);
+                                playerOrder.splice(index, 1);
+                                console.log(playerOrder.length);
+                                // update totalPlayers in firebase
+                                currentGameRef.update({
+                                    totalPlayers: playerOrder.length
+                                })
+                            }
+                            $('#' + snap.key + 'blackCount').parents('td').remove();
+                            $('#' + snap.key + 'waiting-list').remove();
+                        });
+                        // ---- END QUIT GAME LISTENER ---- //
+
                         switch (data) {
                             case (state.open):
-
                                 fireObj.globalChatOff();
-                                //TODO: hide game list
                                 $("#current-turn-name").text("");
                                 for (var i = 0; i < 4; i++) {
                                     $("#row" + i).html("");
                                 }
+                                // show waiting for game to start screen
                                 $("#waiting-player-table").html("<tbody><tr> <th>Players</th></tr></tbody>");
                                 if (!host && !reJoined) {
-                                    // if not the host build and add player object based on player uid
+                                    // if not host, build and add your player obj based on uid
                                     fireObj.buildPlayerObj(key, playerKey)
+                                    // store game key in your userRef, used in case of disconnect
                                     userRef.child(currentUid).update({
                                         joinedGame: key
                                     })
                                 }
-                                // ---- QUIT GAME LISTENER ---- //
-                                $('body').on('click', '#quit-game-confirm', function() {
-                                    $('.cd-popup').removeClass('is-visible');
-                                    if (!host) {
-                                        currentPlayerRef.child(currentUid).remove();
-                                        userRef.child(currentUid).update({
-                                                joinedGame: ''
-                                            })
-                                            // let total = 0;
-                                        currentGameRef.child('totalPlayers').transaction(function(snap) {
-                                            return snap - 1;
-                                        });
-                                    }
 
-                                    fireObj.globalChatOn();
-                                    $("#waiting").hide();
-                                    $(".hide-waiting").hide();
-                                    $(".hide-create").show();
-                                    $("#hideCards").hide();
-                                    currentChatRef.off();
-                                });
-                                //show waitng for game to start screen
+                                // listen for new players being added to game, update display
                                 currentPlayerRef.on("child_added", function(snap) {
-                                    //listen for players joining to update the screen
-                                    //call update players screen
+
                                     let displayName = snap.val().displayName
+                                    // build list of players & scores in display
                                     makeElement.buildPlayerList(playerKey, snap.key, displayName);
+                                    // if host, push new player into playerOrder array
                                     if (host) playerOrder.push(snap.key);
+                                    // add new player to 'Waiting for Players' list in display
                                     let newPlayer = $("<th>").text(displayName);
                                     let newTr = $("<tr>").attr('id', snap.key + 'waiting-list');
                                     newTr.append(newPlayer);
@@ -166,10 +185,6 @@ gameState = function(key, rejoined) {
                                     } //if
 
                                 }); //currentPlayerRef.on()
-                                currentPlayerRef.on('child_removed', function(snap) {
-                                    $('#' + snap.key + 'blackCount').parents('td').remove();
-                                    $('#' + snap.key + 'waiting-list').remove();
-                                });
                                 //the host starts game and changes to next state
                                 break;
                             case (state.ready):
